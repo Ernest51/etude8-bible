@@ -347,6 +347,7 @@ function App() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="500">500</SelectItem>
                       <SelectItem value="1500">1500</SelectItem>
                       <SelectItem value="2500">2500</SelectItem>
                       <SelectItem value="5000">5000</SelectItem>
