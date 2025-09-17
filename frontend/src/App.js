@@ -36,7 +36,7 @@ function App() {
   const [selectedChapter, setSelectedChapter] = useState('');
   const [selectedVerse, setSelectedVerse] = useState('');
   const [passage, setPassage] = useState('');
-  const [density, setDensity] = useState('2500');
+  const [density, setDensity] = useState('500');
   const [model, setModel] = useState('ChatGPT');
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
