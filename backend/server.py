@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 # Pydantic models
 class StudyRequest(BaseModel):
     passage: str
-    density: Optional[str] = "2500"
+    density: Optional[str] = "500"  # Reduced default for faster generation
     model: Optional[str] = "ChatGPT"
 
 class StudyResponse(BaseModel):
