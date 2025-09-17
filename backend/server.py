@@ -113,17 +113,31 @@ async def generate_bible_study(passage: str, density: str = "2500") -> dict:
             "Prière de conclusion"
         ]
         
-        prompt = f"""
-        Génère une étude biblique complète pour le passage: {passage}
-        
-        Crée exactement 29 sections avec les titres suivants:
-        {chr(10).join([f"{i}. {title}" for i, title in enumerate(sections_titles)])}
-        
-        Chaque section doit contenir minimum {density} caractères de contenu théologique rigoureux.
-        Adapte le contenu spécifiquement au passage {passage}.
-        
-        Réponds UNIQUEMENT avec un JSON valide au format spécifié ci-dessus.
-        """
+        # Check if it's a quick test (small density)
+        if int(density) < 1000:
+            prompt = f"""
+            Génère une étude biblique complète mais CONCISE pour le passage: {passage}
+            
+            Crée exactement 29 sections avec les titres suivants:
+            {chr(10).join([f"{i}. {title}" for i, title in enumerate(sections_titles)])}
+            
+            Chaque section doit contenir environ 100-200 mots de contenu théologique adapté au passage {passage}.
+            SOIS CONCIS mais précis.
+            
+            Réponds UNIQUEMENT avec un JSON valide au format spécifié ci-dessus.
+            """
+        else:
+            prompt = f"""
+            Génère une étude biblique complète pour le passage: {passage}
+            
+            Crée exactement 29 sections avec les titres suivants:
+            {chr(10).join([f"{i}. {title}" for i, title in enumerate(sections_titles)])}
+            
+            Chaque section doit contenir minimum {density} caractères de contenu théologique rigoureux.
+            Adapte le contenu spécifiquement au passage {passage}.
+            
+            Réponds UNIQUEMENT avec un JSON valide au format spécifié ci-dessus.
+            """
         
         user_message = UserMessage(text=prompt)
         response = await chat.send_message(user_message)
