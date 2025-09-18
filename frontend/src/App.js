@@ -462,4 +462,176 @@ function App() {
   );
 }
 
+/* -------------------- Composants UI légers (pas de dépendances externes) -------------------- */
+
+function Step({ n, label, active }) {
+  return (
+    <li className={`inline-flex items-center gap-2 ${active ? "text-emerald-700" : "text-gray-400"}`}>
+      <span className={`h-6 w-6 rounded-full border inline-flex items-center justify-center text-xs ${active ? "border-emerald-500" : "border-gray-300"}`}>{n}</span>
+      <span className="font-medium">{label}</span>
+    </li>
+  );
+}
+
+function Select({ label, value, onChange, options }) {
+  return (
+    <label className="flex flex-col gap-1">
+      <span className="text-sm text-gray-600">{label}</span>
+      <select
+        value={value}
+        onChange={(e)=>onChange(e.target.value)}
+        className="rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+      >
+        {options.map((opt) => (
+          <option key={opt} value={opt}>{opt}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function NumberSelect({ label, value, onChange, min=1, max=100, step=1 }) {
+  const opts = [];
+  for (let i=min; i<=max; i+=step) opts.push(i);
+  return (
+    <label className="flex flex-col gap-1">
+      <span className="text-sm text-gray-600">{label}</span>
+      <select
+        value={value}
+        onChange={(e)=>onChange(Number(e.target.value))}
+        className="rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+      >
+        {opts.map((n) => (
+          <option key={n} value={n}>{n}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function Toggle({ label, enabled, setEnabled }) {
+  return (
+    <div className="flex items-end gap-3">
+      <label className="text-sm text-gray-600">{label}</label>
+      <button
+        type="button"
+        onClick={()=>setEnabled(!enabled)}
+        className={`relative inline-flex h-9 w-16 items-center rounded-full border transition ${enabled ? "bg-emerald-500" : "bg-gray-200"}`}
+        aria-pressed={enabled}
+      >
+        <span className={`inline-block h-7 w-7 transform rounded-full bg-white shadow transition ${enabled ? "translate-x-8" : "translate-x-1"}`} />
+      </button>
+    </div>
+  );
+}
+
+function Button({ children, variant = "default", ...props }) {
+  const base = "inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium transition focus:outline-none";
+  const variants = {
+    default: "border bg-white hover:bg-gray-50",
+    ghost: "border bg-transparent hover:bg-gray-50",
+    secondary: "border bg-blue-50 hover:bg-blue-100",
+    primary: "border bg-emerald-500 text-white hover:bg-emerald-600",
+  };
+  return (
+    <button className={`${base} ${variants[variant]}`} {...props}>{children}</button>
+  );
+}
+
+function Badge({ children, color = "gray" }) {
+  const map = {
+    gray: "bg-gray-100 text-gray-700 border-gray-200",
+    emerald: "bg-emerald-50 text-emerald-700 border-emerald-200",
+  };
+  return (
+    <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs ${map[color]}`}>{children}</span>
+  );
+}
+
+function Article({ content }) {
+  // Accepte du texte markdown-like simple ou plain-text
+  return (
+    <div className="whitespace-pre-wrap leading-relaxed">{content}</div>
+  );
+}
+
+/* -------------------- Utilitaires -------------------- */
+
+function normalizeBook(raw) {
+  const s = raw.trim().toLowerCase();
+  // Normalisations rapides (exemples usuels)
+  const map = {
+    "jn": "Jean", "jean": "Jean", "joh": "Jean", "john": "Jean",
+    "mt": "Matthieu", "mat": "Matthieu", "matt": "Matthieu",
+    "mc": "Marc", "marc": "Marc", "mark": "Marc",
+    "lc": "Luc", "luc": "Luc", "luke": "Luc",
+    "ps": "Psaumes", "psaume": "Psaumes", "psaumes": "Psaumes",
+  };
+  for (const k of Object.keys(map)) {
+    if (s === k) return map[k];
+  }
+  // Première lettre en majuscules par défaut
+  return raw.charAt(0).toUpperCase() + raw.slice(1);
+}
+
+function youVersionUrl(book, chapter, verse, version = "LSG") {
+  // Par défaut, on pointe vers la LSG (93). Construire un code livre robuste
+  // dépasserait le cadre; on tombe sur une URL de recherche propre si le code est inconnu.
+  const base = "https://www.bible.com/fr/search/bible";
+  const q = encodeURIComponent(`${book} ${chapter}:${verse} ${version}`);
+  return `${base}?query=${q}`;
+}
+
+async function simulateGeneration({ passageLabel, setProgress, setOutput }) {
+  // Simule une génération progressive en 3 étapes
+  setProgress(25);
+  await wait(600);
+  setProgress(60);
+  await wait(600);
+  setProgress(90);
+  await wait(400);
+
+  const demo = `Titre: Méditation sur ${passageLabel}\n\n1) Vérités clés\n- Dieu aime le monde d'un amour actif.\n- Le salut est un don, non un mérite.\n\n2) Commentaire\nDans ce verset, l'accent est mis sur l'initiative divine: Dieu "a tant aimé". La foi reçoit, elle ne produit pas. La vie éternelle commence dès maintenant par la communion avec le Fils.\n\n3) Prière\nSeigneur, apprends-moi à vivre aujourd'hui en réponse à ton amour, confiant dans ta grâce. Amen.`;
+  setOutput(demo);
+  setProgress(100);
+}
+
+function wait(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+/* -------------------- Mini système de toast (sans lib externe) -------------------- */
+
+const toastQueue = [];
+let toastId = 0;
+
+function toast(message) {
+  const id = ++toastId;
+  toastQueue.push({ id, message });
+  const evt = new CustomEvent("__toast_push");
+  window.dispatchEvent(evt);
+  setTimeout(() => {
+    const idx = toastQueue.findIndex(t => t.id === id);
+    if (idx >= 0) toastQueue.splice(idx, 1);
+    window.dispatchEvent(new CustomEvent("__toast_push"));
+  }, 2400);
+}
+
+function ToastContainer() {
+  const [, force] = React.useReducer((x)=>x+1, 0);
+  React.useEffect(() => {
+    const onPush = () => force();
+    window.addEventListener("__toast_push", onPush);
+    return () => window.removeEventListener("__toast_push", onPush);
+  }, []);
+
+  return (
+    <div className="pointer-events-none fixed inset-x-0 top-2 z-50 mx-auto flex max-w-md flex-col gap-2">
+      {toastQueue.map((t) => (
+        <div key={t.id} className="pointer-events-auto rounded-xl border bg-white px-4 py-2 shadow">
+          <div className="text-sm">{t.message}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default App;
