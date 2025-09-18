@@ -137,6 +137,4 @@ body{margin:0; color:#0f2d33; font-family:Inter,Segoe UI,Roboto,Helvetica,Arial}
 .muted{color:var(--muted); font-style:italic}
 
 .page-wrap{min-height:100vh; background:linear-gradient(180deg,#fff7ed 0%, #ecfdf5 100%)}
-=======
-.right-head{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; border-radius:12px; background:#f5fbff; border:1px solid var(-
->>>>>>> ed4327de77fff5ce14e6c50845888dcf08aedae5
+.page-wrap{min-height:100vh; background:linear-gradient(180deg,#fff7ed 0%, #ecfdf5 100%)}
