@@ -503,6 +503,32 @@ export default function App() {
   function goPrev() { setActiveId(function(i){ return Math.max(0, i - 1); }); }
   function goNext() { setActiveId(function(i){ return Math.min(RUBRIQUES.length - 1, i + 1); }); }
 
+  // Fonction pour formater le contenu avec des éléments en gras
+  function formatContent(text) {
+    if (!text) return null;
+    
+    const lines = text.split('\n');
+    return (
+      <div className="content-formatted-inner">
+        {lines.map((line, index) => {
+          // Rendre les titres en gras
+          if (line.startsWith('**') && line.endsWith('**')) {
+            const boldText = line.replace(/\*\*/g, '');
+            return <div key={index} className="content-bold">{boldText}</div>;
+          }
+          // Lignes normales
+          else if (line.trim()) {
+            return <div key={index} className="content-line">{line}</div>;
+          }
+          // Lignes vides pour l'espacement
+          else {
+            return <div key={index} className="content-space"></div>;
+          }
+        })}
+      </div>
+    );
+  }
+
   async function handleVersetsClick() {
     setActiveId(0);
     console.log('Versets button clicked - activeId set to 0');
