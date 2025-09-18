@@ -60,7 +60,6 @@ export default function App() {
   const [search, setSearch] = React.useState("");
   const [activeId, setActiveId] = React.useState(0);
   const [content, setContent] = React.useState("");
-  const [selectedColor, setSelectedColor] = React.useState("default");
 
   var passageLabel = book + " " + chapter + ":" + verse + " " + version;
 
