@@ -320,13 +320,13 @@ body {
 
 .pill-btn.special:hover {
   background: linear-gradient(135deg, var(--dynamic-button-hover), var(--dynamic-button-color));
-  box-shadow: 0 0 20px rgba(var(--dynamic-button-color), 0.5), var(--shadow-lg);
+  box-shadow: 0 0 20px rgba(var(--dynamic-shadow-color), 0.5), var(--shadow-lg);
   transform: translateY(-3px);
 }
 
 .pill-btn.special.active {
   background: linear-gradient(135deg, var(--dynamic-button-color), var(--dynamic-button-hover));
-  box-shadow: 0 0 25px rgba(var(--dynamic-button-color), 0.7), var(--shadow-xl);
+  box-shadow: 0 0 25px rgba(var(--dynamic-shadow-color), 0.7), var(--shadow-xl);
   transform: translateY(-2px);
   animation: pulse 2s infinite;
 }
@@ -341,7 +341,7 @@ body {
 
 .pill-btn.reset:hover {
   background: linear-gradient(135deg, var(--dynamic-button-hover), var(--dynamic-button-color));
-  box-shadow: 0 0 20px rgba(var(--dynamic-button-color), 0.5), var(--shadow-lg);
+  box-shadow: 0 0 20px rgba(var(--dynamic-shadow-color), 0.5), var(--shadow-lg);
   transform: translateY(-2px) rotate(-5deg);
 }
 
@@ -361,7 +361,7 @@ body {
 .pill-btn.accent:hover {
   background: linear-gradient(135deg, var(--dynamic-button-hover), var(--dynamic-button-color));
   animation: none;
-  box-shadow: 0 0 25px rgba(var(--dynamic-button-color), 0.6), var(--shadow-xl);
+  box-shadow: 0 0 25px rgba(var(--dynamic-shadow-color), 0.6), var(--shadow-xl);
 }
 
 @keyframes resetPulse {
