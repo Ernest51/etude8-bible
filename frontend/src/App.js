@@ -52,7 +52,7 @@ export default function App() {
   }
 
   function handleReset() {
-    setBook("Jean"); setChapter(3); setVerse(16); setVersion("LSG"); setTokens(500);
+    setBook("Jean"); setChapter(3); setVerse(16); setVersion("LSG"); setLength(500);
     setChatgpt(true); setProgress(0); setSearch(""); setActiveId(0); setContent("");
   }
 
