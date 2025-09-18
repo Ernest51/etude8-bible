@@ -2026,16 +2026,16 @@ body{
 
 /* Responsive */
 @media (max-width: 768px) {
-  .rubriques-navigation-container {
+  .three-column-container {
     flex-direction: column;
   }
   
-  .rubriques-left-panel {
+  .rubriques-left-panel, .current-study-center-panel, .right-content-panel {
     flex: none;
   }
   
-  .welcome-bible-title {
-    font-size: 36px;
+  .welcome-bible-title, .welcome-bible-title-right {
+    font-size: 20px;
   }
   
   .main-app-container {
