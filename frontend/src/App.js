@@ -84,6 +84,10 @@ export default function App() {
         requestedRubriques: [activeId]
       });
       
+      // Create AbortController for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+      
       const response = await fetch(`${backendUrl}/api/generate-study`, {
         method: 'POST',
         headers: {
@@ -95,16 +99,18 @@ export default function App() {
           tokens: tokens,
           model: chatgpt ? "gpt" : "claude",
           requestedRubriques: [activeId]
-        })
+        }),
+        signal: controller.signal
       });
       
+      clearTimeout(timeoutId); // Clear timeout if request completes
       setProgress(60); await wait(350);
       
       console.log('Response status:', response.status);
       
       if (response.ok) {
         const data = await response.json();
-        console.log('Response data:', data);
+        console.log('Response data received:', !!data.content);
         setProgress(100);
         setContent(data.content || "Méditation générée avec succès");
       } else {
@@ -115,13 +121,23 @@ export default function App() {
     } catch (error) {
       console.error('Full error:', error);
       setProgress(100);
-      setContent(
-        "🙏 Méditation sur " + passageLabel +
-        "\n\n- Dieu aime, Dieu donne, la foi reçoit." +
-        "\n- La vie éternelle commence déjà par la communion avec le Fils." +
-        "\n\nPrière : Seigneur, apprends-moi à répondre à ton amour aujourd'hui. Amen." +
-        "\n\n[Note: Contenu de fallback - Erreur: " + error.message + "]"
-      );
+      if (error.name === 'AbortError') {
+        setContent(
+          "🙏 Méditation sur " + passageLabel +
+          "\n\n- Dieu aime, Dieu donne, la foi reçoit." +
+          "\n- La vie éternelle commence déjà par la communion avec le Fils." +
+          "\n\nPrière : Seigneur, apprends-moi à répondre à ton amour aujourd'hui. Amen." +
+          "\n\n[Note: Délai d'attente dépassé - utilisation du contenu de fallback]"
+        );
+      } else {
+        setContent(
+          "🙏 Méditation sur " + passageLabel +
+          "\n\n- Dieu aime, Dieu donne, la foi reçoit." +
+          "\n- La vie éternelle commence déjà par la communion avec le Fils." +
+          "\n\nPrière : Seigneur, apprends-moi à répondre à ton amour aujourd'hui. Amen." +
+          "\n\n[Note: Contenu de fallback - Erreur: " + error.message + "]"
+        );
+      }
     }
   }
 
