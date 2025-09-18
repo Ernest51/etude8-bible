@@ -136,9 +136,13 @@ export default function App() {
   // Fonction pour changer de livre et ajuster le chapitre si nécessaire
   function handleBookChange(newBook) {
     setBook(newBook);
-    const maxChapters = BOOK_CHAPTERS[newBook] || 150;
-    if (chapter > maxChapters) {
-      setChapter(1);
+    if (newBook === "vide") {
+      setChapter("vide");
+    } else {
+      const maxChapters = BOOK_CHAPTERS[newBook] || 150;
+      if (chapter === "vide" || chapter > maxChapters) {
+        setChapter(1);
+      }
     }
   }
 
