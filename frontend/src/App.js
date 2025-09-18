@@ -88,7 +88,7 @@ export default function App() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
       
-      const response = await fetch(`${backendUrl}/api/generate-study`, {
+      const response = await fetch(`/api/generate-study`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
