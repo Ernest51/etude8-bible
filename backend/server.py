@@ -262,7 +262,7 @@ async def generate_study(ref: str, version: str = "LSG", length: int = 500):
 async def get_meditations(limit: int = 10):
     """Get recent meditations"""
     try:
-        meditations = await db.meditations.find().sort("created_at", -1).limit(limit).to_list(length=limit)
+        meditations = await db.meditations.find({}, {"_id": 0}).sort("created_at", -1).limit(limit).to_list(length=limit)
         return {"meditations": meditations}
     except Exception as e:
         logging.error(f"Error fetching meditations: {e}")
