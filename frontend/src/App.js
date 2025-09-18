@@ -506,7 +506,7 @@ function App() {
           <div className="grid">
             <div className="card section">
               <h3>Rubriques (29)</h3>
-              <p style={{color:"#5a7381", margin:0}}>Cliquez sur une rubrique dans la sidebar pour afficher son contenu détaillé</p>
+              <p style={{color:"#5a7381", margin:0}}>Cliquez sur une rubrique dans la sidebar pour afficher son contenu détaillé ci-dessous</p>
             </div>
 
             <div className="card section">
@@ -518,15 +518,19 @@ function App() {
             </div>
           </div>
 
-          {/* Contenu détaillé de la rubrique sélectionnée */}
-          <div className="card section" style={{marginTop: "16px"}}>
-            <h3>Contenu de l'étude : {STUDY_SECTIONS[selectedSection]?.title}</h3>
+          {/* Contenu détaillé de la rubrique sélectionnée - EN DESSOUS des Rubriques (29) */}
+          <div className="card section" style={{marginTop: "20px", width: "100%"}}>
+            <h3 style={{color: "#0ea5b3", marginBottom: "16px"}}>
+              📚 Étude détaillée : {STUDY_SECTIONS[selectedSection]?.title}
+            </h3>
+            
             <div className="study-content">
               <p style={{
-                lineHeight: "1.6", 
+                lineHeight: "1.7", 
                 color: "#0f2d3a", 
                 fontSize: "16px",
-                marginBottom: "20px"
+                marginBottom: "24px",
+                textAlign: "justify"
               }}>
                 {STUDY_SECTIONS[selectedSection]?.content || "Contenu de l'étude à venir..."}
               </p>
@@ -534,18 +538,19 @@ function App() {
               {/* Section d'interaction */}
               <div style={{
                 background: "rgba(14, 165, 179, 0.05)",
-                border: "1px solid rgba(14, 165, 179, 0.1)",
-                borderRadius: "12px",
-                padding: "16px",
-                marginTop: "16px"
+                border: "1px solid rgba(14, 165, 179, 0.15)",
+                borderRadius: "16px",
+                padding: "20px",
+                marginTop: "20px"
               }}>
-                <h4 style={{color: "#0ea5b3", margin: "0 0 12px 0", fontSize: "14px", fontWeight: "600"}}>
-                  💡 Questions de réflexion
+                <h4 style={{color: "#0ea5b3", margin: "0 0 16px 0", fontSize: "16px", fontWeight: "600"}}>
+                  💡 Questions de réflexion pour cette rubrique
                 </h4>
-                <ul style={{margin: "0", paddingLeft: "20px", color: "#5a7381"}}>
-                  <li>Comment ce passage s'applique-t-il à ma vie personnelle ?</li>
-                  <li>Quel enseignement principal puis-je retenir ?</li>
-                  <li>Comment puis-je mettre en pratique cette vérité biblique ?</li>
+                <ul style={{margin: "0", paddingLeft: "24px", color: "#5a7381", lineHeight: "1.6"}}>
+                  <li style={{marginBottom: "8px"}}>Comment ce passage s'applique-t-il à ma vie personnelle ?</li>
+                  <li style={{marginBottom: "8px"}}>Quel enseignement principal puis-je retenir de cette étude ?</li>
+                  <li style={{marginBottom: "8px"}}>Comment puis-je mettre en pratique cette vérité biblique au quotidien ?</li>
+                  <li>Quelle prière puis-je formuler à partir de cette méditation ?</li>
                 </ul>
               </div>
 
@@ -554,9 +559,9 @@ function App() {
                 display: "flex", 
                 justifyContent: "space-between", 
                 alignItems: "center",
-                marginTop: "20px",
-                paddingTop: "16px",
-                borderTop: "1px solid rgba(0,0,0,0.06)"
+                marginTop: "24px",
+                paddingTop: "20px",
+                borderTop: "2px solid rgba(14, 165, 179, 0.1)"
               }}>
                 <button 
                   className="btn btn-outline"
@@ -567,9 +572,15 @@ function App() {
                   ◀ Rubrique précédente
                 </button>
                 
-                <span style={{color: "#7895a2", fontSize: "14px", fontWeight: "600"}}>
-                  {selectedSection + 1} / 29
-                </span>
+                <div style={{textAlign: "center"}}>
+                  <span style={{color: "#0ea5b3", fontSize: "18px", fontWeight: "700"}}>
+                    {selectedSection + 1} / 29
+                  </span>
+                  <br />
+                  <span style={{color: "#7895a2", fontSize: "12px"}}>
+                    Progression dans l'étude
+                  </span>
+                </div>
                 
                 <button 
                   className="btn btn-outline"
