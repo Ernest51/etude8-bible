@@ -599,10 +599,17 @@ export default function App() {
       clearTimeout(timeoutId);
       setProgress(60); await wait(350);
       
+      console.log('📥 Response status:', response.status);
+      
       if (response.ok) {
         const data = await response.json();
+        console.log('✅ API Response received, content length:', data.content ? data.content.length : 0);
         setProgress(100);
         let content = data.content || "Étude verset par verset générée avec succès";
+        
+        // Compter les versets dans le contenu reçu
+        const verseCount = (content.match(/VERSET \d+/g) || []).length;
+        console.log('📊 Number of verses found in content:', verseCount);
         
         // Améliorer la lisibilité en rendant certains éléments en gras
         content = content.replace(/VERSET (\d+)/g, '**VERSET $1**');
@@ -612,6 +619,7 @@ export default function App() {
         content = content.replace(/Synthèse Spirituelle/g, '**Synthèse Spirituelle**');
         content = content.replace(/Principe Herméneutique/g, '**Principe Herméneutique**');
         
+        console.log('✅ Content processed and about to set in state');
         setContent(content);
         
         // Marquer la rubrique 0 comme complétée (LED verte)
