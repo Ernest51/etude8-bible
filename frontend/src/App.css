@@ -72,6 +72,7 @@ body{margin:0; color:#0f2d33; font-family:Inter,Segoe UI,Roboto,Helvetica,Arial}
 .sw-on{background:#34d399 !important; border-color:#34d399}
 .sw-on .dot{transform:translateX(26px)}
 
+<<<<<<< HEAD
 /* Color palette styles */
 .color-options{display:flex; gap:4px; align-items:center}
 .color-dot{
@@ -81,6 +82,8 @@ body{margin:0; color:#0f2d33; font-family:Inter,Segoe UI,Roboto,Helvetica,Arial}
 .color-dot:hover{transform:scale(1.1)}
 .color-dot.active{border-color:#3b82f6; box-shadow:0 0 0 2px rgba(59,130,246,0.2)}
 
+=======
+>>>>>>> ed4327de77fff5ce14e6c50845888dcf08aedae5
 /* ---------- Two columns ---------- */
 .two-cols{
   display:grid; grid-template-columns: 1fr; gap:16px;
@@ -118,6 +121,7 @@ body{margin:0; color:#0f2d33; font-family:Inter,Segoe UI,Roboto,Helvetica,Arial}
   background:#fff; border:1px solid var(--border); border-radius:18px; box-shadow:0 10px 30px rgba(0,0,0,.04);
   padding:14px 14px 22px;
 }
+<<<<<<< HEAD
 .right-head{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; border-radius:12px; background:#f5fbff; border:1px solid var(--border);}
 .right-head h3{margin:0; font-size:16px; color:#0b7392}
 .right-nav{display:flex; gap:6px}
@@ -133,3 +137,6 @@ body{margin:0; color:#0f2d33; font-family:Inter,Segoe UI,Roboto,Helvetica,Arial}
 .muted{color:var(--muted); font-style:italic}
 
 .page-wrap{min-height:100vh; background:linear-gradient(180deg,#fff7ed 0%, #ecfdf5 100%)}
+=======
+.right-head{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; border-radius:12px; background:#f5fbff; border:1px solid var(-
+>>>>>>> ed4327de77fff5ce14e6c50845888dcf08aedae5
