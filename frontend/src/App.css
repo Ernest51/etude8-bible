@@ -23,6 +23,15 @@ body{margin:0; color:#0f2d33; font-family:Inter,Segoe UI,Roboto,Helvetica,Arial}
   color:#0b7392; font-weight:700;
 }
 .progress-card{width:min(920px, calc(100% - 32px)); border-radius:18px; background:#fff; box-shadow:0 10px 30px rgba(0,0,0,.04); padding:18px}
+.progress-gradient{
+  height:24px;border-radius:999px;position:relative;overflow:hidden;cursor:pointer;
+  background:linear-gradient(90deg, #f0f9ff 0%, #f5f3ff 25%, #fff7ed 50%, #f0fdf4 75%, #f0fdf4 100%);
+  transition: all 0.2s ease;
+}
+.progress-gradient:hover{
+  height:28px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
 
 /* ---------- Controls card ---------- */
 .controls-card{
