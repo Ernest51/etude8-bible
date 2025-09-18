@@ -200,18 +200,28 @@ export default function App() {
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
       
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
-      const response = await fetch(`${backendUrl}/api/generate-study`, {
+      
+      // Check if we're doing verse-by-verse study (rubrique 0 = "Étude verset par verset")
+      const isVerseByVerse = activeId === 0;
+      const endpoint = isVerseByVerse ? '/api/generate-verse-by-verse' : '/api/generate-study';
+      
+      const payload = isVerseByVerse ? {
+        passage: passageLabel,
+        version: version
+      } : {
+        passage: passageLabel,
+        version: version,
+        tokens: length,
+        model: chatgpt ? "gpt" : "claude",
+        requestedRubriques: [activeId]
+      };
+      
+      const response = await fetch(`${backendUrl}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          passage: passageLabel,
-          version: version,
-          tokens: length,
-          model: chatgpt ? "gpt" : "claude",
-          requestedRubriques: [activeId]
-        }),
+        body: JSON.stringify(payload),
         signal: controller.signal
       });
       
