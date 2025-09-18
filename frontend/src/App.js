@@ -64,6 +64,31 @@ export default function App() {
 
   var passageLabel = book + " " + chapter + ":" + verse + " " + version;
 
+  // Fonction pour gérer les clics sur le gradient et changer la couleur de fond
+  function handleGradientClick(e) {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const width = rect.width;
+    const percentage = x / width;
+    
+    // Définir les couleurs selon la position du clic
+    let newColor;
+    if (percentage < 0.25) {
+      newColor = "#f0f9ff"; // Bleu clair
+    } else if (percentage < 0.5) {
+      newColor = "#f5f3ff"; // Violet clair  
+    } else if (percentage < 0.75) {
+      newColor = "#fff7ed"; // Orange clair
+    } else {
+      newColor = "#f0fdf4"; // Vert clair
+    }
+    
+    setPageBackground(newColor);
+    
+    // Appliquer immédiatement à la page
+    document.querySelector('.page-wrap').style.background = `linear-gradient(180deg, ${newColor} 0%, #ecfdf5 100%)`;
+  }
+
   // Fonction pour changer de livre et ajuster le chapitre si nécessaire
   function handleBookChange(newBook) {
     setBook(newBook);
