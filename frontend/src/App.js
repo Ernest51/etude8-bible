@@ -529,10 +529,6 @@ export default function App() {
     );
   }
 
-  const handleVersetsClick = () => {
-    alert('VERSETS CLICKED!');
-  };
-
   const generateVerseByVerse = async () => {
     console.log('🚀 STARTING generateVerseByVerse function');
     setProgress(5); await wait(200);
