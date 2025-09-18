@@ -2583,8 +2583,17 @@ body{
     order: 2;
   }
   
-  .content-hero h1 {
-    font-size: 24px;
+  .welcome-section h1 {
+    font-size: 20px;
+  }
+  
+  .questions-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .study-actions {
+    flex-direction: column;
+    align-items: stretch;
   }
   
   .main-app-container {
