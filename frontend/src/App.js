@@ -183,7 +183,7 @@ export default function App() {
           <ColorPalette backgroundColor={backgroundColor} onChange={setBackgroundColor} />
           <button className="pill-btn" onClick={handleLastStudy}>Dernière étude</button>
           <button className="pill-btn" onClick={handleReset}>Reset</button>
-          <button className="pill-btn">Versets</button>
+          <button className="pill-btn" onClick={function(){ setActiveId(0); }}>Versets</button>
           <button className="pill-btn accent" onClick={handleGenerate}>Générer</button>
         </div>
       </div>
