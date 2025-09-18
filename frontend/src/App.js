@@ -744,7 +744,6 @@ Soli Deo Gloria - Étude conforme à la sainte doctrine
           >
             📖 Versets
           </button>
-          <button className="pill-btn" onClick={testFunction} style={{backgroundColor: 'red', color: 'white'}}>TEST</button>
           <button className="pill-btn accent" onClick={handleGenerate}>Générer</button>
         </div>
       </div>
