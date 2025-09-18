@@ -42,9 +42,9 @@ const RUBRIQUES = [
   "Prière de réponse","Questions d'étude","Points de vigilance",
   "Objections et réponses","Perspective missionnelle","Éthique chrétienne",
   "Louange / liturgie","Méditation guidée","Mémoire / versets clés","Plan d'action"
-].map(function (t, i) { return { id: i, title: t }; });
+].map((t, i) => ({ id: i, title: t }));
 
-function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+function wait(ms){ return new Promise(r => setTimeout(r, ms)); }
 
 export default function App() {
   // passage
@@ -60,23 +60,20 @@ export default function App() {
   const [search, setSearch] = React.useState("");
   const [activeId, setActiveId] = React.useState(0);
   const [content, setContent] = React.useState("");
-  const [knobPosition, setKnobPosition] = React.useState(0); // Position du bouton sur la palette (0-100%)
-  const [isResetting, setIsResetting] = React.useState(false); // Flag pour éviter la sauvegarde lors du reset
-  const [rubriquesStatus, setRubriquesStatus] = React.useState({}); // État des LEDs de chaque rubrique
-  const [lastStudyLabel, setLastStudyLabel] = React.useState("Dernière étude"); // Label du bouton dernière étude
+  const [knobPosition, setKnobPosition] = React.useState(0);
+  const [isResetting, setIsResetting] = React.useState(false);
+  const [rubriquesStatus, setRubriquesStatus] = React.useState({});
+  const [lastStudyLabel, setLastStudyLabel] = React.useState("Dernière étude");
 
-  // Initialiser les couleurs au chargement
   React.useEffect(() => {
     updateBackgroundColor(knobPosition);
-    updateLastStudyLabel(); // Charger le label au démarrage
+    updateLastStudyLabel();
   }, []);
 
-  // Mettre à jour les couleurs quand knobPosition change
   React.useEffect(() => {
     updateBackgroundColor(knobPosition);
   }, [knobPosition]);
 
-  // Mettre à jour le label de "Dernière étude"
   function updateLastStudyLabel() {
     try {
       const stored = localStorage.getItem("lastStudy");
@@ -84,301 +81,224 @@ export default function App() {
         const data = JSON.parse(stored);
         const label = `${data.book || "Jean"} ${data.chapter || 3}`;
         setLastStudyLabel(label);
-        console.log('Last study label updated to:', label);
       } else {
         setLastStudyLabel("Dernière étude");
       }
-    } catch (e) {
-      console.error('Error updating last study label:', e);
+    } catch {
       setLastStudyLabel("Dernière étude");
     }
   }
 
-  // Mettre à jour le statut des rubriques quand livre/chapitre change
   React.useEffect(() => {
     if (book !== "vide" && chapter !== "vide") {
-      // Tous les rubriques sont prêts (LEDs jaunes)
       const newStatus = {};
-      for (let i = 0; i < RUBRIQUES.length; i++) {
-        newStatus[i] = 'ready';
-      }
+      for (let i = 0; i < RUBRIQUES.length; i++) newStatus[i] = 'ready';
       setRubriquesStatus(newStatus);
     } else {
-      // Reset des LEDs si pas de sélection
       setRubriquesStatus({});
     }
   }, [book, chapter]);
 
-  var passageLabel = (book === "vide" || chapter === "vide" || verse === "vide") 
-    ? "Sélectionnez un passage" 
-    : book + " " + chapter + ":" + verse + " " + version;
+  const passageLabel = (book === "vide" || chapter === "vide" || verse === "vide")
+    ? "Sélectionnez un passage"
+    : `${book} ${chapter}:${verse} ${version}`;
 
-  // Fonction pour gérer les clics sur le gradient et changer la couleur de fond
   function handleGradientClick(e) {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    const width = rect.width;
-    const percentage = (x / width) * 100;
+    const percentage = (x / rect.width) * 100;
     setKnobPosition(Math.max(0, Math.min(100, percentage)));
     updateBackgroundColor(percentage);
   }
 
-  // Fonction pour gérer le drag du bouton
   function handleKnobMouseDown(e) {
-    e.preventDefault();
-    e.stopPropagation();
+    e.preventDefault(); e.stopPropagation();
     const gradient = e.currentTarget.parentElement;
     const rect = gradient.getBoundingClientRect();
-    function handleMouseMove(moveEvent) {
-      const x = moveEvent.clientX - rect.left;
-      const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-      setKnobPosition(percentage);
-      updateBackgroundColor(percentage);
+    function handleMouseMove(me) {
+      const x = me.clientX - rect.left;
+      const p = Math.max(0, Math.min(100, (x / rect.width) * 100));
+      setKnobPosition(p); updateBackgroundColor(p);
     }
-    function handleMouseUp() {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    }
+    function handleMouseUp(){ document.removeEventListener('mousemove', handleMouseMove); document.removeEventListener('mouseup', handleMouseUp); }
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
   }
 
-  // Fonction pour mettre à jour la couleur de fond selon le pourcentage
-  function updateBackgroundColor(percentage) {
+  function updateBackgroundColor(pct) {
     let newColor, gradientEnd, buttonColor, buttonColorHover, shadowColor;
-    if (percentage < 25) {
-      newColor = "#dbeafe"; gradientEnd = "#bfdbfe"; buttonColor = "#3b82f6"; buttonColorHover = "#2563eb"; shadowColor = "59, 130, 246";
-    } else if (percentage < 50) {
-      newColor = "#e9d5ff"; gradientEnd = "#ddd6fe"; buttonColor = "#8b5cf6"; buttonColorHover = "#7c3aed"; shadowColor = "139, 92, 246";
-    } else if (percentage < 75) {
-      newColor = "#fed7aa"; gradientEnd = "#fdba74"; buttonColor = "#f59e0b"; buttonColorHover = "#d97706"; shadowColor = "245, 158, 11";
-    } else {
-      newColor = "#bbf7d0"; gradientEnd = "#86efac"; buttonColor = "#10b981"; buttonColorHover = "#059669"; shadowColor = "16, 185, 129";
-    }
+    if (pct < 25) { newColor="#dbeafe"; gradientEnd="#bfdbfe"; buttonColor="#3b82f6"; buttonColorHover="#2563eb"; shadowColor="59, 130, 246";}
+    else if (pct < 50) { newColor="#e9d5ff"; gradientEnd="#ddd6fe"; buttonColor="#8b5cf6"; buttonColorHover="#7c3aed"; shadowColor="139, 92, 246";}
+    else if (pct < 75) { newColor="#fed7aa"; gradientEnd="#fdba74"; buttonColor="#f59e0b"; buttonColorHover="#d97706"; shadowColor="245, 158, 11";}
+    else { newColor="#bbf7d0"; gradientEnd="#86efac"; buttonColor="#10b981"; buttonColorHover="#059669"; shadowColor="16, 185, 129";}
     const pageWrap = document.querySelector('.page-wrap');
-    if (pageWrap) {
-      pageWrap.style.background = `linear-gradient(180deg, ${newColor} 0%, ${gradientEnd} 100%)`;
-    }
+    if (pageWrap) pageWrap.style.background = `linear-gradient(180deg, ${newColor} 0%, ${gradientEnd} 100%)`;
     const root = document.documentElement;
     root.style.setProperty('--dynamic-button-color', buttonColor);
     root.style.setProperty('--dynamic-button-hover', buttonColorHover);
     root.style.setProperty('--dynamic-shadow-color', shadowColor);
   }
 
-  // Fonction pour changer de livre et ajuster le chapitre si nécessaire
   function handleBookChange(newBook) {
     setBook(newBook);
-    if (newBook === "vide") {
-      setChapter("vide");
-    } else {
+    if (newBook === "vide") setChapter("vide");
+    else {
       const maxChapters = BOOK_CHAPTERS[newBook] || 150;
-      if (chapter === "vide" || chapter > maxChapters) {
-        setChapter(1);
-      }
+      if (chapter === "vide" || chapter > maxChapters) setChapter(1);
     }
   }
 
   function handleValidate() {
-    if (!search.trim()) {
-      setProgress(function(p){ return p < 15 ? 15 : p; });
-      return;
-    }
+    if (!search.trim()) { setProgress(p => (p < 15 ? 15 : p)); return; }
     const searchText = search.trim().toLowerCase();
-    console.log('Parsing search:', searchText);
+
     const bookMapping = {
-      'genese': 'Genèse', 'genesis': 'Genèse',
-      'exode': 'Exode', 'exodus': 'Exode',
-      'levitique': 'Lévitique', 'leviticus': 'Lévitique',
-      'nombres': 'Nombres', 'numbers': 'Nombres',
-      'deuteronome': 'Deutéronome', 'deuteronomy': 'Deutéronome',
-      'josue': 'Josué', 'joshua': 'Josué',
-      'juges': 'Juges', 'judges': 'Juges',
-      'ruth': 'Ruth',
-      '1 samuel': '1 Samuel', '1samuel': '1 Samuel',
-      '2 samuel': '2 Samuel', '2samuel': '2 Samuel',
-      '1 rois': '1 Rois', '1rois': '1 Rois', '1 kings': '1 Rois',
-      '2 rois': '2 Rois', '2rois': '2 Rois', '2 kings': '2 Rois',
-      '1 chroniques': '1 Chroniques', '1chroniques': '1 Chroniques',
-      '2 chroniques': '2 Chroniques', '2chroniques': '2 Chroniques',
-      'esdras': 'Esdras', 'ezra': 'Esdras',
-      'nehemie': 'Néhémie', 'nehemiah': 'Néhémie',
-      'esther': 'Esther',
-      'job': 'Job',
-      'psaumes': 'Psaumes', 'psalms': 'Psaumes',
-      'proverbes': 'Proverbes', 'proverbs': 'Proverbes',
-      'ecclesiaste': 'Ecclésiaste', 'ecclesiastes': 'Ecclésiaste',
-      'cantique': 'Cantique', 'song': 'Cantique',
-      'esaie': 'Ésaïe', 'isaiah': 'Ésaïe',
-      'jeremie': 'Jérémie', 'jeremiah': 'Jérémie',
-      'lamentations': 'Lamentations',
-      'ezechiel': 'Ézéchiel', 'ezekiel': 'Ézéchiel',
-      'daniel': 'Daniel',
-      'osee': 'Osée', 'hosea': 'Osée',
-      'joel': 'Joël',
-      'amos': 'Amos',
-      'abdias': 'Abdias', 'obadiah': 'Abdias',
-      'jonas': 'Jonas', 'jonah': 'Jonas',
-      'michee': 'Michée', 'micah': 'Michée',
-      'nahum': 'Nahum',
-      'habacuc': 'Habacuc', 'habakkuk': 'Habacuc',
-      'sophonie': 'Sophonie', 'zephaniah': 'Sophonie',
-      'aggee': 'Aggée', 'haggai': 'Aggée',
-      'zacharie': 'Zacharie', 'zechariah': 'Zacharie',
-      'malachie': 'Malachie', 'malachi': 'Malachie',
-      'matthieu': 'Matthieu', 'matthew': 'Matthieu', 'matt': 'Matthieu',
-      'marc': 'Marc', 'mark': 'Marc',
-      'luc': 'Luc', 'luke': 'Luc',
-      'jean': 'Jean', 'john': 'Jean',
-      'actes': 'Actes', 'acts': 'Actes',
-      'romains': 'Romains', 'romans': 'Romains', 'rom': 'Romains',
-      '1 corinthiens': '1 Corinthiens', '1corinthiens': '1 Corinthiens', '1 cor': '1 Corinthiens',
-      '2 corinthiens': '2 Corinthiens', '2corinthiens': '2 Corinthiens', '2 cor': '2 Corinthiens',
-      'galates': 'Galates', 'galatians': 'Galates', 'gal': 'Galates',
-      'ephesiens': 'Éphésiens', 'ephesians': 'Éphésiens', 'eph': 'Éphésiens',
-      'philippiens': 'Philippiens', 'philippians': 'Philippiens', 'phil': 'Philippiens',
-      'colossiens': 'Colossiens', 'colossians': 'Colossiens', 'col': 'Colossiens',
-      '1 thessaloniciens': '1 Thessaloniciens', '1thessaloniciens': '1 Thessaloniciens', '1 thess': '1 Thessaloniciens',
-      '2 thessaloniciens': '2 Thessaloniciens', '2thessaloniciens': '2 Thessaloniciens', '2 thess': '2 Thessaloniciens',
-      '1 timothee': '1 Timothée', '1timothee': '1 Timothée', '1 tim': '1 Timothée',
-      '2 timothee': '2 Timothée', '2timothee': '2 Timothée', '2 tim': '2 Timothée',
-      'tite': 'Tite', 'titus': 'Tite',
-      'philemon': 'Philémon',
-      'hebreux': 'Hébreux', 'hebrews': 'Hébreux', 'heb': 'Hébreux',
-      'jacques': 'Jacques', 'james': 'Jacques',
-      '1 pierre': '1 Pierre', '1pierre': '1 Pierre', '1 peter': '1 Pierre',
-      '2 pierre': '2 Pierre', '2pierre': '2 Pierre', '2 peter': '2 Pierre',
-      '1 jean': '1 Jean', '1jean': '1 Jean', '1 john': '1 Jean',
-      '2 jean': '2 Jean', '2jean': '2 Jean', '2 john': '2 Jean',
-      '3 jean': '3 Jean', '3jean': '3 Jean', '3 john': '3 Jean',
-      'jude': 'Jude',
-      'apocalypse': 'Apocalypse', 'revelation': 'Apocalypse', 'rev': 'Apocalypse'
+      'genese':'Genèse','genesis':'Genèse','exode':'Exode','exodus':'Exode','levitique':'Lévitique','leviticus':'Lévitique',
+      'nombres':'Nombres','numbers':'Nombres','deuteronome':'Deutéronome','deuteronomy':'Deutéronome','josue':'Josué','joshua':'Josué',
+      'juges':'Juges','judges':'Juges','ruth':'Ruth','1 samuel':'1 Samuel','1samuel':'1 Samuel','2 samuel':'2 Samuel','2samuel':'2 Samuel',
+      '1 rois':'1 Rois','1rois':'1 Rois','1 kings':'1 Rois','2 rois':'2 Rois','2rois':'2 Rois','2 kings':'2 Rois',
+      '1 chroniques':'1 Chroniques','1chroniques':'1 Chroniques','2 chroniques':'2 Chroniques','2chroniques':'2 Chroniques',
+      'esdras':'Esdras','ezra':'Esdras','nehemie':'Néhémie','nehemiah':'Néhémie','esther':'Esther','job':'Job',
+      'psaumes':'Psaumes','psalms':'Psaumes','proverbes':'Proverbes','proverbs':'Proverbes',
+      'ecclesiaste':'Ecclésiaste','ecclesiastes':'Ecclésiaste','cantique':'Cantique','song':'Cantique',
+      'esaie':'Ésaïe','isaiah':'Ésaïe','jeremie':'Jérémie','jeremiah':'Jérémie','lamentations':'Lamentations',
+      'ezechiel':'Ézéchiel','ezekiel':'Ézéchiel','daniel':'Daniel','osee':'Osée','hosea':'Osée','joel':'Joël','amos':'Amos',
+      'abdias':'Abdias','obadiah':'Abdias','jonas':'Jonas','jonah':'Jonas','michee':'Michée','micah':'Michée','nahum':'Nahum',
+      'habacuc':'Habacuc','habakkuk':'Habacuc','sophonie':'Sophonie','zephaniah':'Sophonie','aggee':'Aggée','haggai':'Aggée',
+      'zacharie':'Zacharie','zechariah':'Zacharie','malachie':'Malachie','malachi':'Malachie',
+      'matthieu':'Matthieu','matthew':'Matthieu','matt':'Matthieu','marc':'Marc','mark':'Marc','luc':'Luc','luke':'Luc',
+      'jean':'Jean','john':'Jean','actes':'Actes','acts':'Actes','romains':'Romains','romans':'Romains','rom':'Romains',
+      '1 corinthiens':'1 Corinthiens','1corinthiens':'1 Corinthiens','1 cor':'1 Corinthiens',
+      '2 corinthiens':'2 Corinthiens','2corinthiens':'2 Corinthiens','2 cor':'2 Corinthiens',
+      'galates':'Galates','galatians':'Galates','gal':'Galates','ephesiens':'Éphésiens','ephesians':'Éphésiens','eph':'Éphésiens',
+      'philippiens':'Philippiens','philippians':'Philippiens','phil':'Philippiens','colossiens':'Colossiens','colossians':'Colossiens','col':'Colossiens',
+      '1 thessaloniciens':'1 Thessaloniciens','1thessaloniciens':'1 Thessaloniciens','1 thess':'1 Thessaloniciens',
+      '2 thessaloniciens':'2 Thessaloniciens','2thessaloniciens':'2 Thessaloniciens','2 thess':'2 Thessaloniciens',
+      '1 timothee':'1 Timothée','1timothee':'1 Timothée','1 tim':'1 Timothée','2 timothee':'2 Timothée','2timothee':'2 Timothée','2 tim':'2 Timothée',
+      'tite':'Tite','titus':'Tite','philemon':'Philémon','hebreux':'Hébreux','hebrews':'Hébreux','heb':'Hébreux',
+      'jacques':'Jacques','james':'Jacques','1 pierre':'1 Pierre','1pierre':'1 Pierre','1 peter':'1 Pierre',
+      '2 pierre':'2 Pierre','2pierre':'2 Pierre','2 peter':'2 Pierre','1 jean':'1 Jean','1jean':'1 Jean','1 john':'1 Jean',
+      '2 jean':'2 Jean','2jean':'2 Jean','2 john':'2 Jean','3 jean':'3 Jean','3jean':'3 Jean','3 john':'3 Jean',
+      'jude':'Jude','apocalypse':'Apocalypse','revelation':'Apocalypse','rev':'Apocalypse'
     };
-    let foundBook = null;
-    let foundChapter = "vide";
-    let foundVerse = "vide";
-    const pattern1 = searchText.match(/^(.+?)\s+(\d+):(\d+)$/);
-    if (pattern1) {
-      const bookName = pattern1[1].trim();
-      foundBook = bookMapping[bookName];
-      if (foundBook) {
-        foundChapter = parseInt(pattern1[2]);
-        foundVerse = parseInt(pattern1[3]);
-      }
+
+    let foundBook = null, foundChapter = "vide", foundVerse = "vide";
+
+    const m1 = searchText.match(/^(.+?)\s+(\d+):(\d+)$/);
+    if (m1) {
+      const b = m1[1].trim(); foundBook = bookMapping[b];
+      if (foundBook) { foundChapter = parseInt(m1[2]); foundVerse = parseInt(m1[3]); }
     }
+
     if (!foundBook) {
-      const pattern2 = searchText.match(/^(.+?)\s+(\d+)$/);
-      if (pattern2) {
-        const bookName = pattern2[1].trim();
-        foundBook = bookMapping[bookName];
-        if (foundBook) {
-          foundChapter = parseInt(pattern2[2]);
-          foundVerse = "vide";
-        }
+      const m2 = searchText.match(/^(.+?)\s+(\d+)$/);
+      if (m2) {
+        const b = m2[1].trim(); foundBook = bookMapping[b];
+        if (foundBook) { foundChapter = parseInt(m2[2]); foundVerse = "vide"; }
       }
     }
+
     if (!foundBook) {
-      const bookName = searchText.trim();
-      foundBook = bookMapping[bookName];
-      if (foundBook) {
-        foundChapter = 1;
-        foundVerse = 1;
-      }
+      const b = searchText.trim(); foundBook = bookMapping[b];
+      if (foundBook) { foundChapter = 1; foundVerse = 1; }
     }
+
     if (foundBook) {
-      setBook(foundBook);
-      setChapter(foundChapter);
-      setVerse(foundVerse);
-      setSearch("");
-      setProgress(50);
-      setTimeout(() => setProgress(0), 1000);
+      setBook(foundBook); setChapter(foundChapter); setVerse(foundVerse);
+      setSearch(""); setProgress(50); setTimeout(() => setProgress(0), 1000);
     } else {
-      setProgress(function(p){ return p < 15 ? 15 : p; });
+      setProgress(p => (p < 15 ? 15 : p));
     }
   }
 
   function handleReset() {
     setIsResetting(true);
-    setBook("vide");
-    setChapter("vide");
-    setVerse("vide");
-    setVersion("LSG");
-    setLength(500);
-    setChatgpt(true);
-    setProgress(0);
-    setSearch("");
-    setActiveId(0);
-    setContent("");
-    setKnobPosition(0);
-    setRubriquesStatus({});
-    updateBackgroundColor(0);
-    console.log('Reset effectué - Tout vidé, Dernière étude inchangée');
+    setBook("vide"); setChapter("vide"); setVerse("vide");
+    setVersion("LSG"); setLength(500); setChatgpt(true);
+    setProgress(0); setSearch(""); setActiveId(0); setContent("");
+    setKnobPosition(0); setRubriquesStatus({}); updateBackgroundColor(0);
   }
 
   function handleLastStudy() {
     try {
       const stored = localStorage.getItem("lastStudy");
       if (stored) {
-        const data = JSON.parse(stored);
-        setBook(data.book || "Jean");
-        setChapter(data.chapter || 3);
-        setVerse(data.verse || 16);
-        setVersion(data.version || "LSG");
-        setLength(data.length || 500);
-        setChatgpt(data.chatgpt !== undefined ? data.chatgpt : true);
+        const d = JSON.parse(stored);
+        setBook(d.book || "Jean"); setChapter(d.chapter || 3); setVerse(d.verse || 16);
+        setVersion(d.version || "LSG"); setLength(d.length || 500);
+        setChatgpt(d.chatgpt !== undefined ? d.chatgpt : true);
       }
-    } catch (e) {
-      console.error("Erreur lors du chargement de la dernière étude:", e);
-    }
+    } catch (e) { console.error("Erreur dernière étude:", e); }
   }
 
   function handleReadBible() {
-    var q = encodeURIComponent(passageLabel);
+    const q = encodeURIComponent(passageLabel);
     window.open("https://www.bible.com/fr/search/bible?query=" + q, "_blank");
   }
 
+  // ⛑️ SAFE: validation différente pour la rubrique 0 (chapitre uniquement)
   async function handleGenerate() {
-    if (book === "vide" || chapter === "vide" || verse === "vide") {
-      setContent("⚠️ Veuillez d'abord sélectionner un livre, un chapitre et un verset pour générer une étude biblique.");
-      setProgress(0);
-      return;
+    const isVerseByVerse = activeId === 0;
+
+    if (isVerseByVerse) {
+      if (book === "vide" || chapter === "vide") {
+        setContent("⚠️ Veuillez d'abord sélectionner un livre et un chapitre.");
+        setProgress(0); return;
+      }
+    } else {
+      if (book === "vide" || chapter === "vide" || verse === "vide") {
+        setContent("⚠️ Veuillez d'abord sélectionner un livre, un chapitre et un verset pour générer une étude biblique.");
+        setProgress(0); return;
+      }
     }
+
     setProgress(5); await wait(200);
     setProgress(25); await wait(250);
+
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
-      const isVerseByVerse = activeId === 0;
+
+      // Pour la rubrique 0, on n’envoie pas :verset
+      const passageForApi = isVerseByVerse
+        ? `${book} ${chapter} ${version}`
+        : passageLabel;
+
       const endpoint = isVerseByVerse ? '/api/generate-verse-by-verse' : '/api/generate-study';
       const payload = isVerseByVerse ? {
-        passage: passageLabel,
+        passage: passageForApi,
         version: version
       } : {
-        passage: passageLabel,
+        passage: passageForApi,
         version: version,
         tokens: length,
         model: chatgpt ? "gpt" : "claude",
         requestedRubriques: [activeId]
       };
+
       const response = await fetch(`${backendUrl}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
         signal: controller.signal
       });
+
       clearTimeout(timeoutId);
       setProgress(60); await wait(350);
+
       if (response.ok) {
         const data = await response.json();
         setProgress(100);
         setContent(data.content || "Méditation générée avec succès");
+
         if (!isResetting) {
           try {
             localStorage.setItem("lastStudy", JSON.stringify({
-              book: book, chapter: chapter, verse: verse, version: version, length: length, chatgpt: chatgpt
+              book, chapter, verse, version, length, chatgpt
             }));
             updateLastStudyLabel();
-          } catch (e) {}
+          } catch {}
         } else {
           setIsResetting(false);
         }
@@ -388,16 +308,12 @@ export default function App() {
       }
     } catch (error) {
       setProgress(100);
-      if (error.name === 'AbortError') {
-        setContent("⏳ Temps d'attente dépassé. Réessayez.");
-      } else {
-        setContent("⚠️ Erreur: " + error.message);
-      }
+      setContent("⚠️ Erreur: " + error.message);
     }
   }
 
-  function goPrev() { setActiveId(function(i){ return Math.max(0, i - 1); }); }
-  function goNext() { setActiveId(function(i){ return Math.min(RUBRIQUES.length - 1, i + 1); }); }
+  function goPrev() { setActiveId(i => Math.max(0, i - 1)); }
+  function goNext() { setActiveId(i => Math.min(RUBRIQUES.length - 1, i + 1)); }
 
   function formatContent(text) {
     if (!text) return null;
@@ -418,10 +334,10 @@ export default function App() {
     );
   }
 
-  // (LAISSE EXISTANT) generateVerseByVerse — non appelée
-  const generateVerseByVerse = async () => { /* laissée telle quelle si besoin */ };
+  // (laisse la fonction existante si tu l’avais; elle n’est pas appelée)
+  const generateVerseByVerse = async () => {};
 
-  // ✅ Handler VERSIONS SAFE : activeId=0 puis génération avec passage sélectionné
+  // ✅ Versets = activer la rubrique 0 puis générer (sans forcer un passage)
   const handleVersetsClick = async () => {
     setActiveId(0);
     await handleGenerate();
@@ -429,7 +345,7 @@ export default function App() {
 
   return (
     <div className="page-wrap">
-      {/* HEADER avec Marquee MEDITATION */}
+      {/* HEADER */}
       <div className="header-marquee">
         <div className="marquee-container">
           <div className="marquee-content" data-text="✨ MEDITATION BIBLIQUE ✨ ÉTUDE SPIRITUELLE ✨ SAGESSE DIVINE ✨ MÉDITATION THÉOLOGIQUE ✨ CONTEMPLATION SACRÉE ✨ RÉFLEXION INSPIRÉE ✨">
@@ -438,28 +354,24 @@ export default function App() {
         </div>
       </div>
 
-      {/* Bandeau haut (bulle %, barre gradient, points) */}
+      {/* Bandeau haut */}
       <div className="topband">
         <div className="progress-bubble">{Math.round(progress)}%</div>
         <div className="progress-card">
           <div className="progress-gradient" onClick={handleGradientClick}>
-            <div 
-              className="color-knob"
-              style={{left: `${knobPosition}%`}}
-              onMouseDown={handleKnobMouseDown}
-            />
+            <div className="color-knob" style={{left: `${knobPosition}%`}} onMouseDown={handleKnobMouseDown}/>
           </div>
         </div>
       </div>
 
-      {/* Bloc contrôles */}
+      {/* Contrôles */}
       <div className="controls-card">
         <div className="search-row">
           <input
             className="pill-input"
             placeholder="Rechercher (ex : Marc 5:1, 1 Jean 2, Genèse 1:1-5)"
             value={search}
-            onChange={function(e){ setSearch(e.target.value); }}
+            onChange={(e)=> setSearch(e.target.value)}
           />
           <button className="pill-btn primary" onClick={handleValidate}>Valider</button>
           <button className="pill-btn" onClick={handleReadBible}>Lire la Bible</button>
@@ -471,27 +383,22 @@ export default function App() {
           <NumberPill label="Verset" value={verse} onChange={setVerse} min={1} max={176} />
           <SelectPill label="Version" value={version} onChange={setVersion} options={["LSG","NEG79","BDS"]} />
           <SelectPill label="Longueur" value={length} onChange={setLength} options={[500,1500,2500]} />
-          <button className="pill-btn" onClick={function(){ window.open('https://chatgpt.com/', '_blank'); }}>ChatGPT</button>
+          <button className="pill-btn" onClick={()=> window.open('https://chatgpt.com/', '_blank')}>ChatGPT</button>
           <button className="pill-btn" onClick={handleLastStudy}>{lastStudyLabel}</button>
           <button className="pill-btn reset" onClick={handleReset}>🔄 Reset</button>
-          <button 
-            className={`pill-btn special ${activeId === 0 ? 'active' : ''}`} 
-            onClick={handleVersetsClick}
-          >
-            📖 Versets
-          </button>
+          <button className={`pill-btn special ${activeId === 0 ? 'active' : ''}`} onClick={handleVersetsClick}>📖 Versets</button>
           <button className="pill-btn accent" onClick={handleGenerate}>Générer</button>
         </div>
       </div>
 
-      {/* 2 colonnes */}
+      {/* Deux colonnes */}
       <div className="two-cols">
         <aside className="left-card">
           <div className="left-header">Rubriques ({RUBRIQUES.length})</div>
           <RubriquesInline
             items={RUBRIQUES}
             activeId={activeId}
-            onSelect={function(id){ setActiveId(id); }}
+            onSelect={(id)=> setActiveId(id)}
             rubriquesStatus={rubriquesStatus}
           />
         </aside>
@@ -512,9 +419,7 @@ export default function App() {
 
           <div className="section">
             {content ? (
-              <div className="content-formatted">
-                {formatContent(content)}
-              </div>
+              <div className="content-formatted">{formatContent(content)}</div>
             ) : (
               <p className="muted">
                 Sélectionnez une rubrique puis cliquez sur <b>Générer</b> pour afficher du contenu
@@ -530,40 +435,29 @@ export default function App() {
 
 /* ---------- UI sub-components ---------- */
 
-function SelectPill(props) {
-  var label = props.label, value = props.value, onChange = props.onChange, options = props.options;
+function SelectPill({ label, value, onChange, options }) {
   return (
     <div className="pill">
       <span className="pill-label">{label}</span>
-      <select
-        className="pill-select"
-        value={value}
-        onChange={function(e){ onChange(e.target.value); }}
-      >
-        {options.map(function(opt){ return <option key={opt} value={opt}>{opt}</option>; })}
+      <select className="pill-select" value={value} onChange={(e)=> onChange(e.target.value)}>
+        {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
       </select>
       <span className="chev">▾</span>
     </div>
   );
 }
 
-function NumberPill(props) {
-  var label = props.label, value = props.value, onChange = props.onChange,
-      min = props.min || 1, max = props.max || 100, step = props.step || 1;
-  var list = ["vide"];
-  for (var i=min; i<=max; i+=step) list.push(i);
+function NumberPill({ label, value, onChange, min=1, max=100, step=1 }) {
+  const list = ["vide"]; for (let i=min; i<=max; i+=step) list.push(i);
   return (
     <div className="pill">
       <span className="pill-label">{label}</span>
       <select
         className="pill-select"
         value={value}
-        onChange={function(e){ 
-          const val = e.target.value;
-          onChange(val === "vide" ? "vide" : Number(val)); 
-        }}
+        onChange={(e)=> onChange(e.target.value === "vide" ? "vide" : Number(e.target.value))}
       >
-        {list.map(function(n){ return <option key={n} value={n}>{n}</option>; })}
+        {list.map(n => <option key={n} value={n}>{n}</option>)}
       </select>
       <span className="chev">▾</span>
     </div>
