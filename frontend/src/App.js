@@ -63,7 +63,9 @@ export default function App() {
   const [knobPosition, setKnobPosition] = React.useState(0); // Position du bouton sur la palette (0-100%)
   const [isResetting, setIsResetting] = React.useState(false); // Flag pour éviter la sauvegarde lors du reset
 
-  var passageLabel = book + " " + chapter + ":" + verse + " " + version;
+  var passageLabel = (book === "vide" || chapter === "vide" || verse === "vide") 
+    ? "Sélectionnez un passage" 
+    : book + " " + chapter + ":" + verse + " " + version;
 
   // Fonction pour gérer les clics sur le gradient et changer la couleur de fond
   function handleGradientClick(e) {
