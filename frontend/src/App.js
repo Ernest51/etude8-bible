@@ -72,21 +72,29 @@ export default function App() {
     const percentage = x / width;
     
     // Définir les couleurs selon la position du clic
-    let newColor;
+    let newColor, gradientEnd;
     if (percentage < 0.25) {
-      newColor = "#f0f9ff"; // Bleu clair
+      newColor = "#dbeafe"; // Bleu plus visible
+      gradientEnd = "#bfdbfe";
     } else if (percentage < 0.5) {
-      newColor = "#f5f3ff"; // Violet clair  
+      newColor = "#e9d5ff"; // Violet plus visible  
+      gradientEnd = "#ddd6fe";
     } else if (percentage < 0.75) {
-      newColor = "#fff7ed"; // Orange clair
+      newColor = "#fed7aa"; // Orange plus visible
+      gradientEnd = "#fdba74";
     } else {
-      newColor = "#f0fdf4"; // Vert clair
+      newColor = "#bbf7d0"; // Vert plus visible
+      gradientEnd = "#86efac";
     }
     
     setPageBackground(newColor);
+    console.log('Changing page background to:', newColor);
     
     // Appliquer immédiatement à la page
-    document.querySelector('.page-wrap').style.background = `linear-gradient(180deg, ${newColor} 0%, #ecfdf5 100%)`;
+    const pageWrap = document.querySelector('.page-wrap');
+    if (pageWrap) {
+      pageWrap.style.background = `linear-gradient(180deg, ${newColor} 0%, ${gradientEnd} 100%)`;
+    }
   }
 
   // Fonction pour changer de livre et ajuster le chapitre si nécessaire
