@@ -2002,30 +2002,29 @@ body{
   margin-right: auto;
 }
 
-.detailed-bible-content-right {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 252, 253, 0.9) 100%);
-  border: 1px solid rgba(14, 165, 179, 0.15);
-  border-radius: 18px;
-  padding: 20px;
-  margin-bottom: 16px;
-  box-shadow: 0 6px 20px rgba(14, 165, 179, 0.08);
-  backdrop-filter: blur(10px);
+/* Contenu d'étude intégré sous le titre principal */
+.integrated-study-content {
+  width: 100%;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 2px solid rgba(14, 165, 179, 0.1);
 }
 
-.detailed-bible-content-right h2 {
+.integrated-study-title {
   font-family: "Playfair Display", serif;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
   color: #0ea5b3;
-  margin: 0 0 14px 0;
+  margin: 0 0 16px 0;
+  text-align: center;
   text-shadow: 0 2px 4px rgba(14, 165, 179, 0.1);
 }
 
-.bible-content-text-right {
-  font-size: 13px;
-  line-height: 1.6;
+.integrated-study-text {
+  font-size: 14px;
+  line-height: 1.7;
   color: #0f2d3a;
-  margin: 0 0 16px 0;
+  margin: 0 0 20px 0;
   text-align: justify;
   font-weight: 400;
 }
