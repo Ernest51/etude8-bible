@@ -530,11 +530,12 @@ export default function App() {
   }
 
   async function handleVersetsClick() {
+    console.log('🔵 VERSETS BUTTON CLICKED - Starting verse by verse generation');
     setActiveId(0);
-    console.log('Versets button clicked - activeId set to 0');
+    console.log('✅ activeId set to 0');
     
     // TOUJOURS forcer Genèse 1:1 pour l'étude verset par verset
-    console.log('Setting Genèse 1:1 for verse by verse generation');
+    console.log('🔧 Setting Genèse 1:1 for verse by verse generation');
     setBook("Genèse");
     setChapter(1);
     setVerse(1);
