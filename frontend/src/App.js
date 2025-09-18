@@ -506,7 +506,7 @@ function App() {
           <div className="grid">
             <div className="card section">
               <h3>Rubriques (29)</h3>
-              <p style={{color:"#5a7381", margin:0}}>Indicateurs à venir…</p>
+              <p style={{color:"#5a7381", margin:0}}>Cliquez sur une rubrique dans la sidebar pour afficher son contenu détaillé</p>
             </div>
 
             <div className="card section">
@@ -514,6 +514,71 @@ function App() {
               <div className="footer-controls">
                 <span className="pill">◀ Précédent</span>
                 <span className="pill">Made with Emergent</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Contenu détaillé de la rubrique sélectionnée */}
+          <div className="card section" style={{marginTop: "16px"}}>
+            <h3>Contenu de l'étude : {STUDY_SECTIONS[selectedSection]?.title}</h3>
+            <div className="study-content">
+              <p style={{
+                lineHeight: "1.6", 
+                color: "#0f2d3a", 
+                fontSize: "16px",
+                marginBottom: "20px"
+              }}>
+                {STUDY_SECTIONS[selectedSection]?.content || "Contenu de l'étude à venir..."}
+              </p>
+              
+              {/* Section d'interaction */}
+              <div style={{
+                background: "rgba(14, 165, 179, 0.05)",
+                border: "1px solid rgba(14, 165, 179, 0.1)",
+                borderRadius: "12px",
+                padding: "16px",
+                marginTop: "16px"
+              }}>
+                <h4 style={{color: "#0ea5b3", margin: "0 0 12px 0", fontSize: "14px", fontWeight: "600"}}>
+                  💡 Questions de réflexion
+                </h4>
+                <ul style={{margin: "0", paddingLeft: "20px", color: "#5a7381"}}>
+                  <li>Comment ce passage s'applique-t-il à ma vie personnelle ?</li>
+                  <li>Quel enseignement principal puis-je retenir ?</li>
+                  <li>Comment puis-je mettre en pratique cette vérité biblique ?</li>
+                </ul>
+              </div>
+
+              {/* Navigation entre rubriques */}
+              <div style={{
+                display: "flex", 
+                justifyContent: "space-between", 
+                alignItems: "center",
+                marginTop: "20px",
+                paddingTop: "16px",
+                borderTop: "1px solid rgba(0,0,0,0.06)"
+              }}>
+                <button 
+                  className="btn btn-outline"
+                  onClick={() => setSelectedSection(Math.max(0, selectedSection - 1))}
+                  disabled={selectedSection === 0}
+                  style={{opacity: selectedSection === 0 ? 0.5 : 1}}
+                >
+                  ◀ Rubrique précédente
+                </button>
+                
+                <span style={{color: "#7895a2", fontSize: "14px", fontWeight: "600"}}>
+                  {selectedSection + 1} / 29
+                </span>
+                
+                <button 
+                  className="btn btn-outline"
+                  onClick={() => setSelectedSection(Math.min(28, selectedSection + 1))}
+                  disabled={selectedSection === 28}
+                  style={{opacity: selectedSection === 28 ? 0.5 : 1}}
+                >
+                  Rubrique suivante ▶
+                </button>
               </div>
             </div>
           </div>
