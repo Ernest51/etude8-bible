@@ -400,7 +400,7 @@ function App() {
 
         {/* Contrôles du passage */}
         <div className="mt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-3">
-          <Select label="Livre" value={selectedBook} onChange={setSelectedBook} options={Object.keys(BOOKS_CHAPTERS)} />
+          <Select label="Livre" value={selectedBook} onChange={setSelectedBook} options={BOOKS_FR} />
           <NumberSelect label="Chapitre" value={parseInt(selectedChapter)} onChange={(val) => setSelectedChapter(val.toString())} min={1} max={BOOKS_CHAPTERS[selectedBook] || 150} />
           <NumberSelect label="Verset" value={parseInt(selectedVerse)} onChange={(val) => setSelectedVerse(val.toString())} min={1} max={176} />
           <Select label="Version" value={selectedVersion} onChange={setSelectedVersion} options={["LSG","BDS","NEG79"]} />
