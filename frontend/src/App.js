@@ -528,7 +528,10 @@ export default function App() {
     
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
-      const passageForApi = book + " " + chapter + ":1 " + version;
+      // Utiliser les valeurs actuelles ou forcer Genèse 1:1 par défaut
+      const currentBook = book !== "vide" ? book : "Genèse";
+      const currentChapter = chapter !== "vide" ? chapter : 1;
+      const passageForApi = currentBook + " " + currentChapter + ":1 " + version;
       
       console.log('Generating verse by verse for:', passageForApi);
       
@@ -569,7 +572,7 @@ export default function App() {
       console.error('Verse by verse generation error:', error);
       setProgress(100);
       setContent(
-        "🙏 Étude Verset par Verset - " + book + " " + chapter + 
+        "🙏 Étude Verset par Verset - " + (book !== "vide" ? book : "Genèse") + " " + (chapter !== "vide" ? chapter : 1) + 
         "\n\nGénération en cours via API Bible Derby..." +
         "\n\n[Note: Erreur temporaire - " + error.message + "]"
       );
