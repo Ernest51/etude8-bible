@@ -3,13 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import requests
 from typing import List, Optional
+import os
 import re
 from theological_content import get_theological_content
 from verse_by_verse_content import get_all_verses_for_chapter
 
 app = FastAPI()
 
-# Configuration CORS
+# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,8 +19,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Configuration API Bible Derby
-BIBLE_API_KEY = "0cff5d83f6852c3044a180cc4cdeb0fe"
+# API Bible Derby
+BIBLE_API_KEY = os.getenv("BIBLE_API_KEY", "")  # 🔐 lue depuis l'env
 BIBLE_API_BASE = "https://api.scripture.api.bible/v1"
 BIBLE_ID = "de4e12af7f28f599-02"  # Bible Derby en français
 
@@ -41,24 +42,21 @@ async def root():
 def parse_passage(passage: str):
     """
     Exemples :
-    - 'Jean 3:16 LSG'      -> book='Jean', chapter=3
-    - '1 Jean 2:1 LSG'     -> book='1 Jean', chapter=2
-    - 'Psaumes 23 LSG'     -> book='Psaumes', chapter=23
+    - 'Jean 3:16 LSG'  -> ('Jean', 3)
+    - '1 Jean 2:1 LSG' -> ('1 Jean', 2)
+    - 'Psaumes 23'     -> ('Psaumes', 23)
     """
-    match = re.match(r"(.+?)\s+(\d+)(?::\d+)?(?:\s+\w+)?$", passage.strip())
-    if not match:
+    m = re.match(r"(.+?)\s+(\d+)(?::\d+)?(?:\s+\w+)?$", passage.strip())
+    if not m:
         raise ValueError(f"Format de passage invalide: {passage}")
-    book = match.group(1).strip()
-    chapter = int(match.group(2))
+    book = m.group(1).strip()
+    chapter = int(m.group(2))
     return book, chapter
 
 def get_bible_text(book: str, chapter: int) -> Optional[str]:
     """Récupère le texte biblique via l'API Bible Derby"""
     try:
-        headers = {
-            "api-key": BIBLE_API_KEY,
-            "accept": "application/json"
-        }
+        headers = {"api-key": BIBLE_API_KEY, "accept": "application/json"}
         book_mapping = {
             "Genèse": "GEN", "Exode": "EXO", "Lévitique": "LEV", "Nombres": "NUM", "Deutéronome": "DEU",
             "Josué": "JOS", "Juges": "JDG", "Ruth": "RUT", "1 Samuel": "1SA", "2 Samuel": "2SA",
@@ -79,9 +77,9 @@ def get_bible_text(book: str, chapter: int) -> Optional[str]:
         }
         book_code = book_mapping.get(book, "GEN")
         url = f"{BIBLE_API_BASE}/bibles/{BIBLE_ID}/chapters/{book_code}.{chapter}"
-        response = requests.get(url, headers=headers)
-        if response.status_code == 200:
-            data = response.json()
+        resp = requests.get(url, headers=headers, timeout=20)
+        if resp.status_code == 200:
+            data = resp.json()
             return data.get("data", {}).get("content", "")
         return None
     except Exception as e:
@@ -113,7 +111,8 @@ async def generate_study(request: StudyRequest):
 ## 🙏 Méditation Spirituelle
 
 Cette étude de **{book} {chapter}** nous conduit dans les profondeurs de la révélation divine.
-"""
+
+**Soli Deo Gloria**"""
         return {"content": content}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors de la génération: {str(e)}")
@@ -125,14 +124,38 @@ async def generate_verse_by_verse(request: VerseByVerseRequest):
         verses_content = get_all_verses_for_chapter(book, chapter)
         if not verses_content:
             bible_text = get_bible_text(book, chapter)
-            return {"content": f"Texte biblique complet:\n{bible_text}"}
-        content = f"""Étude Verset par Verset - {book} Chapitre {chapter}\n\n"""
+            return {
+                "content": f"""# 📖 Étude Verset par Verset - {book} {chapter}
+
+## Texte Biblique Complet - Bible Derby
+{bible_text or 'Texte biblique disponible via API Bible Derby...'}
+
+## 🔍 Analyse Verset par Verset
+*Contenu détaillé en cours d’enrichissement pour {book} {chapter}.*"""
+            }
+        content = f"""Étude Verset par Verset - {book} Chapitre {chapter}
+
+Introduction au Chapitre
+
+Cette étude examine chaque verset de {book} {chapter} selon une exégèse grammatico-historique.
+
+"""
         for verse_data in verses_content:
-            content += f"""VERSET {verse_data['verse_number']}\n\nTEXTE BIBLIQUE :\n{verse_data['verse_text']}\n\nEXPLICATION THÉOLOGIQUE :\n{verse_data['explanation']}\n\n"""
+            content += f"""VERSET {verse_data['verse_number']}
+
+TEXTE BIBLIQUE :
+{verse_data['verse_text']}
+
+EXPLICATION THÉOLOGIQUE :
+
+{verse_data['explanation']}
+
+"""
+        content += "Soli Deo Gloria"
         return {"content": content}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors de la génération verset par verset: {str(e)}")
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+  import uvicorn
+  uvicorn.run(app, host="0.0.0.0", port=8001)
