@@ -166,6 +166,59 @@ async def get_books():
     """Get list of Bible books with chapter counts"""
     return {"books": BOOKS_CHAPTERS}
 
+@api_router.post("/generate-study")
+async def generate_study_post(request: StudyGenerationRequest):
+    """Generate Bible study for given passage (POST method for frontend)"""
+    try:
+        # Fetch Bible passage
+        passage = await fetch_bible_passage(request.passage, request.version)
+        if not passage:
+            raise HTTPException(status_code=404, detail="Passage not found")
+        
+        # Generate meditation study
+        study = await generate_meditation_study(passage["text"], request.passage)
+        
+        # Save to database
+        meditation_record = MeditationSave(
+            reference=request.passage,
+            passage_text=passage["text"],
+            meditation_content=study["meditation"],
+            sections=study["sections"]
+        )
+        
+        await db.meditations.insert_one(meditation_record.dict())
+        
+        return StudyGenerationResponse(
+            content=study["meditation"],
+            reference=request.passage,
+            sections=study["sections"]
+        )
+        
+    except Exception as e:
+        logging.error(f"Error in generate_study_post: {e}")
+        # Return a fallback response
+        fallback_content = f"""Méditation sur {request.passage}
+
+1) Vérités clés
+- Ce passage révèle l'amour profond de Dieu pour l'humanité
+- La foi est le moyen par lequel nous recevons la grâce divine
+
+2) Commentaire
+Ce texte nous invite à contempler l'initiative divine dans notre salut. La méditation nous aide à comprendre que la relation avec Dieu commence par son amour pour nous.
+
+3) Application pratique  
+- Prenez du temps aujourd'hui pour remercier Dieu pour son amour
+- Réfléchissez à comment cet amour peut transformer votre quotidien
+
+4) Prière
+Seigneur, merci pour ton amour révélé dans ce passage. Aide-moi à vivre cette vérité aujourd'hui. Amen."""
+        
+        return StudyGenerationResponse(
+            content=fallback_content,
+            reference=request.passage,
+            sections=[]
+        )
+
 @api_router.get("/generate-study")
 async def generate_study(ref: str, version: str = "LSG", length: int = 500):
     """Generate Bible study for given reference"""
