@@ -594,6 +594,7 @@ function App() {
               </div>
             </div>
           </div>
+          </div>
 
           {resultVisible && (
             <div id="result" className="card section" style={{display: "block", marginTop: "16px"}}>
