@@ -611,8 +611,8 @@ body{
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
 }
 
-/* 7. Section Rubriques + Navigation */
-.rubriques-navigation-container {
+/* 7. Section avec 3 colonnes */
+.three-column-container {
   display: flex;
   gap: 20px;
   background: rgba(255, 255, 255, 0.72);
@@ -624,7 +624,7 @@ body{
 }
 
 .rubriques-left-panel {
-  flex: 0 0 320px;
+  flex: 0 0 280px;
 }
 
 .rubriques-header {
