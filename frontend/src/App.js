@@ -46,6 +46,12 @@ export default function App() {
   const [content, setContent] = React.useState("");
   const [backgroundColor, setBackgroundColor] = React.useState("#f7fbfb");
 
+  // Fonction pour changer la couleur de fond
+  function changeBackgroundColor(color) {
+    console.log('Changing background color to:', color);
+    setBackgroundColor(color);
+  }
+
   var passageLabel = book + " " + chapter + ":" + verse + " " + version;
 
   function handleValidate() {
