@@ -566,6 +566,7 @@ export default function App() {
   }
 
   async function generateVerseByVerse() {
+    console.log('🚀 STARTING generateVerseByVerse function');
     setProgress(5); await wait(200);
     setProgress(25); await wait(250);
     
@@ -573,7 +574,7 @@ export default function App() {
       // Utiliser les valeurs forcées : Genèse 1:1 LSG
       const passageForApi = "Genèse 1:1 LSG";
       
-      console.log('Generating verse by verse for:', passageForApi);
+      console.log('📖 Generating verse by verse for:', passageForApi);
       
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
