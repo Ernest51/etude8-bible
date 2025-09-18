@@ -477,6 +477,8 @@ export default function App() {
             localStorage.setItem("lastStudy", JSON.stringify({
               book: book, chapter: chapter, verse: verse, version: version, length: length, chatgpt: chatgpt
             }));
+            // Mettre à jour le label du bouton
+            updateLastStudyLabel();
           } catch (e) {}
         } else {
           // Reset terminé, on peut sauvegarder les prochaines études
