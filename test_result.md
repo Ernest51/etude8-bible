@@ -242,8 +242,10 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: "Successfully integrated the new meditation code provided by user. Backend testing completed with all endpoints working. Ready for frontend testing of the new meditation interface with 29 rubriques, passage controls, and AI generation functionality. The interface includes header, steps, progress bar, passage selection controls, action buttons, search, and rubriques sidebar with content area."
+  - agent: "testing"
+    message: "CRITICAL FINDING: Investigated the 'Versets' button onClick issue. The handleVersetsClick function IS WORKING CORRECTLY - confirmed by successful alert 'VERSETS CLICKED!' when using force click. The real problem is CSS animations causing button instability. The button has continuous pulse animation (animation: pulse 2s infinite) which makes it 'not stable' for normal clicks. This prevents both automated testing and potentially real user interactions. Solution: Remove or modify the pulse animation on .pill-btn.special.active class in App.css."
 
-user_problem_statement: "Tester le nouveau endpoint POST /api/generate-study avec les paramètres du frontend et vérifier tous les endpoints existants"
+user_problem_statement: "Investigation approfondie du problème du bouton 'Versets' qui ne déclenche pas sa fonction onClick malgré une configuration apparemment correcte"
 
 backend:
   - task: "POST /api/generate-study endpoint"
