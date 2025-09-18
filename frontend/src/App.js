@@ -48,9 +48,9 @@ function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
 
 export default function App() {
   // passage
-  const [book, setBook] = React.useState("Jean");
-  const [chapter, setChapter] = React.useState(3);
-  const [verse, setVerse] = React.useState(16);
+  const [book, setBook] = React.useState("vide");
+  const [chapter, setChapter] = React.useState("vide");
+  const [verse, setVerse] = React.useState("vide");
   const [version, setVersion] = React.useState("LSG");
   const [length, setLength] = React.useState(500);
   const [chatgpt, setChatgpt] = React.useState(true);
