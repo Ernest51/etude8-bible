@@ -205,6 +205,13 @@ export default function App() {
   }
 
   async function handleGenerate() {
+    // Vérifier que tous les champs requis sont remplis
+    if (book === "vide" || chapter === "vide" || verse === "vide") {
+      setContent("⚠️ Veuillez d'abord sélectionner un livre, un chapitre et un verset pour générer une étude biblique.");
+      setProgress(0);
+      return;
+    }
+    
     setProgress(5); await wait(200);
     setProgress(25); await wait(250);
     
