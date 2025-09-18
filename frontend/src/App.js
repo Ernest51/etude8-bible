@@ -566,7 +566,7 @@ export default function App() {
     await generateVerseByVerse();
   }
 
-  async function generateVerseByVerse() {
+  const generateVerseByVerse = async () => {
     console.log('🚀 STARTING generateVerseByVerse function');
     setProgress(5); await wait(200);
     setProgress(25); await wait(250);
