@@ -68,12 +68,31 @@ export default function App() {
   // Initialiser les couleurs au chargement
   React.useEffect(() => {
     updateBackgroundColor(knobPosition);
+    updateLastStudyLabel(); // Charger le label au démarrage
   }, []);
 
   // Mettre à jour les couleurs quand knobPosition change
   React.useEffect(() => {
     updateBackgroundColor(knobPosition);
   }, [knobPosition]);
+
+  // Mettre à jour le label de "Dernière étude"
+  function updateLastStudyLabel() {
+    try {
+      const stored = localStorage.getItem("lastStudy");
+      if (stored) {
+        const data = JSON.parse(stored);
+        const label = `${data.book || "Jean"} ${data.chapter || 3}`;
+        setLastStudyLabel(label);
+        console.log('Last study label updated to:', label);
+      } else {
+        setLastStudyLabel("Dernière étude");
+      }
+    } catch (e) {
+      console.error('Error updating last study label:', e);
+      setLastStudyLabel("Dernière étude");
+    }
+  }
 
   // Mettre à jour le statut des rubriques quand livre/chapitre change
   React.useEffect(() => {
