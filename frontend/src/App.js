@@ -79,7 +79,7 @@ export default function App() {
       console.log('Making API call with payload:', {
         passage: passageLabel,
         version: version,
-        tokens: tokens,
+        tokens: length,
         model: chatgpt ? "gpt" : "claude",
         requestedRubriques: [activeId]
       });
