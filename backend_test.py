@@ -11,7 +11,7 @@ import sys
 from datetime import datetime
 
 # Configuration - Use the public URL from frontend .env
-BACKEND_URL = "http://localhost:8001"
+BACKEND_URL = "https://biblecode.preview.emergentagent.com"
 TIMEOUT = 30
 
 def log_test(test_name, status, details=""):
