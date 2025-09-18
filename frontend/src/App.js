@@ -197,7 +197,7 @@ export default function App() {
   function goNext() { setActiveId(function(i){ return Math.min(RUBRIQUES.length - 1, i + 1); }); }
 
   return (
-    <div className="page-wrap" style={{background: backgroundColor}}>
+    <div className="page-wrap">
       {/* Bandeau haut (bulle %, barre gradient, points) */}
       <div className="topband">
         <div className="progress-bubble">{Math.round(progress)}%</div>
