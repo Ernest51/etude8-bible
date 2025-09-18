@@ -177,7 +177,6 @@ function App() {
     };
   }, []);
 
-  // Event handlers
   const handleBookChange = (e) => {
     const book = e.target.value;
     setSelectedBook(book);
@@ -193,25 +192,110 @@ function App() {
     setSelectedVersion("LSG");
     setSelectedLength("500");
     setPctFunc(0);
+    setActiveRubriqueId(0);
+    setOutput("");
+    setStatus("idle");
+    setProgress(0);
+    setSearch("");
   };
 
   const handleValidate = () => {
     const ref = `${selectedBook} ${selectedChapter}:${selectedVerse}`;
-    window.alert(`Passage validé : ${ref}`);
+    toast(`Passage validé: ${ref}`);
   };
 
   const handleRead = () => {
-    const ref = `${selectedBook} ${selectedChapter}:${selectedVerse}`;
-    window.open(`https://www.bible.com/fr/bible/93/${encodeURIComponent(ref.replace(/\s+/g,""))}.LSG`, "_blank");
+    const url = youVersionUrl(selectedBook, parseInt(selectedChapter), parseInt(selectedVerse), selectedVersion);
+    window.open(url, "_blank");
   };
 
   const handleGenerate = async () => {
-    const ref = `${selectedBook} ${selectedChapter}:${selectedVerse}`;
-    window.alert(`Génération d'étude pour : ${ref}`);
+    setStatus("generating");
+    setOutput("");
+    setProgress(5);
+
+    // Sauvegarder le contexte courant
+    handleSaveLast();
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/generate-study`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          passage: `${selectedBook} ${selectedChapter}:${selectedVerse}`,
+          version: selectedVersion,
+          tokens: parseInt(selectedLength),
+          model: useChatGPT ? "gpt" : "local",
+          requestedRubriques: RUBRIQUES.map(r => r.id),
+        }),
+      });
+
+      if (res.ok) {
+        setProgress(60);
+        const data = await res.json().catch(() => null);
+        if (data?.content) {
+          setOutput(data.content);
+          setProgress(100);
+          setStatus("done");
+          return;
+        }
+      }
+    } catch (e) {
+      console.warn("API non disponible, simulation fallback");
+    }
+
+    // SIMULATION (fallback si l'API n'est pas disponible)
+    await simulateGeneration({ passageLabel, setProgress, setOutput });
+    setStatus("done");
   };
 
   const handleChat = () => window.alert("Bouton ChatGPT (placeholder)");
-  const handleLast = () => window.alert("Dernière étude (placeholder)");
+  const handleLast = () => {
+    const last = localStorage.getItem("lastStudy");
+    if (last) {
+      try {
+        const parsed = JSON.parse(last);
+        setSelectedBook(parsed.book);
+        setSelectedChapter(parsed.chapter.toString());
+        setSelectedVerse(parsed.verse.toString());
+        setSelectedVersion(parsed.version);
+        setSelectedLength((parsed.tokens ?? 500).toString());
+        toast("Dernière étude chargée");
+      } catch {
+        toast("Aucune étude précédente trouvée");
+      }
+    } else {
+      toast("Aucune étude précédente trouvée");
+    }
+  };
+
+  const handleSaveLast = () => {
+    const payload = { 
+      book: selectedBook, 
+      chapter: parseInt(selectedChapter), 
+      verse: parseInt(selectedVerse), 
+      version: selectedVersion, 
+      tokens: parseInt(selectedLength) 
+    };
+    localStorage.setItem("lastStudy", JSON.stringify(payload));
+    toast("Dernière étude enregistrée");
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (!search.trim()) return;
+    // Exemples acceptés: "Marc 5:1", "Jn 3:16", "Psaume 23:1"
+    const m = search.match(/^(.*)\s+(\d+):(\d+)$/i);
+    if (m) {
+      const b = normalizeBook(m[1]);
+      setSelectedBook(b);
+      setSelectedChapter(m[2]);
+      setSelectedVerse(m[3]);
+      toast(`Passage défini: ${b} ${m[2]}:${m[3]}`);
+    } else {
+      toast("Format attendu: Livre chap:verset (ex: Marc 5:1)");
+    }
+  };
 
   return (
     <div className="complete-extracted-app">
