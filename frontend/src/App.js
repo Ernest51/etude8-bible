@@ -72,14 +72,42 @@ export default function App() {
   async function handleGenerate() {
     setProgress(5); await wait(200);
     setProgress(25); await wait(250);
-    setProgress(60); await wait(350);
-    setProgress(100);
-    setContent(
-      "🙏 Méditation sur " + passageLabel +
-      "\n\n- Dieu aime, Dieu donne, la foi reçoit." +
-      "\n- La vie éternelle commence déjà par la communion avec le Fils." +
-      "\n\nPrière : Seigneur, apprends-moi à répondre à ton amour aujourd'hui. Amen."
-    );
+    
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:8001";
+      const response = await fetch(`${backendUrl}/api/generate-study`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          passage: passageLabel,
+          version: version,
+          tokens: tokens,
+          model: chatgpt ? "gpt" : "claude",
+          requestedRubriques: [activeId]
+        })
+      });
+      
+      setProgress(60); await wait(350);
+      
+      if (response.ok) {
+        const data = await response.json();
+        setProgress(100);
+        setContent(data.content || "Méditation générée avec succès");
+      } else {
+        throw new Error('Erreur lors de la génération');
+      }
+    } catch (error) {
+      console.error('Erreur:', error);
+      setProgress(100);
+      setContent(
+        "🙏 Méditation sur " + passageLabel +
+        "\n\n- Dieu aime, Dieu donne, la foi reçoit." +
+        "\n- La vie éternelle commence déjà par la communion avec le Fils." +
+        "\n\nPrière : Seigneur, apprends-moi à répondre à ton amour aujourd'hui. Amen."
+      );
+    }
   }
 
   function goPrev() { setActiveId(function(i){ return Math.max(0, i - 1); }); }
