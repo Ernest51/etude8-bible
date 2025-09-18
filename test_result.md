@@ -102,6 +102,147 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
+user_problem_statement: "Intégrer le nouveau code de méditation React fourni par l'utilisateur dans l'application existante, en commençant juste après la palette de couleurs arc-en-ciel. Le nouveau code inclut des contrôles pour sélectionner des passages bibliques, 29 rubriques d'étude, et une interface complète de méditation avec génération IA."
+
+backend:
+  - task: "Créer endpoint POST /api/generate-study"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Endpoint POST /api/generate-study fully functional with proper JSON response containing content, reference, and sections. Successfully integrates with LLM and generates quality meditation content (2900-3300 characters)."
+      - working: true
+        agent: "main"
+        comment: "Added StudyGenerationRequest and StudyGenerationResponse models, implemented POST endpoint to handle frontend requests with passage, version, tokens, model and requestedRubriques parameters."
+
+  - task: "Intégration LLM pour génération de méditations"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "LLM integration working correctly with Emergent LLM key. Generates quality French meditation content with proper structure and theological depth."
+      - working: true
+        agent: "main"
+        comment: "Using emergentintegrations.llm.chat.LlmChat with GPT-4o-mini model for generating biblical meditations in French."
+
+  - task: "Persistance MongoDB des méditations"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "Database persistence verified with unique reference testing. Meditations correctly saved to MongoDB with all required fields. Fixed ObjectId serialization issue."
+      - working: true
+        agent: "main"
+        comment: "MeditationSave model created to store meditations in MongoDB with reference, passage_text, meditation_content, sections, and timestamp."
+
+  - task: "Endpoints existants (books, meditations, root)"
+    implemented: true
+    working: true
+    file: "backend/server.py"
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "All existing endpoints working correctly: GET /api/ returns correct API message, GET /api/books returns all 66 Bible books with chapter counts, GET /api/meditations fixed and working."
+
+frontend:
+  - task: "Intégration nouveau code de méditation"
+    implemented: true
+    working: true
+    file: "frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Successfully integrated the new meditation code after the rainbow color palette. Added header with navigation, steps progression, passage controls, action buttons, search, and 29 rubriques interface with scrollable sidebar and content area."
+
+  - task: "Composants UI (Select, NumberSelect, Toggle, Button)"
+    implemented: true
+    working: true
+    file: "frontend/src/App.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added lightweight UI components: Select for dropdowns, NumberSelect for numeric inputs, Toggle for ChatGPT switch, Button with variants (default, ghost, secondary, primary), Badge, and Article components."
+
+  - task: "États et handlers pour nouveau code"
+    implemented: true
+    working: true
+    file: "frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Added state variables: activeRubriqueId, status, output, progress, search, useChatGPT. Implemented handlers: handleGenerate (calls POST /api/generate-study), handleSearchSubmit, handleSaveLast, handleValidate, handleRead with Bible.com integration."
+
+  - task: "Système de toast et utilitaires"
+    implemented: true
+    working: true
+    file: "frontend/src/App.js"  
+    stuck_count: 0
+    priority: "low"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Implemented lightweight toast notification system, normalizeBook function for search, youVersionUrl for Bible.com links, simulateGeneration fallback, and ToastContainer component."
+
+  - task: "Interface des 29 rubriques"
+    implemented: true
+    working: true
+    file: "frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Integrated 29 RUBRIQUES with titles and subtitles, scrollable sidebar with search functionality, active state management, and content display area. Replaced old STUDY_SECTIONS with new RUBRIQUES structure."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.1"
+  test_sequence: 1
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "Intégration nouveau code de méditation"
+    - "États et handlers pour nouveau code"
+    - "Interface des 29 rubriques"
+    - "Composants UI (Select, NumberSelect, Toggle, Button)"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Successfully integrated the new meditation code provided by user. Backend testing completed with all endpoints working. Ready for frontend testing of the new meditation interface with 29 rubriques, passage controls, and AI generation functionality. The interface includes header, steps, progress bar, passage selection controls, action buttons, search, and rubriques sidebar with content area."
+
 user_problem_statement: "Tester le nouveau endpoint POST /api/generate-study avec les paramètres du frontend et vérifier tous les endpoints existants"
 
 backend:
