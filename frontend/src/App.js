@@ -206,16 +206,7 @@ export default function App() {
             <div className="progress-knob" />
           </div>
           <div className="progress-dots">
-            {["#f7fbfb", "#fff7ed", "#fef7ff", "#f0fdf4", "#fdf2f8", "#f0f9ff", "#fefce8", "#f3e8ff", "#e0f2fe", "#f0fdf4", "#fef3c7", "#fce7f3"].map(function(color, i){ 
-              return (
-                <span 
-                  key={i} 
-                  style={{backgroundColor: color, cursor: 'pointer'}}
-                  onClick={function(){ setBackgroundColor(color); }}
-                  title={`Couleur ${i + 1}`}
-                />
-              ); 
-            })}
+            {Array(12).fill(0).map(function(_, i){ return <span key={i} />; })}
           </div>
         </div>
       </div>
