@@ -431,64 +431,187 @@ function App() {
 
         {/* Rubriques (29) */}
         <section className="mt-10">
-          <h2 className="text-2xl font-semibold">Rubriques ({RUBRIQUES.length})</h2>
-          <p className="text-sm text-gray-500">Cliquez sur une rubrique dans la liste pour afficher son contenu détaillé ci-dessous</p>
-
-          <div className="mt-4 grid grid-cols-1 lg:grid-cols-12 gap-4">
-            {/* Colonne gauche scrollable */}
-            <aside className="lg:col-span-4 lg:sticky lg:top-36 xl:top-40">
-              <div className="rounded-2xl border bg-white/60 p-2">
-                <div
-                  className="max-h-[calc(100vh-16rem)] overflow-y-auto pr-2 overscroll-contain"
-                  style={{ scrollbarGutter: "stable both-edges" }}
-                  aria-label="Liste des rubriques"
+          <div className="study-app-container">
+            {/* Sidebar gauche avec les 29 rubriques */}
+            <aside className="study-sidebar">
+              <div className="sidebar-header">Rubriques (29)</div>
+              
+              <div className="sidebar-controls">
+                <button 
+                  className="control-btn" 
+                  onClick={() => {
+                    const wrap = document.getElementById('rubriquesWrap');
+                    if (wrap) wrap.scrollBy({top: -160, behavior: 'smooth'});
+                  }}
+                  title="Monter"
                 >
-                  <ul className="flex flex-col gap-2">
-                    {RUBRIQUES.map((r, idx) => (
-                      <li key={r.id}>
-                        <button
-                          onClick={() => setActiveRubriqueId(r.id)}
-                          className={`w-full text-left rounded-xl border px-3 py-2 transition ${
-                            activeRubriqueId === r.id
-                              ? "border-emerald-400 bg-emerald-50"
-                              : "hover:bg-gray-50"
-                          }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border text-xs">
-                              {idx}
-                            </span>
-                            <div className="min-w-0">
-                              <div className="font-medium truncate">{r.title}</div>
-                              <div className="text-xs text-gray-500 truncate">{r.subtitle}</div>
-                            </div>
-                          </div>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
+                  ▲
+                </button>
+                <button 
+                  className="control-btn"
+                  onClick={() => {
+                    const wrap = document.getElementById('rubriquesWrap');
+                    if (wrap) wrap.scrollBy({top: 160, behavior: 'smooth'});
+                  }}
+                  title="Descendre"
+                >
+                  ▼
+                </button>
+                <div className="search-container">
+                  <input 
+                    className="filter-input"
+                    placeholder="Trouver une rubrique... (ex: espérance)"
+                    onChange={(e) => {
+                      const q = e.target.value.trim().toLowerCase();
+                      document.querySelectorAll('.study-rubrique').forEach(r => {
+                        const txt = r.textContent.toLowerCase();
+                        r.style.display = txt.includes(q) ? 'flex' : 'none';
+                      });
+                    }}
+                  />
                 </div>
+                <input 
+                  type="range" 
+                  min="0" 
+                  max="100" 
+                  defaultValue="0"
+                  className="elevator-range"
+                  title="Ascenseur"
+                  onChange={(e) => {
+                    const pct = Number(e.target.value);
+                    const wrap = document.getElementById('rubriquesWrap');
+                    if (wrap) {
+                      const maxScroll = wrap.scrollHeight - wrap.clientHeight;
+                      wrap.scrollTo({top: Math.round(maxScroll * pct/100), behavior: 'auto'});
+                    }
+                  }}
+                />
+              </div>
+
+              <div className="rubriques-scroll-wrap" id="rubriquesWrap">
+                {RUBRIQUES.map((rubrique, i) => (
+                  <div 
+                    key={rubrique.id}
+                    className={`study-rubrique ${activeRubriqueId === rubrique.id ? 'active' : ''}`}
+                    onClick={() => setActiveRubriqueId(rubrique.id)}
+                  >
+                    <div className="rubrique-index">{i}</div>
+                    <div className="rubrique-meta">
+                      <h4>{rubrique.title}</h4>
+                      <p>{rubrique.subtitle}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </aside>
 
             {/* Zone de contenu à droite */}
-            <div className="lg:col-span-8">
-              <div className="rounded-2xl border p-4 bg-white/60 min-h-[300px]">
-                <h3 className="text-lg font-semibold mb-2">
-                  {RUBRIQUES.find((r) => r.id === activeRubriqueId)?.title}
-                </h3>
-                <div className="prose max-w-none">
-                  {status === "done" && output ? (
-                    <Article content={output} />
-                  ) : (
-                    <p className="text-gray-600">
-                      Sélectionnez une rubrique et cliquez sur <strong>Générer</strong> pour voir le contenu
-                      de l'étude pour <em>{passageLabel}</em>.
-                    </p>
-                  )}
+            <main className="study-responses">
+              <div className="responses-header">
+                <div className="nav-controls">
+                  <button 
+                    className="nav-action-btn"
+                    onClick={() => setActiveRubriqueId(Math.max(0, activeRubriqueId - 1))}
+                    disabled={activeRubriqueId === 0}
+                  >
+                    ◂ Précédent
+                  </button>
+                  <button 
+                    className="nav-action-btn"
+                    onClick={() => setActiveRubriqueId(Math.min(RUBRIQUES.length - 1, activeRubriqueId + 1))}
+                    disabled={activeRubriqueId === RUBRIQUES.length - 1}
+                  >
+                    Suivant ▸
+                  </button>
                 </div>
+                <div className="made-with">Made with ❤️ — Espace d'étude</div>
               </div>
-            </div>
+
+              <section className="welcome-section">
+                <h1>🙏 Bienvenue dans votre Espace d'Étude Biblique</h1>
+                <p>Cet outil vous accompagne dans la méditation approfondie des Écritures avec une approche théologique rigoureuse.</p>
+              </section>
+
+              {/* Zone de contenu dynamique selon la rubrique sélectionnée */}
+              <section className="response-area">
+                <div className="current-study-header">
+                  <h2>{activeRubriqueId}. {RUBRIQUES[activeRubriqueId]?.title}</h2>
+                  <span className="study-progress">{activeRubriqueId + 1} / {RUBRIQUES.length}</span>
+                </div>
+
+                <div className="study-content-detailed">
+                  <div className="study-description">
+                    <h3>📚 Contenu d'étude</h3>
+                    {status === "done" && output ? (
+                      <Article content={output} />
+                    ) : (
+                      <p>Sélectionnez une rubrique et cliquez sur <strong>Générer</strong> pour voir le contenu
+                      de l'étude pour <em>{passageLabel}</em>.</p>
+                    )}
+                  </div>
+
+                  <div className="study-questions">
+                    <h3>💡 Questions d'approfondissement</h3>
+                    <div className="questions-grid">
+                      <div className="question-card">
+                        <h4>Question 1 : Contexte</h4>
+                        <p>Quel est le contexte historique et littéraire de ce passage ?</p>
+                        <textarea 
+                          className="response-input" 
+                          placeholder="Votre réponse ici..."
+                          rows="3"
+                        ></textarea>
+                      </div>
+                      
+                      <div className="question-card">
+                        <h4>Question 2 : Signification</h4>
+                        <p>Quelle est la signification théologique principale de cette section ?</p>
+                        <textarea 
+                          className="response-input" 
+                          placeholder="Votre réponse ici..."
+                          rows="3"
+                        ></textarea>
+                      </div>
+                      
+                      <div className="question-card">
+                        <h4>Question 3 : Application</h4>
+                        <p>Comment appliquer concrètement ces enseignements dans votre vie ?</p>
+                        <textarea 
+                          className="response-input" 
+                          placeholder="Votre réponse ici..."
+                          rows="3"
+                        ></textarea>
+                      </div>
+                      
+                      <div className="question-card">
+                        <h4>Question 4 : Réflexion personnelle</h4>  
+                        <p>Quelle est votre réflexion personnelle sur ce passage ?</p>
+                        <textarea 
+                          className="response-input" 
+                          placeholder="Votre réponse ici..."
+                          rows="3"
+                        ></textarea>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="study-actions">
+                    <button className="save-btn">💾 Sauvegarder les réponses</button>
+                    <button className="generate-btn" onClick={handleGenerate}>🤖 Générer une méditation IA</button>
+                    <button className="export-btn">📄 Exporter en PDF</button>
+                  </div>
+
+                  <div className="study-notes">
+                    <h3>📝 Notes personnelles</h3>
+                    <textarea 
+                      className="notes-input"
+                      placeholder="Ajoutez vos notes personnelles, références bibliques, insights spirituels..."
+                      rows="4"
+                    ></textarea>
+                  </div>
+                </div>
+              </section>
+            </main>
           </div>
         </section>
       </div>
