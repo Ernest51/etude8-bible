@@ -320,7 +320,7 @@ export default function App() {
           <button className="pill-btn" onClick={function(){ window.open('https://chatgpt.com/', '_blank'); }}>ChatGPT</button>
           <button className="pill-btn" onClick={handleLastStudy}>{getLastStudyLabel()}</button>
           <button className="pill-btn" onClick={handleReset}>Reset</button>
-          <button className="pill-btn" onClick={function(){ setActiveId(0); }}>Versets</button>
+          <button className="pill-btn special" onClick={function(){ setActiveId(0); }}>📖 Versets</button>
           <button className="pill-btn accent" onClick={handleGenerate}>Générer</button>
         </div>
       </div>
