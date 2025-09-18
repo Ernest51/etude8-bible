@@ -288,9 +288,9 @@ function App() {
           </div>
         </div>
 
-        {/* 7. Section avec Rubriques + Navigation */}
-        <div className="rubriques-navigation-container">
-          {/* Section Rubriques (29) à gauche */}
+        {/* 7. Section avec 3 colonnes : Rubriques + Navigation + Contenu détaillé */}
+        <div className="three-column-container">
+          {/* Colonne 1 : Section Rubriques (29) à gauche */}
           <div className="rubriques-left-panel">
             <h2 className="rubriques-header">Rubriques (29)</h2>
             
@@ -312,8 +312,8 @@ function App() {
             </div>
           </div>
 
-          {/* Section "0. Étude verset par verset" à droite */}
-          <div className="current-study-panel">
+          {/* Colonne 2 : Section "0. Étude verset par verset" au centre */}
+          <div className="current-study-center-panel">
             <h2 className="current-study-header">
               {selectedSection}. {STUDY_SECTIONS[selectedSection]?.title || "Étude verset par verset"}
             </h2>
@@ -334,63 +334,64 @@ function App() {
               </button>
             </div>
           </div>
-        </div>
 
-        {/* 8. Section Bienvenue centrale */}
-        <div className="welcome-bible-section">
-          <div className="welcome-bible-content">
-            <h1 className="welcome-bible-title">
-              🙏 Bienvenue dans votre Espace d'Étude Biblique
-            </h1>
-            <p className="welcome-bible-text">
-              Cet outil vous accompagne dans la méditation approfondie des<br />
-              Écritures avec une approche théologique rigoureuse.
-            </p>
-          </div>
-        </div>
-
-        {/* Content détaillé - s'affiche en dessous */}
-        {selectedSection !== null && (
-          <div className="detailed-bible-content">
-            <h2>📚 Étude détaillée : {STUDY_SECTIONS[selectedSection]?.title}</h2>
-            
-            <p className="bible-content-text">
-              {STUDY_SECTIONS[selectedSection]?.content || "Contenu de l'étude à venir..."}
-            </p>
-            
-            <div className="bible-reflection-section">
-              <h4>💡 Questions de réflexion</h4>
-              <ul>
-                <li>Comment ce passage s'applique-t-il à ma vie personnelle ?</li>
-                <li>Quel enseignement principal puis-je retenir ?</li>
-                <li>Comment puis-je mettre en pratique cette vérité biblique ?</li>
-                <li>Quelle prière puis-je formuler à partir de cette méditation ?</li>
-              </ul>
+          {/* Colonne 3 : Section Bienvenue + Contenu détaillé à droite */}
+          <div className="right-content-panel">
+            {/* Section Bienvenue */}
+            <div className="welcome-bible-section-right">
+              <h1 className="welcome-bible-title-right">
+                🙏 Bienvenue dans votre Espace d'Étude Biblique
+              </h1>
+              <p className="welcome-bible-text-right">
+                Cet outil vous accompagne dans la méditation approfondie des
+                Écritures avec une approche théologique rigoureuse.
+              </p>
             </div>
 
-            <div className="bible-detailed-navigation">
-              <button 
-                className="bible-nav-btn"
-                onClick={() => setSelectedSection(Math.max(0, selectedSection - 1))}
-                disabled={selectedSection === 0}
-              >
-                ◄ Précédente
-              </button>
-              
-              <span className="bible-nav-progress">
-                {selectedSection + 1} / 29
-              </span>
-              
-              <button 
-                className="bible-nav-btn"
-                onClick={() => setSelectedSection(Math.min(4, selectedSection + 1))}
-                disabled={selectedSection === 4}
-              >
-                Suivante ►
-              </button>
-            </div>
+            {/* Contenu détaillé */}
+            {selectedSection !== null && (
+              <div className="detailed-bible-content-right">
+                <h2>📚 Étude détaillée : {STUDY_SECTIONS[selectedSection]?.title}</h2>
+                
+                <p className="bible-content-text-right">
+                  {STUDY_SECTIONS[selectedSection]?.content || "Contenu de l'étude à venir..."}
+                </p>
+                
+                <div className="bible-reflection-section-right">
+                  <h4>💡 Questions de réflexion</h4>
+                  <ul>
+                    <li>Comment ce passage s'applique-t-il à ma vie personnelle ?</li>
+                    <li>Quel enseignement principal puis-je retenir ?</li>
+                    <li>Comment puis-je mettre en pratique cette vérité biblique ?</li>
+                    <li>Quelle prière puis-je formuler à partir de cette méditation ?</li>
+                  </ul>
+                </div>
+
+                <div className="bible-detailed-navigation-right">
+                  <button 
+                    className="bible-nav-btn-right"
+                    onClick={() => setSelectedSection(Math.max(0, selectedSection - 1))}
+                    disabled={selectedSection === 0}
+                  >
+                    ◄ Précédente
+                  </button>
+                  
+                  <span className="bible-nav-progress-right">
+                    {selectedSection + 1} / 29
+                  </span>
+                  
+                  <button 
+                    className="bible-nav-btn-right"
+                    onClick={() => setSelectedSection(Math.min(4, selectedSection + 1))}
+                    disabled={selectedSection === 4}
+                  >
+                    Suivante ►
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {/* 9. Logo "Made with Emergent" */}
