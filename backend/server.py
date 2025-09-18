@@ -53,10 +53,17 @@ class StatusCheck(BaseModel):
 class StatusCheckCreate(BaseModel):
     client_name: str
 
-class BibleStudyRequest(BaseModel):
-    reference: str
+class StudyGenerationRequest(BaseModel):
+    passage: str
     version: str = "LSG"
-    length: int = 500
+    tokens: int = 500
+    model: str = "gpt"
+    requestedRubriques: List[int] = []
+
+class StudyGenerationResponse(BaseModel):
+    content: str
+    reference: str
+    sections: Optional[List[Dict[str, str]]] = None
 
 class BibleStudyResponse(BaseModel):
     ok: bool
