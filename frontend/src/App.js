@@ -649,8 +649,40 @@ Soli Deo Gloria - Étude conforme à la sainte doctrine
   }
 
   // Handler pour le bouton Versets - doit être défini avant le JSX
-  const handleVersetsClick = () => {
-    alert('VERSETS CLICKED!');
+  const handleVersetsClick = async () => {
+    console.log('🔵 VERSETS BUTTON CLICKED - Starting verse by verse generation');
+    setActiveId(0);
+    console.log('✅ activeId set to 0');
+    
+    // TOUJOURS forcer Genèse 1:1 pour l'étude verset par verset
+    console.log('🔧 Setting Genèse 1:1 for verse by verse generation');
+    setBook("Genèse");
+    setChapter(1);
+    setVerse(1);
+    
+    // Sauvegarder immédiatement dans localStorage pour "Dernière étude"
+    try {
+      localStorage.setItem("lastStudy", JSON.stringify({
+        book: "Genèse", 
+        chapter: 1, 
+        verse: 1, 
+        version: "LSG", 
+        length: 500, 
+        chatgpt: true
+      }));
+      console.log('Genèse 1:1 saved to localStorage as lastStudy');
+      
+      // Mettre à jour le label du bouton immédiatement
+      updateLastStudyLabel();
+    } catch (e) {
+      console.error('Error saving to localStorage:', e);
+    }
+    
+    // Petit délai pour que les états se mettent à jour
+    await wait(1000);
+    
+    // Générer automatiquement l'étude verset par verset
+    await generateVerseByVerse();
   };
 
   return (
