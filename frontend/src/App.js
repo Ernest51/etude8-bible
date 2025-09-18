@@ -257,7 +257,29 @@ export default function App() {
   );
 }
 
-/* ---------- UI sub-components ---------- */
+function ColorPalette(props) {
+  var backgroundColor = props.backgroundColor, onChange = props.onChange;
+  var colors = ["#f7fbfb", "#fff7ed", "#fef7ff", "#f0fdf4", "#ecfdf5", "#f0f9ff", "#fefce8", "#fdf2f8"];
+  
+  return (
+    <div className="pill">
+      <span className="pill-label">Couleur</span>
+      <div className="color-options">
+        {colors.map(function(color) {
+          return (
+            <button
+              key={color}
+              className={"color-dot " + (backgroundColor === color ? "active" : "")}
+              style={{backgroundColor: color}}
+              onClick={function(){ onChange(color); }}
+              type="button"
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
 
 function SelectPill(props) {
   var label = props.label, value = props.value, onChange = props.onChange, options = props.options;
