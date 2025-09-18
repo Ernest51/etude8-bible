@@ -36,7 +36,7 @@ export default function App() {
   const [chapter, setChapter] = React.useState(3);
   const [verse, setVerse] = React.useState(16);
   const [version, setVersion] = React.useState("LSG");
-  const [tokens, setTokens] = React.useState(500);
+  const [length, setLength] = React.useState(500);
   const [chatgpt, setChatgpt] = React.useState(true);
 
   // UI
