@@ -119,11 +119,7 @@ export default function App() {
     const x = e.clientX - rect.left;
     const width = rect.width;
     const percentage = (x / width) * 100;
-    
-    // Mettre à jour la position du bouton
     setKnobPosition(Math.max(0, Math.min(100, percentage)));
-    
-    // Appliquer la couleur selon la position
     updateBackgroundColor(percentage);
   }
 
@@ -131,23 +127,18 @@ export default function App() {
   function handleKnobMouseDown(e) {
     e.preventDefault();
     e.stopPropagation();
-    
     const gradient = e.currentTarget.parentElement;
     const rect = gradient.getBoundingClientRect();
-    
     function handleMouseMove(moveEvent) {
       const x = moveEvent.clientX - rect.left;
       const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-      
       setKnobPosition(percentage);
       updateBackgroundColor(percentage);
     }
-    
     function handleMouseUp() {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     }
-    
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
   }
@@ -155,42 +146,19 @@ export default function App() {
   // Fonction pour mettre à jour la couleur de fond selon le pourcentage
   function updateBackgroundColor(percentage) {
     let newColor, gradientEnd, buttonColor, buttonColorHover, shadowColor;
-    
     if (percentage < 25) {
-      newColor = "#dbeafe"; // Bleu
-      gradientEnd = "#bfdbfe";
-      buttonColor = "#3b82f6";
-      buttonColorHover = "#2563eb";
-      shadowColor = "59, 130, 246"; // RGB values for rgba
+      newColor = "#dbeafe"; gradientEnd = "#bfdbfe"; buttonColor = "#3b82f6"; buttonColorHover = "#2563eb"; shadowColor = "59, 130, 246";
     } else if (percentage < 50) {
-      newColor = "#e9d5ff"; // Violet
-      gradientEnd = "#ddd6fe";
-      buttonColor = "#8b5cf6";
-      buttonColorHover = "#7c3aed";
-      shadowColor = "139, 92, 246";
+      newColor = "#e9d5ff"; gradientEnd = "#ddd6fe"; buttonColor = "#8b5cf6"; buttonColorHover = "#7c3aed"; shadowColor = "139, 92, 246";
     } else if (percentage < 75) {
-      newColor = "#fed7aa"; // Orange
-      gradientEnd = "#fdba74";
-      buttonColor = "#f59e0b";
-      buttonColorHover = "#d97706";
-      shadowColor = "245, 158, 11";
+      newColor = "#fed7aa"; gradientEnd = "#fdba74"; buttonColor = "#f59e0b"; buttonColorHover = "#d97706"; shadowColor = "245, 158, 11";
     } else {
-      newColor = "#bbf7d0"; // Vert
-      gradientEnd = "#86efac";
-      buttonColor = "#10b981";
-      buttonColorHover = "#059669";
-      shadowColor = "16, 185, 129";
+      newColor = "#bbf7d0"; gradientEnd = "#86efac"; buttonColor = "#10b981"; buttonColorHover = "#059669"; shadowColor = "16, 185, 129";
     }
-    
-    console.log('Changing page background to:', newColor, 'at position:', percentage + '%');
-    
-    // Appliquer immédiatement à la page
     const pageWrap = document.querySelector('.page-wrap');
     if (pageWrap) {
       pageWrap.style.background = `linear-gradient(180deg, ${newColor} 0%, ${gradientEnd} 100%)`;
     }
-    
-    // Appliquer la couleur aux boutons dynamiques
     const root = document.documentElement;
     root.style.setProperty('--dynamic-button-color', buttonColor);
     root.style.setProperty('--dynamic-button-hover', buttonColorHover);
@@ -215,12 +183,8 @@ export default function App() {
       setProgress(function(p){ return p < 15 ? 15 : p; });
       return;
     }
-    
-    // Parser intelligent de la recherche
     const searchText = search.trim().toLowerCase();
     console.log('Parsing search:', searchText);
-    
-    // Mapping des noms de livres (minuscules vers noms corrects)
     const bookMapping = {
       'genese': 'Genèse', 'genesis': 'Genèse',
       'exode': 'Exode', 'exodus': 'Exode',
@@ -289,7 +253,319 @@ export default function App() {
       'jude': 'Jude',
       'apocalypse': 'Apocalypse', 'revelation': 'Apocalypse', 'rev': 'Apocalypse'
     };
-    
     let foundBook = null;
     let foundChapter = "vide";
-    let foundV
+    let foundVerse = "vide";
+    const pattern1 = searchText.match(/^(.+?)\s+(\d+):(\d+)$/);
+    if (pattern1) {
+      const bookName = pattern1[1].trim();
+      foundBook = bookMapping[bookName];
+      if (foundBook) {
+        foundChapter = parseInt(pattern1[2]);
+        foundVerse = parseInt(pattern1[3]);
+      }
+    }
+    if (!foundBook) {
+      const pattern2 = searchText.match(/^(.+?)\s+(\d+)$/);
+      if (pattern2) {
+        const bookName = pattern2[1].trim();
+        foundBook = bookMapping[bookName];
+        if (foundBook) {
+          foundChapter = parseInt(pattern2[2]);
+          foundVerse = "vide";
+        }
+      }
+    }
+    if (!foundBook) {
+      const bookName = searchText.trim();
+      foundBook = bookMapping[bookName];
+      if (foundBook) {
+        foundChapter = 1;
+        foundVerse = 1;
+      }
+    }
+    if (foundBook) {
+      setBook(foundBook);
+      setChapter(foundChapter);
+      setVerse(foundVerse);
+      setSearch("");
+      setProgress(50);
+      setTimeout(() => setProgress(0), 1000);
+    } else {
+      setProgress(function(p){ return p < 15 ? 15 : p; });
+    }
+  }
+
+  function handleReset() {
+    setIsResetting(true);
+    setBook("vide");
+    setChapter("vide");
+    setVerse("vide");
+    setVersion("LSG");
+    setLength(500);
+    setChatgpt(true);
+    setProgress(0);
+    setSearch("");
+    setActiveId(0);
+    setContent("");
+    setKnobPosition(0);
+    setRubriquesStatus({});
+    updateBackgroundColor(0);
+    console.log('Reset effectué - Tout vidé, Dernière étude inchangée');
+  }
+
+  function handleLastStudy() {
+    try {
+      const stored = localStorage.getItem("lastStudy");
+      if (stored) {
+        const data = JSON.parse(stored);
+        setBook(data.book || "Jean");
+        setChapter(data.chapter || 3);
+        setVerse(data.verse || 16);
+        setVersion(data.version || "LSG");
+        setLength(data.length || 500);
+        setChatgpt(data.chatgpt !== undefined ? data.chatgpt : true);
+      }
+    } catch (e) {
+      console.error("Erreur lors du chargement de la dernière étude:", e);
+    }
+  }
+
+  function handleReadBible() {
+    var q = encodeURIComponent(passageLabel);
+    window.open("https://www.bible.com/fr/search/bible?query=" + q, "_blank");
+  }
+
+  async function handleGenerate() {
+    if (book === "vide" || chapter === "vide" || verse === "vide") {
+      setContent("⚠️ Veuillez d'abord sélectionner un livre, un chapitre et un verset pour générer une étude biblique.");
+      setProgress(0);
+      return;
+    }
+    setProgress(5); await wait(200);
+    setProgress(25); await wait(250);
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+      const isVerseByVerse = activeId === 0;
+      const endpoint = isVerseByVerse ? '/api/generate-verse-by-verse' : '/api/generate-study';
+      const payload = isVerseByVerse ? {
+        passage: passageLabel,
+        version: version
+      } : {
+        passage: passageLabel,
+        version: version,
+        tokens: length,
+        model: chatgpt ? "gpt" : "claude",
+        requestedRubriques: [activeId]
+      };
+      const response = await fetch(`${backendUrl}${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+      setProgress(60); await wait(350);
+      if (response.ok) {
+        const data = await response.json();
+        setProgress(100);
+        setContent(data.content || "Méditation générée avec succès");
+        if (!isResetting) {
+          try {
+            localStorage.setItem("lastStudy", JSON.stringify({
+              book: book, chapter: chapter, verse: verse, version: version, length: length, chatgpt: chatgpt
+            }));
+            updateLastStudyLabel();
+          } catch (e) {}
+        } else {
+          setIsResetting(false);
+        }
+      } else {
+        const errorText = await response.text();
+        throw new Error(`Erreur ${response.status}: ${errorText}`);
+      }
+    } catch (error) {
+      setProgress(100);
+      if (error.name === 'AbortError') {
+        setContent("⏳ Temps d'attente dépassé. Réessayez.");
+      } else {
+        setContent("⚠️ Erreur: " + error.message);
+      }
+    }
+  }
+
+  function goPrev() { setActiveId(function(i){ return Math.max(0, i - 1); }); }
+  function goNext() { setActiveId(function(i){ return Math.min(RUBRIQUES.length - 1, i + 1); }); }
+
+  function formatContent(text) {
+    if (!text) return null;
+    const lines = text.split('\n');
+    return (
+      <div className="content-formatted-inner">
+        {lines.map((line, index) => {
+          if (line.startsWith('**') && line.endsWith('**')) {
+            const boldText = line.replace(/\*\*/g, '');
+            return <div key={index} className="content-bold">{boldText}</div>;
+          } else if (line.trim()) {
+            return <div key={index} className="content-line">{line}</div>;
+          } else {
+            return <div key={index} className="content-space"></div>;
+          }
+        })}
+      </div>
+    );
+  }
+
+  // (LAISSE EXISTANT) generateVerseByVerse — non appelée
+  const generateVerseByVerse = async () => { /* laissée telle quelle si besoin */ };
+
+  // ✅ Handler VERSIONS SAFE : activeId=0 puis génération avec passage sélectionné
+  const handleVersetsClick = async () => {
+    setActiveId(0);
+    await handleGenerate();
+  };
+
+  return (
+    <div className="page-wrap">
+      {/* HEADER avec Marquee MEDITATION */}
+      <div className="header-marquee">
+        <div className="marquee-container">
+          <div className="marquee-content" data-text="✨ MEDITATION BIBLIQUE ✨ ÉTUDE SPIRITUELLE ✨ SAGESSE DIVINE ✨ MÉDITATION THÉOLOGIQUE ✨ CONTEMPLATION SACRÉE ✨ RÉFLEXION INSPIRÉE ✨">
+            ✨ MEDITATION BIBLIQUE ✨ ÉTUDE SPIRITUELLE ✨ SAGESSE DIVINE ✨ MÉDITATION THÉOLOGIQUE ✨ CONTEMPLATION SACRÉE ✨ RÉFLEXION INSPIRÉE ✨
+          </div>
+        </div>
+      </div>
+
+      {/* Bandeau haut (bulle %, barre gradient, points) */}
+      <div className="topband">
+        <div className="progress-bubble">{Math.round(progress)}%</div>
+        <div className="progress-card">
+          <div className="progress-gradient" onClick={handleGradientClick}>
+            <div 
+              className="color-knob"
+              style={{left: `${knobPosition}%`}}
+              onMouseDown={handleKnobMouseDown}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Bloc contrôles */}
+      <div className="controls-card">
+        <div className="search-row">
+          <input
+            className="pill-input"
+            placeholder="Rechercher (ex : Marc 5:1, 1 Jean 2, Genèse 1:1-5)"
+            value={search}
+            onChange={function(e){ setSearch(e.target.value); }}
+          />
+          <button className="pill-btn primary" onClick={handleValidate}>Valider</button>
+          <button className="pill-btn" onClick={handleReadBible}>Lire la Bible</button>
+        </div>
+
+        <div className="pills-row">
+          <SelectPill label="Livre" value={book} onChange={handleBookChange} options={BOOKS} />
+          <NumberPill label="Chapitre" value={chapter} onChange={setChapter} min={1} max={BOOK_CHAPTERS[book] || 150} />
+          <NumberPill label="Verset" value={verse} onChange={setVerse} min={1} max={176} />
+          <SelectPill label="Version" value={version} onChange={setVersion} options={["LSG","NEG79","BDS"]} />
+          <SelectPill label="Longueur" value={length} onChange={setLength} options={[500,1500,2500]} />
+          <button className="pill-btn" onClick={function(){ window.open('https://chatgpt.com/', '_blank'); }}>ChatGPT</button>
+          <button className="pill-btn" onClick={handleLastStudy}>{lastStudyLabel}</button>
+          <button className="pill-btn reset" onClick={handleReset}>🔄 Reset</button>
+          <button 
+            className={`pill-btn special ${activeId === 0 ? 'active' : ''}`} 
+            onClick={handleVersetsClick}
+          >
+            📖 Versets
+          </button>
+          <button className="pill-btn accent" onClick={handleGenerate}>Générer</button>
+        </div>
+      </div>
+
+      {/* 2 colonnes */}
+      <div className="two-cols">
+        <aside className="left-card">
+          <div className="left-header">Rubriques ({RUBRIQUES.length})</div>
+          <RubriquesInline
+            items={RUBRIQUES}
+            activeId={activeId}
+            onSelect={function(id){ setActiveId(id); }}
+            rubriquesStatus={rubriquesStatus}
+          />
+        </aside>
+
+        <section className="right-card">
+          <div className="right-head">
+            <h3>{activeId}. {(RUBRIQUES[activeId] && RUBRIQUES[activeId].title) || "Rubrique"}</h3>
+            <div className="right-nav">
+              <button className="mini-pill" onClick={goPrev}>◂ Précédent</button>
+              <button className="mini-pill" onClick={goNext}>Suivant ▸</button>
+            </div>
+          </div>
+
+          <div className="welcome" style={{display: content ? 'none' : 'block'}}>
+            <h1>🙏 Bienvenue dans votre Espace d'Étude</h1>
+            <p>​Cet outil vous accompagne dans une méditation biblique structurée et claire.</p>
+          </div>
+
+          <div className="section">
+            {content ? (
+              <div className="content-formatted">
+                {formatContent(content)}
+              </div>
+            ) : (
+              <p className="muted">
+                Sélectionnez une rubrique puis cliquez sur <b>Générer</b> pour afficher du contenu
+                pour <i>{passageLabel}</i>.
+              </p>
+            )}
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- UI sub-components ---------- */
+
+function SelectPill(props) {
+  var label = props.label, value = props.value, onChange = props.onChange, options = props.options;
+  return (
+    <div className="pill">
+      <span className="pill-label">{label}</span>
+      <select
+        className="pill-select"
+        value={value}
+        onChange={function(e){ onChange(e.target.value); }}
+      >
+        {options.map(function(opt){ return <option key={opt} value={opt}>{opt}</option>; })}
+      </select>
+      <span className="chev">▾</span>
+    </div>
+  );
+}
+
+function NumberPill(props) {
+  var label = props.label, value = props.value, onChange = props.onChange,
+      min = props.min || 1, max = props.max || 100, step = props.step || 1;
+  var list = ["vide"];
+  for (var i=min; i<=max; i+=step) list.push(i);
+  return (
+    <div className="pill">
+      <span className="pill-label">{label}</span>
+      <select
+        className="pill-select"
+        value={value}
+        onChange={function(e){ 
+          const val = e.target.value;
+          onChange(val === "vide" ? "vide" : Number(val)); 
+        }}
+      >
+        {list.map(function(n){ return <option key={n} value={n}>{n}</option>; })}
+      </select>
+      <span className="chev">▾</span>
+    </div>
+  );
+}
