@@ -237,11 +237,12 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Intégration nouveau code de méditation"
     - "États et handlers pour nouveau code"
     - "Interface des 29 rubriques"
+    - "Système de toast et utilitaires"
+  stuck_tasks: 
+    - "Intégration nouveau code de méditation"
     - "Composants UI (Select, NumberSelect, Toggle, Button)"
-  stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
