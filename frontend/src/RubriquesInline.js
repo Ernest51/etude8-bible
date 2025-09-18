@@ -1,25 +1,33 @@
 import React from "react";
 
 /**
- * Colonne gauche : liste scrollable + sticky (styles dans App.css/rubriques.css)
+ * Colonne gauche : liste scrollable + sticky (styles dans App.css / rubriques.css)
+ * Props:
+ *  - items: [{ id:number, title:string }]
+ *  - activeId: number
+ *  - onSelect: (id:number) => void
  */
-export default function RubriquesInline(props) {
-  var items = props.items || [];
+function RubriquesInline(props) {
+  var items = Array.isArray(props.items) ? props.items : [];
   var activeId = typeof props.activeId === "number" ? props.activeId : 0;
-  var onSelect = props.onSelect;
+  var onSelect = typeof props.onSelect === "function" ? props.onSelect : null;
+
+  function handleSelect(id) {
+    if (onSelect) onSelect(id);
+  }
 
   return (
     <div className="rubriques">
       <div className="rubriques-scroll">
-        {items.map(function(it){
-          var active = it.id === activeId;
+        {items.map(function (it) {
+          var isActive = it.id === activeId;
           return (
             <button
-              key={it.id}
-              id={"rubrique-" + it.id}
-              className={"rubrique" + (active ? " active" : "")}
-              onClick={function(){ if (onSelect) onSelect(it.id); }}
+              key={String(it.id)}
+              id={"rubrique-" + String(it.id)}
               type="button"
+              className={"rubrique" + (isActive ? " active" : "")}
+              onClick={function () { handleSelect(it.id); }}
             >
               <span className="idx">{it.id}</span>
               <span className="r-texts">
@@ -34,3 +42,5 @@ export default function RubriquesInline(props) {
     </div>
   );
 }
+
+export default RubriquesInline;
