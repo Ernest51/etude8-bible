@@ -745,17 +745,26 @@ body {
 .content-pre {
   white-space: pre-wrap;
   font-family: 'Georgia', serif;
-  font-size: 1rem;
-  line-height: 1.8;
+  font-size: 1.05rem;
+  line-height: 1.9;
   color: var(--text-dark);
   background: white;
-  padding: 2rem;
+  padding: 2.5rem;
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--border-gray);
   max-height: 600px;
   overflow-y: auto;
+  letter-spacing: 0.3px;
 }
+
+/* Styles pour rendre le texte plus lisible */
+.content-pre {
+  /* Simuler les titres en gras via regex patterns ou contenu spécifique */
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+}
+
+/* Style pour les versets - on utilisera JavaScript pour les rendre gras */
 
 .content-pre::-webkit-scrollbar {
   width: 8px;
