@@ -726,14 +726,19 @@ body{
   border-radius: 8px;
 }
 
-.current-study-panel {
-  flex: 1;
+.current-study-center-panel {
+  flex: 0 0 300px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   padding: 20px;
+}
+
+.right-content-panel {
+  flex: 1;
+  min-width: 0;
 }
 
 .current-study-header {
