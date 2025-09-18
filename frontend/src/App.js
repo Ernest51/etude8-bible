@@ -288,111 +288,123 @@ function App() {
           </div>
         </div>
 
-        {/* 7. Section avec 3 colonnes : Rubriques + Navigation + Contenu détaillé */}
-        <div className="three-column-container">
-          {/* Colonne 1 : Section Rubriques (29) à gauche */}
-          <div className="rubriques-left-panel">
-            <h2 className="rubriques-header">Rubriques (29)</h2>
+        {/* 7. Interface avec sidebar 28 rubriques et ascenseur */}
+        <div className="study-app-container">
+          {/* Sidebar gauche avec ascenseur */}
+          <aside className="study-sidebar">
+            <div className="sidebar-header">Rubriques (28)</div>
             
-            <div className="rubriques-cards-container">
-              {STUDY_SECTIONS.slice(0, 3).map((section) => (
+            <div className="sidebar-controls">
+              <button 
+                className="control-btn" 
+                onClick={() => {
+                  const wrap = document.getElementById('rubriquesWrap');
+                  if (wrap) wrap.scrollBy({top: -160, behavior: 'smooth'});
+                }}
+                title="Monter"
+              >
+                ▲
+              </button>
+              <button 
+                className="control-btn"
+                onClick={() => {
+                  const wrap = document.getElementById('rubriquesWrap');
+                  if (wrap) wrap.scrollBy({top: 160, behavior: 'smooth'});
+                }}
+                title="Descendre"
+              >
+                ▼
+              </button>
+              <div className="search-container">
+                <input 
+                  className="filter-input"
+                  placeholder="Trouver une rubrique... (ex: espérance)"
+                  onChange={(e) => {
+                    const q = e.target.value.trim().toLowerCase();
+                    document.querySelectorAll('.study-rubrique').forEach(r => {
+                      const txt = r.textContent.toLowerCase();
+                      r.style.display = txt.includes(q) ? 'flex' : 'none';
+                    });
+                  }}
+                />
+              </div>
+              <input 
+                type="range" 
+                min="0" 
+                max="100" 
+                defaultValue="0"
+                className="elevator-range"
+                title="Ascenseur"
+                onChange={(e) => {
+                  const pct = Number(e.target.value);
+                  const wrap = document.getElementById('rubriquesWrap');
+                  if (wrap) {
+                    const maxScroll = wrap.scrollHeight - wrap.clientHeight;
+                    wrap.scrollTo({top: Math.round(maxScroll * pct/100), behavior: 'auto'});
+                  }
+                }}
+              />
+            </div>
+
+            <div className="rubriques-scroll-wrap" id="rubriquesWrap">
+              {STUDY_SECTIONS.map((section, i) => (
                 <div 
                   key={section.id}
-                  className={`rubrique-study-card ${selectedSection === section.id ? 'active' : ''}`}
+                  className={`study-rubrique ${selectedSection === section.id ? 'active' : ''}`}
                   onClick={() => setSelectedSection(section.id)}
                 >
-                  <div className="study-card-number">{section.id}</div>
-                  <div className="study-card-info">
-                    <h4 className="study-card-title">{section.title}</h4>
-                    <p className="study-card-subtitle">{section.subtitle}</p>
+                  <div className="rubrique-index">{i}</div>
+                  <div className="rubrique-meta">
+                    <h4>{section.title}</h4>
+                    <p>Courte description de la rubrique n°{i} — cliquez pour aller à la section correspondante.</p>
                   </div>
-                  <div className="study-card-orange-icon"></div>
                 </div>
               ))}
             </div>
-          </div>
+          </aside>
 
-          {/* Colonne 2 : Section "0. Étude verset par verset" au centre */}
-          <div className="current-study-center-panel">
-            <h2 className="current-study-header">
-              {selectedSection}. {STUDY_SECTIONS[selectedSection]?.title || "Étude verset par verset"}
-            </h2>
-            <div className="study-panel-navigation">
-              <button 
-                className="study-nav-prev"
-                onClick={() => setSelectedSection(Math.max(0, selectedSection - 1))}
-                disabled={selectedSection === 0}
-              >
-                ◄ Précédent
-              </button>
-              <button 
-                className="study-nav-next"
-                onClick={() => setSelectedSection(Math.min(4, selectedSection + 1))}
-                disabled={selectedSection === 4}
-              >
-                Suivant ►
-              </button>
+          {/* Contenu principal à droite */}
+          <main className="study-content">
+            <div className="content-top-actions">
+              <div>
+                <button 
+                  className="nav-action-btn"
+                  onClick={() => setSelectedSection(Math.max(0, selectedSection - 1))}
+                  disabled={selectedSection === 0}
+                >
+                  ◂ Précédent
+                </button>
+                <button 
+                  className="nav-action-btn"
+                  onClick={() => setSelectedSection(Math.min(STUDY_SECTIONS.length - 1, selectedSection + 1))}
+                  disabled={selectedSection === STUDY_SECTIONS.length - 1}
+                >
+                  Suivant ▸
+                </button>
+              </div>
+              <div className="made-with">Made with ❤️ — Espace d'étude</div>
             </div>
-          </div>
 
-          {/* Colonne 3 : Section Bienvenue CENTRÉE dominante */}
-          <div className="right-content-panel">
-            {/* Section Bienvenue PRINCIPALE - Centrée et dominante */}
-            <div className="welcome-bible-main-section">
-              <h1 className="welcome-bible-main-title">
-                🙏 Bienvenue dans votre Espace d'Étude Biblique
-              </h1>
-              <p className="welcome-bible-main-text">
-                Cet outil vous accompagne dans la méditation approfondie des<br />
-                Écritures avec une approche théologique rigoureuse.
-              </p>
-              
-              {/* Contenu d'étude intégré sous le titre principal */}
-              {selectedSection !== null && (
-                <div className="integrated-study-content">
-                  <h3 className="integrated-study-title">
-                    📚 {STUDY_SECTIONS[selectedSection]?.title}
-                  </h3>
-                  
-                  <p className="integrated-study-text">
-                    {STUDY_SECTIONS[selectedSection]?.content || "Contenu de l'étude à venir..."}
+            <section className="content-hero">
+              <h1>🙏 Bienvenue dans votre Espace d'Étude Biblique</h1>
+              <p>Cet outil vous accompagne dans la méditation approfondie des Écritures avec une approche théologique rigoureuse.</p>
+            </section>
+
+            <section className="main-study-sections">
+              {STUDY_SECTIONS.map((section, i) => (
+                <div 
+                  key={section.id}
+                  className={`study-section ${selectedSection === section.id ? 'active' : ''}`}
+                  id={`section-${section.id}`}
+                >
+                  <h3>{i}. {section.title}</h3>
+                  <p>
+                    {section.content || `Contenu détaillé pour la rubrique "${section.title}". Ici on place l'analyse, les versets liés, commentaires théologiques et questions interactives.`}
                   </p>
-                  
-                  <div className="integrated-reflection-section">
-                    <h4>💡 Questions de réflexion</h4>
-                    <ul>
-                      <li>Comment ce passage s'applique-t-il à ma vie personnelle ?</li>
-                      <li>Quel enseignement principal puis-je retenir ?</li>
-                      <li>Comment puis-je mettre en pratique cette vérité biblique ?</li>
-                      <li>Quelle prière puis-je formuler à partir de cette méditation ?</li>
-                    </ul>
-                  </div>
-
-                  <div className="integrated-navigation">
-                    <button 
-                      className="integrated-nav-btn"
-                      onClick={() => setSelectedSection(Math.max(0, selectedSection - 1))}
-                      disabled={selectedSection === 0}
-                    >
-                      ◄ Précédente
-                    </button>
-                    
-                    <span className="integrated-progress">
-                      {selectedSection + 1} / 29
-                    </span>
-                    
-                    <button 
-                      className="integrated-nav-btn"
-                      onClick={() => setSelectedSection(Math.min(4, selectedSection + 1))}
-                      disabled={selectedSection === 4}
-                    >
-                      Suivante ►
-                    </button>
-                  </div>
                 </div>
-              )}
-            </div>
-          </div>
+              ))}
+            </section>
+          </main>
         </div>
       </div>
 
