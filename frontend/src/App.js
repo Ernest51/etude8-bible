@@ -144,24 +144,24 @@ export default function App() {
   }
 
   function handleReset() {
-    // Remettre tous les paramètres à leur valeur par défaut
-    setBook("Jean"); 
-    setChapter(3); 
-    setVerse(16); 
-    setVersion("LSG"); 
-    setLength(500);
+    // Remettre tous les paramètres à leur première valeur (index 0)
+    setBook("Genèse");  // Premier livre biblique
+    setChapter(1);      // Premier chapitre
+    setVerse(1);        // Premier verset
+    setVersion("LSG");  // Première version
+    setLength(500);     // Première longueur
     setChatgpt(true); 
-    setProgress(0); 
-    setSearch(""); 
-    setActiveId(0); 
-    setContent("");
-    setKnobPosition(0);
+    setProgress(0);     // Progress à 0%
+    setSearch("");      // Recherche vide
+    setActiveId(0);     // Première rubrique (Étude verset par verset)
+    setContent("");     // Contenu vide
+    setKnobPosition(0); // Palette de couleur au début
     
     // Remettre le fond à la couleur par défaut (bleu)
     updateBackgroundColor(0);
     
     // Note: localStorage "lastStudy" est préservé pour que "Dernière étude" continue de fonctionner
-    console.log('Reset effectué - Dernière étude préservée');
+    console.log('Reset effectué - Tout remis à 0/1, Dernière étude préservée');
   }
 
   function handleLastStudy() {
