@@ -96,7 +96,7 @@ export default function App() {
         body: JSON.stringify({
           passage: passageLabel,
           version: version,
-          tokens: tokens,
+          tokens: length,
           model: chatgpt ? "gpt" : "claude",
           requestedRubriques: [activeId]
         }),
