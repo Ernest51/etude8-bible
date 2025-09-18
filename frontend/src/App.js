@@ -237,6 +237,11 @@ export default function App() {
         <div className="progress-bubble">{Math.round(progress)}%</div>
         <div className="progress-card">
           <div className="progress-gradient" onClick={handleGradientClick}>
+            <div 
+              className="color-knob"
+              style={{left: `${knobPosition}%`}}
+              onMouseDown={handleKnobMouseDown}
+            />
           </div>
         </div>
       </div>
