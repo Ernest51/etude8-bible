@@ -325,6 +325,31 @@ body {
   animation: pulse 2s infinite;
 }
 
+.pill-btn.reset {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: white;
+  border-color: #f97316;
+  font-weight: 600;
+}
+
+.pill-btn.reset:hover {
+  background: linear-gradient(135deg, #ea580c, #c2410c);
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.5), var(--shadow-lg);
+  transform: translateY(-2px) rotate(-5deg);
+  transition: var(--transition);
+}
+
+.pill-btn.reset:active {
+  transform: translateY(0) rotate(0deg);
+  animation: resetPulse 0.3s ease-out;
+}
+
+@keyframes resetPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
 .pill {
   position: relative;
   display: inline-flex;
