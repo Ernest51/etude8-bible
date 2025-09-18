@@ -335,61 +335,63 @@ function App() {
             </div>
           </div>
 
-          {/* Colonne 3 : Section Bienvenue + Contenu détaillé à droite */}
+          {/* Colonne 3 : Section Bienvenue CENTRÉE dominante */}
           <div className="right-content-panel">
-            {/* Section Bienvenue */}
-            <div className="welcome-bible-section-right">
-              <h1 className="welcome-bible-title-right">
+            {/* Section Bienvenue PRINCIPALE - Centrée et dominante */}
+            <div className="welcome-bible-main-section">
+              <h1 className="welcome-bible-main-title">
                 🙏 Bienvenue dans votre Espace d'Étude Biblique
               </h1>
-              <p className="welcome-bible-text-right">
-                Cet outil vous accompagne dans la méditation approfondie des
+              <p className="welcome-bible-main-text">
+                Cet outil vous accompagne dans la méditation approfondie des<br />
                 Écritures avec une approche théologique rigoureuse.
               </p>
+              
+              {/* Contenu d'étude intégré sous le titre principal */}
+              {selectedSection !== null && (
+                <div className="integrated-study-content">
+                  <h3 className="integrated-study-title">
+                    📚 {STUDY_SECTIONS[selectedSection]?.title}
+                  </h3>
+                  
+                  <p className="integrated-study-text">
+                    {STUDY_SECTIONS[selectedSection]?.content || "Contenu de l'étude à venir..."}
+                  </p>
+                  
+                  <div className="integrated-reflection-section">
+                    <h4>💡 Questions de réflexion</h4>
+                    <ul>
+                      <li>Comment ce passage s'applique-t-il à ma vie personnelle ?</li>
+                      <li>Quel enseignement principal puis-je retenir ?</li>
+                      <li>Comment puis-je mettre en pratique cette vérité biblique ?</li>
+                      <li>Quelle prière puis-je formuler à partir de cette méditation ?</li>
+                    </ul>
+                  </div>
+
+                  <div className="integrated-navigation">
+                    <button 
+                      className="integrated-nav-btn"
+                      onClick={() => setSelectedSection(Math.max(0, selectedSection - 1))}
+                      disabled={selectedSection === 0}
+                    >
+                      ◄ Précédente
+                    </button>
+                    
+                    <span className="integrated-progress">
+                      {selectedSection + 1} / 29
+                    </span>
+                    
+                    <button 
+                      className="integrated-nav-btn"
+                      onClick={() => setSelectedSection(Math.min(4, selectedSection + 1))}
+                      disabled={selectedSection === 4}
+                    >
+                      Suivante ►
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
-
-            {/* Contenu détaillé */}
-            {selectedSection !== null && (
-              <div className="detailed-bible-content-right">
-                <h2>📚 Étude détaillée : {STUDY_SECTIONS[selectedSection]?.title}</h2>
-                
-                <p className="bible-content-text-right">
-                  {STUDY_SECTIONS[selectedSection]?.content || "Contenu de l'étude à venir..."}
-                </p>
-                
-                <div className="bible-reflection-section-right">
-                  <h4>💡 Questions de réflexion</h4>
-                  <ul>
-                    <li>Comment ce passage s'applique-t-il à ma vie personnelle ?</li>
-                    <li>Quel enseignement principal puis-je retenir ?</li>
-                    <li>Comment puis-je mettre en pratique cette vérité biblique ?</li>
-                    <li>Quelle prière puis-je formuler à partir de cette méditation ?</li>
-                  </ul>
-                </div>
-
-                <div className="bible-detailed-navigation-right">
-                  <button 
-                    className="bible-nav-btn-right"
-                    onClick={() => setSelectedSection(Math.max(0, selectedSection - 1))}
-                    disabled={selectedSection === 0}
-                  >
-                    ◄ Précédente
-                  </button>
-                  
-                  <span className="bible-nav-progress-right">
-                    {selectedSection + 1} / 29
-                  </span>
-                  
-                  <button 
-                    className="bible-nav-btn-right"
-                    onClick={() => setSelectedSection(Math.min(4, selectedSection + 1))}
-                    disabled={selectedSection === 4}
-                  >
-                    Suivante ►
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
