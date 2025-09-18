@@ -348,7 +348,7 @@ function App() {
 
   const handleValidate = () => {
     const ref = buildRef();
-    alert(`Passage validé : ${ref}`);
+    window.alert(`Passage validé : ${ref}`);
   };
 
   const handleRead = () => {
@@ -385,8 +385,8 @@ function App() {
     }
   };
 
-  const handleChat = () => alert("Bouton ChatGPT (placeholder)");
-  const handleLast = () => alert("Dernière étude (placeholder)");
+  const handleChat = () => window.alert("Bouton ChatGPT (placeholder)");
+  const handleLast = () => window.alert("Dernière étude (placeholder)");
 
   return (
     <div className="app-layout">
@@ -503,6 +503,7 @@ function App() {
             </div>
           </div>
 
+          {/* GRILLE 2 COLONNES */}
           <div className="grid">
             <div className="card section">
               <h3>Rubriques (29)</h3>
@@ -518,82 +519,82 @@ function App() {
             </div>
           </div>
 
-          {/* SECTION COMPLÈTEMENT SÉPARÉE - EN DESSOUS de la grille */}
-          <div style={{width: "100%", marginTop: "24px"}}>
-            <div className="card section" style={{width: "100%"}}>
-            <h3 style={{color: "#0ea5b3", marginBottom: "16px"}}>
-              📚 Étude détaillée : {STUDY_SECTIONS[selectedSection]?.title}
-            </h3>
-            
-            <div className="study-content">
-              <p style={{
-                lineHeight: "1.7", 
-                color: "#0f2d3a", 
-                fontSize: "16px",
-                marginBottom: "24px",
-                textAlign: "justify"
-              }}>
-                {STUDY_SECTIONS[selectedSection]?.content || "Contenu de l'étude à venir..."}
-              </p>
+          {/* CONTENU DÉTAILLÉ - COMPLÈTEMENT EN DESSOUS DE LA GRILLE */}
+          <div style={{clear: "both", width: "100%", marginTop: "32px"}}>
+            <div className="card section" style={{width: "100%", display: "block"}}>
+              <h3 style={{color: "#0ea5b3", marginBottom: "20px", fontSize: "28px"}}>
+                📚 Étude détaillée : {STUDY_SECTIONS[selectedSection]?.title}
+              </h3>
               
-              {/* Section d'interaction */}
-              <div style={{
-                background: "rgba(14, 165, 179, 0.05)",
-                border: "1px solid rgba(14, 165, 179, 0.15)",
-                borderRadius: "16px",
-                padding: "20px",
-                marginTop: "20px"
-              }}>
-                <h4 style={{color: "#0ea5b3", margin: "0 0 16px 0", fontSize: "16px", fontWeight: "600"}}>
-                  💡 Questions de réflexion pour cette rubrique
-                </h4>
-                <ul style={{margin: "0", paddingLeft: "24px", color: "#5a7381", lineHeight: "1.6"}}>
-                  <li style={{marginBottom: "8px"}}>Comment ce passage s'applique-t-il à ma vie personnelle ?</li>
-                  <li style={{marginBottom: "8px"}}>Quel enseignement principal puis-je retenir de cette étude ?</li>
-                  <li style={{marginBottom: "8px"}}>Comment puis-je mettre en pratique cette vérité biblique au quotidien ?</li>
-                  <li>Quelle prière puis-je formuler à partir de cette méditation ?</li>
-                </ul>
-              </div>
-
-              {/* Navigation entre rubriques */}
-              <div style={{
-                display: "flex", 
-                justifyContent: "space-between", 
-                alignItems: "center",
-                marginTop: "24px",
-                paddingTop: "20px",
-                borderTop: "2px solid rgba(14, 165, 179, 0.1)"
-              }}>
-                <button 
-                  className="btn btn-outline"
-                  onClick={() => setSelectedSection(Math.max(0, selectedSection - 1))}
-                  disabled={selectedSection === 0}
-                  style={{opacity: selectedSection === 0 ? 0.5 : 1}}
-                >
-                  ◀ Rubrique précédente
-                </button>
+              <div className="study-content">
+                <p style={{
+                  lineHeight: "1.8", 
+                  color: "#0f2d3a", 
+                  fontSize: "17px",
+                  marginBottom: "28px",
+                  textAlign: "justify"
+                }}>
+                  {STUDY_SECTIONS[selectedSection]?.content || "Contenu de l'étude à venir..."}
+                </p>
                 
-                <div style={{textAlign: "center"}}>
-                  <span style={{color: "#0ea5b3", fontSize: "18px", fontWeight: "700"}}>
-                    {selectedSection + 1} / 29
-                  </span>
-                  <br />
-                  <span style={{color: "#7895a2", fontSize: "12px"}}>
-                    Progression dans l'étude
-                  </span>
+                {/* Section d'interaction */}
+                <div style={{
+                  background: "rgba(14, 165, 179, 0.08)",
+                  border: "1px solid rgba(14, 165, 179, 0.2)",
+                  borderRadius: "18px",
+                  padding: "24px",
+                  marginTop: "24px"
+                }}>
+                  <h4 style={{color: "#0ea5b3", margin: "0 0 18px 0", fontSize: "18px", fontWeight: "600"}}>
+                    💡 Questions de réflexion pour cette rubrique
+                  </h4>
+                  <ul style={{margin: "0", paddingLeft: "28px", color: "#5a7381", lineHeight: "1.7"}}>
+                    <li style={{marginBottom: "10px"}}>Comment ce passage s'applique-t-il à ma vie personnelle ?</li>
+                    <li style={{marginBottom: "10px"}}>Quel enseignement principal puis-je retenir de cette étude ?</li>
+                    <li style={{marginBottom: "10px"}}>Comment puis-je mettre en pratique cette vérité biblique au quotidien ?</li>
+                    <li>Quelle prière puis-je formuler à partir de cette méditation ?</li>
+                  </ul>
                 </div>
-                
-                <button 
-                  className="btn btn-outline"
-                  onClick={() => setSelectedSection(Math.min(28, selectedSection + 1))}
-                  disabled={selectedSection === 28}
-                  style={{opacity: selectedSection === 28 ? 0.5 : 1}}
-                >
-                  Rubrique suivante ▶
-                </button>
+
+                {/* Navigation entre rubriques */}
+                <div style={{
+                  display: "flex", 
+                  justifyContent: "space-between", 
+                  alignItems: "center",
+                  marginTop: "32px",
+                  paddingTop: "24px",
+                  borderTop: "2px solid rgba(14, 165, 179, 0.15)"
+                }}>
+                  <button 
+                    className="btn btn-outline"
+                    onClick={() => setSelectedSection(Math.max(0, selectedSection - 1))}
+                    disabled={selectedSection === 0}
+                    style={{opacity: selectedSection === 0 ? 0.5 : 1}}
+                  >
+                    ◀ Rubrique précédente
+                  </button>
+                  
+                  <div style={{textAlign: "center"}}>
+                    <span style={{color: "#0ea5b3", fontSize: "20px", fontWeight: "700"}}>
+                      {selectedSection + 1} / 29
+                    </span>
+                    <br />
+                    <span style={{color: "#7895a2", fontSize: "13px"}}>
+                      Progression dans l'étude
+                    </span>
+                  </div>
+                  
+                  <button 
+                    className="btn btn-outline"
+                    onClick={() => setSelectedSection(Math.min(28, selectedSection + 1))}
+                    disabled={selectedSection === 28}
+                    style={{opacity: selectedSection === 28 ? 0.5 : 1}}
+                  >
+                    Rubrique suivante ▶
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
           </div>
 
           {resultVisible && (
