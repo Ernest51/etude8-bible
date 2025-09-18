@@ -495,6 +495,69 @@ export default function App() {
   async function handleVersetsClick() {
     setActiveId(0);
     console.log('Versets button clicked - activeId set to 0');
+    
+    // Vérifier que livre et chapitre sont sélectionnés
+    if (book === "vide" || chapter === "vide") {
+      setContent("⚠️ Veuillez d'abord sélectionner un livre et un chapitre pour générer l'étude verset par verset.");
+      return;
+    }
+    
+    // Générer automatiquement l'étude verset par verset
+    await generateVerseByVerse();
+  }
+
+  async function generateVerseByVerse() {
+    setProgress(5); await wait(200);
+    setProgress(25); await wait(250);
+    
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+      const passageForApi = book + " " + chapter + ":1 " + version;
+      
+      console.log('Generating verse by verse for:', passageForApi);
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      
+      const response = await fetch(`${backendUrl}/api/generate-verse-by-verse`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          passage: passageForApi,
+          version: version
+        }),
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      setProgress(60); await wait(350);
+      
+      if (response.ok) {
+        const data = await response.json();
+        setProgress(100);
+        setContent(data.content || "Étude verset par verset générée avec succès");
+        
+        // Marquer la rubrique 0 comme complétée (LED verte)
+        setRubriquesStatus(prev => ({
+          ...prev,
+          0: 'completed'
+        }));
+        
+        console.log('Verse by verse generation successful');
+      } else {
+        throw new Error(`Erreur ${response.status}: ${await response.text()}`);
+      }
+    } catch (error) {
+      console.error('Verse by verse generation error:', error);
+      setProgress(100);
+      setContent(
+        "🙏 Étude Verset par Verset - " + book + " " + chapter + 
+        "\n\nGénération en cours via API Bible Derby..." +
+        "\n\n[Note: Erreur temporaire - " + error.message + "]"
+      );
+    }
   }
 
   return (
