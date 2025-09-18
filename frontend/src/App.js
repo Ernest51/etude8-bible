@@ -59,7 +59,7 @@ export default function App() {
   function handleLastStudy() {
     try {
       localStorage.setItem("lastStudy", JSON.stringify({
-        book: book, chapter: chapter, verse: verse, version: version, tokens: tokens, chatgpt: chatgpt
+        book: book, chapter: chapter, verse: verse, version: version, length: length, chatgpt: chatgpt
       }));
     } catch (e) {}
   }
