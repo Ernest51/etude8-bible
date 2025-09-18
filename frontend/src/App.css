@@ -305,6 +305,19 @@ body {
   box-shadow: 0 0 25px rgba(245, 158, 11, 0.6), var(--shadow-xl);
 }
 
+.pill-btn.special {
+  background: linear-gradient(135deg, var(--success-color), #34d399);
+  color: white;
+  border-color: var(--success-color);
+  font-weight: 700;
+}
+
+.pill-btn.special:hover {
+  background: linear-gradient(135deg, #34d399, var(--success-color));
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.5), var(--shadow-lg);
+  transform: translateY(-3px);
+}
+
 .pill {
   position: relative;
   display: inline-flex;
