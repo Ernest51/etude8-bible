@@ -11,26 +11,11 @@
   ],
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
-    },
-    {
       "src": "/(.*)",
       "dest": "/frontend/$1"
     }
   ],
-<<<<<<< HEAD
   "installCommand": "cd frontend && yarn install",
   "buildCommand": "cd frontend && yarn build",
-  "outputDirectory": "frontend/build",
-  "functions": {
-    "backend/server.py": {
-      "runtime": "python3.9"
-    }
-  }
-=======
-  "installCommand": "cd frontend && npm install",
-  "buildCommand": "cd frontend && npm run build",
   "outputDirectory": "frontend/build"
->>>>>>> ed4327de77fff5ce14e6c50845888dcf08aedae5
 }
