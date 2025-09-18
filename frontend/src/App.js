@@ -60,6 +60,7 @@ export default function App() {
   const [search, setSearch] = React.useState("");
   const [activeId, setActiveId] = React.useState(0);
   const [content, setContent] = React.useState("");
+  const [pageBackground, setPageBackground] = React.useState("#f7fbfb");
 
   var passageLabel = book + " " + chapter + ":" + verse + " " + version;
 
