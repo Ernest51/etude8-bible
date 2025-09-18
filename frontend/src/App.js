@@ -253,12 +253,17 @@ export default function App() {
         setProgress(100);
         setContent(data.content || "Méditation générée avec succès");
         
-        // Sauvegarder automatiquement la dernière étude
-        try {
-          localStorage.setItem("lastStudy", JSON.stringify({
-            book: book, chapter: chapter, verse: verse, version: version, length: length, chatgpt: chatgpt
-          }));
-        } catch (e) {}
+        // Sauvegarder automatiquement la dernière étude (sauf si c'est un reset)
+        if (!isResetting) {
+          try {
+            localStorage.setItem("lastStudy", JSON.stringify({
+              book: book, chapter: chapter, verse: verse, version: version, length: length, chatgpt: chatgpt
+            }));
+          } catch (e) {}
+        } else {
+          // Reset terminé, on peut sauvegarder les prochaines études
+          setIsResetting(false);
+        }
       } else {
         const errorText = await response.text();
         console.error('Response error:', errorText);
