@@ -2029,37 +2029,38 @@ body{
   font-weight: 400;
 }
 
-.bible-reflection-section-right {
+.integrated-reflection-section {
   background: linear-gradient(135deg, rgba(14, 165, 179, 0.08) 0%, rgba(14, 165, 179, 0.04) 100%);
   border: 1px solid rgba(14, 165, 179, 0.2);
-  border-radius: 14px;
-  padding: 16px;
-  margin: 14px 0;
+  border-radius: 16px;
+  padding: 18px;
+  margin: 18px 0;
   box-shadow: 0 4px 12px rgba(14, 165, 179, 0.06);
 }
 
-.bible-reflection-section-right h4 {
+.integrated-reflection-section h4 {
   color: #0ea5b3;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
-  margin: 0 0 10px 0;
+  margin: 0 0 12px 0;
   text-shadow: 0 1px 2px rgba(14, 165, 179, 0.1);
+  text-align: center;
 }
 
-.bible-reflection-section-right ul {
+.integrated-reflection-section ul {
   margin: 0;
-  padding-left: 18px;
+  padding-left: 20px;
   color: #5a7381;
-  line-height: 1.5;
-  font-size: 12px;
+  line-height: 1.6;
+  font-size: 13px;
 }
 
-.bible-reflection-section-right li {
-  margin-bottom: 6px;
+.integrated-reflection-section li {
+  margin-bottom: 8px;
   position: relative;
 }
 
-.bible-reflection-section-right li::marker {
+.integrated-reflection-section li::marker {
   color: #0ea5b3;
 }
 
