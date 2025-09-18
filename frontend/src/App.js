@@ -75,6 +75,15 @@ export default function App() {
     
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:8001";
+      console.log('Backend URL:', backendUrl);
+      console.log('Making API call with payload:', {
+        passage: passageLabel,
+        version: version,
+        tokens: tokens,
+        model: chatgpt ? "gpt" : "claude",
+        requestedRubriques: [activeId]
+      });
+      
       const response = await fetch(`${backendUrl}/api/generate-study`, {
         method: 'POST',
         headers: {
@@ -91,21 +100,27 @@ export default function App() {
       
       setProgress(60); await wait(350);
       
+      console.log('Response status:', response.status);
+      
       if (response.ok) {
         const data = await response.json();
+        console.log('Response data:', data);
         setProgress(100);
         setContent(data.content || "Méditation générée avec succès");
       } else {
-        throw new Error('Erreur lors de la génération');
+        const errorText = await response.text();
+        console.error('Response error:', errorText);
+        throw new Error(`Erreur ${response.status}: ${errorText}`);
       }
     } catch (error) {
-      console.error('Erreur:', error);
+      console.error('Full error:', error);
       setProgress(100);
       setContent(
         "🙏 Méditation sur " + passageLabel +
         "\n\n- Dieu aime, Dieu donne, la foi reçoit." +
         "\n- La vie éternelle commence déjà par la communion avec le Fils." +
-        "\n\nPrière : Seigneur, apprends-moi à répondre à ton amour aujourd'hui. Amen."
+        "\n\nPrière : Seigneur, apprends-moi à répondre à ton amour aujourd'hui. Amen." +
+        "\n\n[Note: Contenu de fallback - Erreur: " + error.message + "]"
       );
     }
   }
