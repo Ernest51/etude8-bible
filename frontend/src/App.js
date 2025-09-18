@@ -47,7 +47,6 @@ const RUBRIQUES = [
 function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
 
 export default function App() {
-  // passage
   const [book, setBook] = React.useState("vide");
   const [chapter, setChapter] = React.useState("vide");
   const [verse, setVerse] = React.useState("vide");
@@ -55,89 +54,22 @@ export default function App() {
   const [length, setLength] = React.useState(500);
   const [chatgpt, setChatgpt] = React.useState(true);
 
-  // UI
   const [progress, setProgress] = React.useState(0);
   const [search, setSearch] = React.useState("");
   const [activeId, setActiveId] = React.useState(0);
   const [content, setContent] = React.useState("");
-  const [knobPosition, setKnobPosition] = React.useState(0);
-  const [isResetting, setIsResetting] = React.useState(false);
   const [rubriquesStatus, setRubriquesStatus] = React.useState({});
-  const [lastStudyLabel, setLastStudyLabel] = React.useState("Dernière étude");
-
-  React.useEffect(() => {
-    updateBackgroundColor(knobPosition);
-    updateLastStudyLabel();
-  }, []);
-
-  React.useEffect(() => {
-    updateBackgroundColor(knobPosition);
-  }, [knobPosition]);
-
-  function updateLastStudyLabel() {
-    try {
-      const stored = localStorage.getItem("lastStudy");
-      if (stored) {
-        const data = JSON.parse(stored);
-        const label = `${data.book || "Jean"} ${data.chapter || 3}`;
-        setLastStudyLabel(label);
-      } else {
-        setLastStudyLabel("Dernière étude");
-      }
-    } catch {
-      setLastStudyLabel("Dernière étude");
-    }
-  }
-
-  React.useEffect(() => {
-    if (book !== "vide" && chapter !== "vide") {
-      const newStatus = {};
-      for (let i = 0; i < RUBRIQUES.length; i++) newStatus[i] = 'ready';
-      setRubriquesStatus(newStatus);
-    } else {
-      setRubriquesStatus({});
-    }
-  }, [book, chapter]);
 
   var passageLabel = (book === "vide" || chapter === "vide" || verse === "vide") 
     ? "Sélectionnez un passage" 
     : book + " " + chapter + ":" + verse + " " + version;
-
-  function updateBackgroundColor(percentage) {
-    let newColor, gradientEnd, buttonColor, buttonColorHover, shadowColor;
-    if (percentage < 25) {
-      newColor = "#dbeafe"; gradientEnd = "#bfdbfe"; buttonColor = "#3b82f6"; buttonColorHover = "#2563eb"; shadowColor = "59, 130, 246";
-    } else if (percentage < 50) {
-      newColor = "#e9d5ff"; gradientEnd = "#ddd6fe"; buttonColor = "#8b5cf6"; buttonColorHover = "#7c3aed"; shadowColor = "139, 92, 246";
-    } else if (percentage < 75) {
-      newColor = "#fed7aa"; gradientEnd = "#fdba74"; buttonColor = "#f59e0b"; buttonColorHover = "#d97706"; shadowColor = "245, 158, 11";
-    } else {
-      newColor = "#bbf7d0"; gradientEnd = "#86efac"; buttonColor = "#10b981"; buttonColorHover = "#059669"; shadowColor = "16, 185, 129";
-    }
-    const pageWrap = document.querySelector('.page-wrap');
-    if (pageWrap) pageWrap.style.background = `linear-gradient(180deg, ${newColor} 0%, ${gradientEnd} 100%)`;
-    const root = document.documentElement;
-    root.style.setProperty('--dynamic-button-color', buttonColor);
-    root.style.setProperty('--dynamic-button-hover', buttonColorHover);
-    root.style.setProperty('--dynamic-shadow-color', shadowColor);
-  }
-
-  function handleBookChange(newBook) {
-    setBook(newBook);
-    if (newBook === "vide") setChapter("vide");
-    else {
-      const maxChapters = BOOK_CHAPTERS[newBook] || 150;
-      if (chapter === "vide" || chapter > maxChapters) setChapter(1);
-    }
-  }
 
   async function handleGenerate() {
     if (book === "vide" || chapter === "vide" || verse === "vide") {
       setContent("⚠️ Veuillez d'abord sélectionner un livre, un chapitre et un verset.");
       return;
     }
-    setProgress(5); await wait(200);
-    setProgress(25); await wait(250);
+    setProgress(10); await wait(200);
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
       const isVerseByVerse = activeId === 0;
@@ -157,7 +89,6 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      setProgress(60); await wait(350);
       if (response.ok) {
         const data = await response.json();
         setProgress(100);
@@ -170,9 +101,9 @@ export default function App() {
     }
   }
 
+  // ✅ MODIF SAFE : bouton Versets appelle handleGenerate avec activeId=0
   const handleVersetsClick = async () => {
     setActiveId(0);
-    await wait(300);
     await handleGenerate();
   };
 
@@ -191,6 +122,7 @@ export default function App() {
 
   return (
     <div className="page-wrap">
+      {/* CONTROLS */}
       <div className="controls-card">
         <div className="pills-row">
           <button 
@@ -202,13 +134,22 @@ export default function App() {
           <button className="pill-btn accent" onClick={handleGenerate}>Générer</button>
         </div>
       </div>
+
+      {/* MAIN */}
       <div className="two-cols">
         <aside className="left-card">
-          <RubriquesInline items={RUBRIQUES} activeId={activeId} onSelect={setActiveId} rubriquesStatus={rubriquesStatus}/>
+          <RubriquesInline 
+            items={RUBRIQUES} 
+            activeId={activeId} 
+            onSelect={setActiveId} 
+            rubriquesStatus={rubriquesStatus}
+          />
         </aside>
         <section className="right-card">
           <div className="section">
-            {content ? <div className="content-formatted">{formatContent(content)}</div> : <p>Sélectionnez une rubrique puis cliquez sur Générer.</p>}
+            {content 
+              ? <div className="content-formatted">{formatContent(content)}</div> 
+              : <p>Sélectionnez une rubrique puis cliquez sur Générer pour {passageLabel}</p>}
           </div>
         </section>
       </div>
