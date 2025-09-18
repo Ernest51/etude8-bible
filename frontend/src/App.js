@@ -259,20 +259,39 @@ export default function App() {
 
 function ColorPalette(props) {
   var backgroundColor = props.backgroundColor, onChange = props.onChange;
-  var colors = ["#f7fbfb", "#fff7ed", "#fef7ff", "#f0fdf4", "#ecfdf5", "#f0f9ff", "#fefce8", "#fdf2f8"];
+  var colors = [
+    "#f7fbfb", // Bleu très clair (défaut)
+    "#fff7ed", // Orange clair
+    "#fef7ff", // Rose clair
+    "#f0fdf4", // Vert clair
+    "#fdf2f8", // Rose plus foncé
+    "#f0f9ff", // Bleu clair
+    "#fefce8", // Jaune clair
+    "#f3e8ff"  // Violet clair
+  ];
+  
+  function handleColorClick(color) {
+    console.log('Color clicked:', color);
+    onChange(color);
+  }
   
   return (
     <div className="pill">
       <span className="pill-label">Palette</span>
       <div className="color-options">
-        {colors.map(function(color) {
+        {colors.map(function(color, index) {
+          var isActive = backgroundColor === color;
           return (
             <button
               key={color}
-              className={"color-dot " + (backgroundColor === color ? "active" : "")}
-              style={{backgroundColor: color}}
-              onClick={function(){ onChange(color); }}
+              className={"color-dot " + (isActive ? "active" : "")}
+              style={{
+                backgroundColor: color,
+                border: isActive ? "3px solid #3b82f6" : "2px solid #e5e7eb"
+              }}
+              onClick={function(){ handleColorClick(color); }}
               type="button"
+              title={`Couleur ${index + 1}`}
             />
           );
         })}
