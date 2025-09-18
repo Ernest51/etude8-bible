@@ -1951,28 +1951,32 @@ body{
 
 /* Colonne de droite - Bienvenue + Contenu détaillé */
 .welcome-bible-section-right {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(14, 165, 179, 0.1);
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 20px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 252, 253, 0.9) 100%);
+  border: 1px solid rgba(14, 165, 179, 0.15);
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 16px;
   text-align: center;
+  box-shadow: 0 6px 20px rgba(14, 165, 179, 0.08);
+  backdrop-filter: blur(10px);
 }
 
 .welcome-bible-title-right {
   font-family: "Playfair Display", serif;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 600;
   color: #0ea5b3;
-  margin: 0 0 16px 0;
+  margin: 0 0 12px 0;
   line-height: 1.2;
+  text-shadow: 0 2px 4px rgba(14, 165, 179, 0.1);
 }
 
 .welcome-bible-text-right {
-  font-size: 14px;
+  font-size: 13px;
   color: #5a7381;
-  line-height: 1.5;
+  line-height: 1.6;
   margin: 0;
+  font-weight: 400;
 }
 
 .detailed-bible-content-right {
