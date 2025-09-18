@@ -72,19 +72,6 @@ body{margin:0; color:#0f2d33; font-family:Inter,Segoe UI,Roboto,Helvetica,Arial}
 .sw-on{background:#34d399 !important; border-color:#34d399}
 .sw-on .dot{transform:translateX(26px)}
 
-/* Color palette styles */
-.color-options{display:flex; gap:6px; align-items:center; padding:2px}
-.color-dot{
-  width:28px; height:28px; border-radius:50%; cursor:pointer; 
-  transition:all 0.2s ease; outline:none; position:relative;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.color-dot:hover{transform:scale(1.15); box-shadow: 0 4px 8px rgba(0,0,0,0.2)}
-.color-dot.active{
-  transform:scale(1.1); 
-  box-shadow: 0 0 0 3px rgba(59,130,246,0.3), 0 4px 8px rgba(0,0,0,0.2);
-}
-
 /* ---------- Two columns ---------- */
 .two-cols{
   display:grid; grid-template-columns: 1fr; gap:16px;
