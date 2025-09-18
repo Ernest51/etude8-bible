@@ -1,0 +1,14 @@
+{
+  "name": "etude8-bible",
+  "version": "1.0.0",
+  "description": "Application d'étude biblique avec interface 3 colonnes et 29 rubriques théologiques",
+  "main": "index.js",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd frontend && npm start",
+    "install": "cd frontend && npm install"
+  },
+  "keywords": ["bible", "study", "meditation", "theology"],
+  "author": "Ernest51",
+  "license": "MIT"
+}
