@@ -518,8 +518,9 @@ function App() {
             </div>
           </div>
 
-          {/* Contenu détaillé de la rubrique sélectionnée - EN DESSOUS des Rubriques (29) */}
-          <div className="card section" style={{marginTop: "20px", width: "100%"}}>
+          {/* SECTION COMPLÈTEMENT SÉPARÉE - EN DESSOUS de la grille */}
+          <div style={{width: "100%", marginTop: "24px"}}>
+            <div className="card section" style={{width: "100%"}}>
             <h3 style={{color: "#0ea5b3", marginBottom: "16px"}}>
               📚 Étude détaillée : {STUDY_SECTIONS[selectedSection]?.title}
             </h3>
