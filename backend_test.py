@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Backend API Testing Suite for Bible Study Application - Versets Functionality
-Tests the POST /api/generate-verse-by-verse endpoint and related functionality
+Tests the POST /api/generate-verse-by-verse endpoint specifically
 """
 
 import requests
@@ -11,7 +11,7 @@ import sys
 from datetime import datetime
 
 # Configuration - Use the public URL from frontend .env
-BACKEND_URL = "http://localhost:8001/api"
+BACKEND_URL = "http://localhost:8001"
 TIMEOUT = 30
 
 def log_test(test_name, status, details=""):
