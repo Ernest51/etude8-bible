@@ -272,9 +272,6 @@ export default function App() {
             ✨ MEDITATION BIBLIQUE ✨ ÉTUDE SPIRITUELLE ✨ SAGESSE DIVINE ✨ MÉDITATION THÉOLOGIQUE ✨ CONTEMPLATION SACRÉE ✨ RÉFLEXION INSPIRÉE ✨
           </div>
         </div>
-        <div className="header-subtitle">
-          🙏 Espace d'étude biblique moderne et responsive
-        </div>
       </div>
 
       {/* Bandeau haut (bulle %, barre gradient, points) */}
