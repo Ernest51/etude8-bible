@@ -1,34 +1,112 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+/* ---------- Base ---------- */
+:root{
+  --accent:#10b981; /* emerald */
+  --blue:#3b82f6;
+  --purple:#a855f7;
+  --orange:#f97316;
+  --muted:#7b8a90;
+  --bg:#f7fbfb;
+  --card:#ffffff;
+  --ring:#dbeafe;
+  --border:#e6eef0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+*{box-sizing:border-box}
+html,body,#root{height:100%}
+body{margin:0; color:#0f2d33; font-family:Inter,Segoe UI,Roboto,Helvetica,Arial}
+
+/* ---------- Top band ---------- */
+.topband{display:flex; flex-direction:column; align-items:center; gap:18px; padding:28px 12px 10px; background:linear-gradient(180deg, #fff 0%, #f4fbff 100%)}
+.progress-bubble{
+  width:76px;height:76px;border-radius:999px;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 35% 35%, #f0fbff 0, #fff 70%); border:6px solid #eaf6ff;
+  color:#0b7392; font-weight:700;
+}
+.progress-card{width:min(920px, calc(100% - 32px)); border-radius:18px; background:#fff; box-shadow:0 10px 30px rgba(0,0,0,.04); padding:18px}
+.progress-gradient{
+  height:18px;border-radius:999px;position:relative;overflow:hidden;
+  background:linear-gradient(90deg, var(--blue) 0%, var(--purple) 35%, var(--orange) 70%, var(--accent) 100%);
+}
+.progress-knob{
+  position:absolute; top:-6px; left:24px; width:30px; height:30px; border-radius:999px; background:#fff; border:4px solid #61dafb;
+  box-shadow:0 4px 18px rgba(0,0,0,.12);
+}
+.progress-dots{display:flex; justify-content:space-between; margin-top:8px; padding:0 8px}
+.progress-dots span{width:8px;height:8px;border-radius:999px;background:#1f2937}
+
+/* ---------- Controls card ---------- */
+.controls-card{
+  margin:14px auto 18px; width:min(1220px, calc(100% - 32px));
+  background:#fff; border:1px solid var(--border); border-radius:18px; padding:16px; box-shadow:0 10px 30px rgba(0,0,0,.04);
+}
+.search-row{display:flex; gap:12px; align-items:center; margin-bottom:12px}
+.pill-input{
+  flex:1; height:48px; border-radius:14px; border:1px solid var(--ring); padding:0 14px; font-size:15px; outline:none;
+}
+.pills-row{display:flex; flex-wrap:wrap; gap:12px}
+.pill{
+  position:relative; display:flex; align-items:center; gap:10px; height:48px; padding:0 14px; border:1px solid var(--ring);
+  border-radius:14px; background:#f8fbff;
+}
+.pill-label{font-size:12px; color:#6b7280}
+.pill-select{
+  appearance:none; border:0; background:transparent; outline:none; font-size:15px; padding-right:24px; min-width:110px;
+}
+.chev{position:absolute; right:12px; pointer-events:none; color:#64748b}
+
+.pill-btn{
+  height:48px; padding:0 16px; border-radius:14px; border:1px solid var(--ring); background:#f8fbff; cursor:pointer;
+}
+.pill-btn:hover{background:#f1f7ff}
+.pill-btn.primary{background:#0ea5e9; border-color:#0ea5e9; color:#fff}
+.pill-btn.accent{background:#f59e0b; border-color:#f59e0b; color:#fff}
+
+.pill.toggle{cursor:pointer}
+.switch{
+  width:54px;height:28px;border-radius:999px;background:#e5e7eb; position:relative; border:1px solid #e5e7eb;
+}
+.switch .dot{
+  position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:999px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.12);
+  transition:transform .18s ease;
+}
+.sw-on{background:#34d399 !important; border-color:#34d399}
+.sw-on .dot{transform:translateX(26px)}
+
+/* ---------- Two columns ---------- */
+.two-cols{
+  display:grid; grid-template-columns: 1fr; gap:16px;
+  width:min(1220px, calc(100% - 32px)); margin:0 auto 36px;
+}
+@media (min-width: 1100px){
+  .two-cols{ grid-template-columns: 320px 1fr; }
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+/* ---------- Left card ---------- */
+.left-card{
+  background:#fff; border:1px solid var(--border); border-radius:18px; box-shadow:0 10px 30px rgba(0,0,0,.04);
+  padding:12px; position:sticky; top:180px; height:fit-content;
 }
+.left-header{font-weight:700; color:#0b7392; text-align:center; margin-bottom:8px}
+.rubriques{display:block}
+.rubriques-scroll{max-height:calc(100vh - 220px); overflow:auto; padding:6px}
+.rubrique{
+  width:100%; display:flex; align-items:flex-start; gap:12px; border:1px solid var(--border);
+  background:#fff; border-radius:12px; padding:10px 12px; margin-bottom:10px; cursor:pointer; text-align:left; position:relative;
+}
+.rubrique:hover{background:#f8fbff}
+.rubrique.active{background:#ecfdf5; border-color:#a7f3d0}
+.idx{
+  width:36px;height:36px;border-radius:10px; display:inline-flex; align-items:center;justify-content:center; font-weight:700; color:#0ea5a4;
+  background:linear-gradient(180deg,#e6fbfa,#ffffff); border:1px solid #e2ecee; flex:none;
+}
+.r-texts{min-width:0; display:flex; flex-direction:column}
+.r-title{font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.r-sub{font-size:12px; color:var(--muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.status-dot{position:absolute; right:10px; top:50%; transform:translateY(-50%); width:10px; height:10px; border-radius:999px; background:#f59e0b}
 
-.App-link {
-    color: #61dafb;
+/* ---------- Right card ---------- */
+.right-card{
+  background:#fff; border:1px solid var(--border); border-radius:18px; box-shadow:0 10px 30px rgba(0,0,0,.04);
+  padding:14px 14px 22px;
 }
-
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
+.right-head{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; border-radius:12px; background:#f5fbff; border:1px solid var(-
