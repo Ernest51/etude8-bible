@@ -311,6 +311,45 @@ function App() {
 
       {/* Main container */}
       <div className="main-app-container">
+        {/* Header principal */}
+        <header className="sticky top-0 z-10 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b">
+          <div className="mx-auto max-w-7xl px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <nav className="text-sm text-gray-500">
+                  <span className="hover:underline cursor-pointer">Accueil</span>
+                  <span className="mx-2">→</span>
+                  <span className="text-gray-700">Méditation</span>
+                </nav>
+                <h1 className="text-4xl font-serif mt-1">Méditation</h1>
+              </div>
+              <div className="hidden sm:flex items-center gap-2">
+                <Badge color="emerald">{status === "generating" ? "En cours" : "Prêt"}</Badge>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Étapes */}
+        <ol className="flex items-center gap-6 text-sm mb-4">
+          <Step n={1} label="Passage" active/>
+          <Step n={2} label="Génération" active={status !== "idle"}/>
+          <Step n={3} label="Méditation" active={status === "done"}/>
+        </ol>
+
+        {/* Barre de progression gradient + jalons */}
+        <div className="mt-4 rounded-xl border p-4 mb-6">
+          <div className="h-3 rounded-full" style={{
+            background: "linear-gradient(90deg, #3b82f6 0%, #a855f7 35%, #f97316 70%, #22c55e 100%)"
+          }}>
+            <div className="h-3 bg-white/70 rounded-full" style={{ width: `${Math.max(0, 100 - progress)}%` }} />
+          </div>
+          <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
+            {[0,10,20,30,40,50,60,70,80,90,100].map((p)=> (
+              <span key={p}>•</span>
+            ))}
+          </div>
+        </div>
         {/* 2. Titre "Méditation" */}
         <div className="meditation-title-section">
           <h1>Méditation</h1>
