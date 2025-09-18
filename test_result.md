@@ -165,12 +165,15 @@ backend:
 frontend:
   - task: "Intégration nouveau code de méditation"
     implemented: true
-    working: true
+    working: false
     file: "frontend/src/App.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
+      - working: false
+        agent: "testing"
+        comment: "CRITICAL ISSUE IDENTIFIED: The 'Versets' button onClick handler (handleVersetsClick) is correctly implemented and functional - confirmed by successful alert when using force click. However, the button is unusable due to CSS animation interference. The continuous pulse animation (animation: pulse 2s infinite) on .pill-btn.special.active makes the button 'not stable', preventing normal clicks from registering. This affects both automated testing and real user interactions. The button shows 'element is not stable' error when attempting normal clicks."
       - working: true
         agent: "main"
         comment: "Successfully integrated the new meditation code after the rainbow color palette. Added header with navigation, steps progression, passage controls, action buttons, search, and 29 rubriques interface with scrollable sidebar and content area."
