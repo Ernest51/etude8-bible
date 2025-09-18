@@ -769,41 +769,76 @@ body{
 
 .current-study-header {
   font-family: "Playfair Display", serif;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 600;
   color: #0ea5b3;
-  margin: 0 0 24px 0;
+  margin: 0 0 20px 0;
   line-height: 1.3;
+  text-align: center;
+  padding: 0 10px;
 }
 
 .study-panel-navigation {
   display: flex;
-  gap: 16px;
+  gap: 12px;
+  flex-direction: column;
+  width: 100%;
 }
 
 .study-nav-prev, .study-nav-next {
-  height: 48px;
-  padding: 0 20px;
+  height: 44px;
+  padding: 0 16px;
   border-radius: 12px;
   border: 2px solid #0ea5b3;
-  background: rgba(14, 165, 179, 0.1);
+  background: linear-gradient(135deg, rgba(14, 165, 179, 0.1) 0%, rgba(14, 165, 179, 0.05) 100%);
   color: #0ea5b3;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(14, 165, 179, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.study-nav-prev::before, .study-nav-next::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s;
+}
+
+.study-nav-prev:hover::before, .study-nav-next:hover::before {
+  left: 100%;
 }
 
 .study-nav-prev:hover:not(:disabled), 
 .study-nav-next:hover:not(:disabled) {
-  background: #0ea5b3;
+  background: linear-gradient(135deg, #0ea5b3 0%, #14b8a6 100%);
   color: white;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(14, 165, 179, 0.3);
+}
+
+.study-nav-prev:active:not(:disabled), 
+.study-nav-next:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(14, 165, 179, 0.3);
 }
 
 .study-nav-prev:disabled, 
 .study-nav-next:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 6px rgba(14, 165, 179, 0.1);
 }
 
 /* Section Rubriques (29) à gauche */
