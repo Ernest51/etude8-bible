@@ -534,6 +534,9 @@ export default function App() {
         chatgpt: true
       }));
       console.log('Genèse 1:1 saved to localStorage as lastStudy');
+      
+      // Mettre à jour le label du bouton immédiatement
+      updateLastStudyLabel();
     } catch (e) {
       console.error('Error saving to localStorage:', e);
     }
