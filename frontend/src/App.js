@@ -204,9 +204,6 @@ export default function App() {
           <div className="progress-gradient">
             <div className="progress-knob" />
           </div>
-          <div className="progress-dots">
-            {Array(12).fill(0).map(function(_, i){ return <span key={i} />; })}
-          </div>
         </div>
       </div>
 
