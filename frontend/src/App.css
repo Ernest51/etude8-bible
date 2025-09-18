@@ -9,6 +9,7 @@
   --card:#ffffff;
   --ring:#dbeafe;
   --border:#e6eef0;
+  --page-background: linear-gradient(180deg,#f7fbfb 0%, #ecfdf5 100%);
 }
 
 *{box-sizing:border-box}
