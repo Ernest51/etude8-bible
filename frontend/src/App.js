@@ -503,6 +503,21 @@ export default function App() {
     setChapter(1);
     setVerse(1);
     
+    // Sauvegarder immédiatement dans localStorage pour "Dernière étude"
+    try {
+      localStorage.setItem("lastStudy", JSON.stringify({
+        book: "Genèse", 
+        chapter: 1, 
+        verse: 1, 
+        version: "LSG", 
+        length: 500, 
+        chatgpt: true
+      }));
+      console.log('Genèse 1:1 saved to localStorage as lastStudy');
+    } catch (e) {
+      console.error('Error saving to localStorage:', e);
+    }
+    
     // Petit délai pour que les états se mettent à jour
     await wait(1000);
     
