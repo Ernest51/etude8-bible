@@ -177,7 +177,7 @@ export default function App() {
           <NumberPill label="Chapitre" value={chapter} onChange={setChapter} min={1} max={150} />
           <NumberPill label="Verset" value={verse} onChange={setVerse} min={1} max={176} />
           <SelectPill label="Version" value={version} onChange={setVersion} options={["LSG","NEG79","BDS"]} />
-          <NumberPill label="Tokens" value={tokens} onChange={setTokens} min={128} max={2048} step={64} />
+          <SelectPill label="Longueur" value={length} onChange={setLength} options={[500,1500,2500]} />
           <TogglePill label="ChatGPT" enabled={chatgpt} onToggle={function(){ setChatgpt(!chatgpt); }} />
           <button className="pill-btn" onClick={handleLastStudy}>Dernière étude</button>
           <button className="pill-btn" onClick={handleReset}>Reset</button>
