@@ -132,4 +132,4 @@ body{margin:0; color:#0f2d33; font-family:Inter,Segoe UI,Roboto,Helvetica,Arial}
 .content-pre{white-space:pre-wrap; margin:0; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; background:#f8fafc; border:1px solid #eef2f7; padding:12px; border-radius:10px}
 .muted{color:var(--muted); font-style:italic}
 
-.page-wrap{min-height:100vh;}
+.page-wrap{min-height:100vh; background:linear-gradient(180deg,#f7fbfb 0%, #ecfdf5 100%)}
