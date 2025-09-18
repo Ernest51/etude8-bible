@@ -347,6 +347,7 @@ export default function App() {
     setActiveId(0);       // Première rubrique (Étude verset par verset)
     setContent("");       // Contenu vide
     setKnobPosition(0);   // Palette de couleur au début
+    setRubriquesStatus({}); // Reset des LEDs
     
     // Remettre le fond à la couleur par défaut (bleu)
     updateBackgroundColor(0);
