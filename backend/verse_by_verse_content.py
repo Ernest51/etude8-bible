@@ -6,13 +6,13 @@ VERSE_BY_VERSE_LIBRARY = {
         1: {
             1: {
                 "verse": "Au commencement, Dieu créa les cieux et la terre.",
-                "explanation": """**"Au commencement"** (*Bereshit*) ouvre la révélation divine par l'affirmation de l'origine absolue. Le terme hébraïque implique un commencement temporel de l'univers matériel, réfutant l'éternité de la matière.
+                "explanation": """Au commencement (Bereshit) ouvre la révélation divine par l'affirmation de l'origine absolue. Le terme hébraïque implique un commencement temporel de l'univers matériel, réfutant l'éternité de la matière.
 
-**"Dieu"** (*Elohim*) - forme plurielle indiquant la majesté divine et suggérant la Trinité. Ce pluriel d'excellence révèle la plénitude de la divinité engagée dans l'acte créateur.
+Dieu (Elohim) - forme plurielle indiquant la majesté divine et suggérant la Trinité. Ce pluriel d'excellence révèle la plénitude de la divinité engagée dans l'acte créateur.
 
-**"Créa"** (*bara*) - verbe exclusivement divin signifiant création ex nihilo. Contrairement à *yatsar* (façonner) ou *asah* (faire), *bara* indique une création absolue, du néant vers l'existence.
+Créa (bara) - verbe exclusivement divin signifiant création ex nihilo. Contrairement à yatsar (façonner) ou asah (faire), bara indique une création absolue, du néant vers l'existence.
 
-**"Les cieux et la terre"** - expression hébraïque désignant la totalité de l'univers. Cette **merisme** englobe tout l'ordre cosmique visible et invisible."""
+Les cieux et la terre - expression hébraïque désignant la totalité de l'univers. Cette merisme englobe tout l'ordre cosmique visible et invisible."""
             },
             2: {
                 "verse": "La terre était informe et vide : il y avait des ténèbres à la surface de l'abîme, et l'esprit de Dieu se mouvait au-dessus des eaux.",
