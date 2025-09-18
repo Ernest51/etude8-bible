@@ -736,7 +736,11 @@ Soli Deo Gloria - Étude conforme à la sainte doctrine
           <button className="pill-btn reset" onClick={handleReset}>🔄 Reset</button>
           <button 
             className={`pill-btn special ${activeId === 0 ? 'active' : ''}`} 
-            onClick={handleVersetsClick}
+            onClick={() => {
+              console.log('INLINE ONCLICK WORKS!');
+              alert('BOUTON VERSETS CLIQUÉ!');
+              handleVersetsClick();
+            }}
           >
             📖 Versets
           </button>
