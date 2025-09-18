@@ -497,10 +497,14 @@ export default function App() {
     setActiveId(0);
     console.log('Versets button clicked - activeId set to 0');
     
-    // Vérifier que livre et chapitre sont sélectionnés
+    // Pour le test, forcer Genèse 1 si les champs sont vides
     if (book === "vide" || chapter === "vide") {
-      setContent("⚠️ Veuillez d'abord sélectionner un livre et un chapitre pour générer l'étude verset par verset.");
-      return;
+      setBook("Genèse");
+      setChapter(1);
+      setVerse(1);
+      
+      // Petit délai pour que les états se mettent à jour
+      await wait(500);
     }
     
     // Générer automatiquement l'étude verset par verset
