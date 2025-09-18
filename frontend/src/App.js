@@ -276,12 +276,6 @@ export default function App() {
   async function handleVersetsClick() {
     setActiveId(0);
     console.log('Versets button clicked - activeId set to 0');
-    
-    // Attendre un peu pour que l'état se mette à jour
-    await wait(100);
-    
-    // Générer automatiquement l'étude verset par verset
-    handleGenerate();
   }
 
   return (
