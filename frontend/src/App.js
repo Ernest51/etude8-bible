@@ -61,6 +61,7 @@ export default function App() {
   const [activeId, setActiveId] = React.useState(0);
   const [content, setContent] = React.useState("");
   const [knobPosition, setKnobPosition] = React.useState(0); // Position du bouton sur la palette (0-100%)
+  const [isResetting, setIsResetting] = React.useState(false); // Flag pour éviter la sauvegarde lors du reset
 
   var passageLabel = book + " " + chapter + ":" + verse + " " + version;
 
