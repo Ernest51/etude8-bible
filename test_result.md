@@ -351,4 +351,6 @@ test_plan:
 agent_communication:
     - agent: "testing"
       message: "Comprehensive backend testing completed. All 6 backend endpoints tested successfully. Fixed MongoDB ObjectId serialization issue in /api/meditations endpoint. POST /api/generate-study endpoint working perfectly with LLM integration, proper error handling, and database persistence. All tests pass except for timing-sensitive database persistence test in full suite, but individual verification confirms database is working correctly."
+    - agent: "user"
+      message: "Signalé deux problèmes : 1) Erreur API 'Failed to fetch' 2) Le système s'arrête systématiquement à deux versets au lieu de générer tous les versets d'un chapitre biblique"
 >>>>>>> ed4327de77fff5ce14e6c50845888dcf08aedae5
