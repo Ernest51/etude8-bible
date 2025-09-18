@@ -234,7 +234,7 @@ export default function App() {
         </div>
 
         <div className="pills-row">
-          <SelectPill label="Livre" value={book} onChange={setBook} options={BOOKS} />
+          <SelectPill label="Livre" value={book} onChange={handleBookChange} options={BOOKS} />
           <NumberPill label="Chapitre" value={chapter} onChange={setChapter} min={1} max={BOOK_CHAPTERS[book] || 150} />
           <NumberPill label="Verset" value={verse} onChange={setVerse} min={1} max={176} />
           <SelectPill label="Version" value={version} onChange={setVersion} options={["LSG","NEG79","BDS"]} />
