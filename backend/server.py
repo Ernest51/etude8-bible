@@ -164,43 +164,38 @@ async def generate_verse_by_verse(request: VerseByVerseRequest):
             }
         
         # Construire l'étude verset par verset
-        content = f"""# 📖 Étude Verset par Verset - {book} Chapitre {chapter}
+        content = f"""Étude Verset par Verset - {book} Chapitre {chapter}
 
-## 🎯 Introduction au Chapitre
+Introduction au Chapitre
 
-Cette étude examine chaque verset de **{book} {chapter}** selon les principes de l'**exégèse grammatico-historique** et de l'**herméneutique orthodoxe**. Chaque verset révèle les richesses de la **révélation divine** dans son contexte canonique.
-
----
+Cette étude examine chaque verset de {book} {chapter} selon les principes de l'exégèse grammatico-historique et de l'herméneutique orthodoxe. Chaque verset révèle les richesses de la révélation divine dans son contexte canonique.
 
 """
         
         # Ajouter chaque verset avec son explication
         for i, verse_data in enumerate(verses_content, 1):
-            content += f"""## 📝 Verset {verse_data['verse_number']}
+            content += f"""Verset {verse_data['verse_number']}
 
-### **Texte Biblique :**
-*"{verse_data['verse_text']}"*
+Texte Biblique :
+"{verse_data['verse_text']}"
 
-### **💡 Explication Théologique :**
+Explication Théologique :
 
 {verse_data['explanation']}
 
----
-
 """
         
-        content += f"""## 🙏 Synthèse Spirituelle
+        content += f"""Synthèse Spirituelle
 
-Cette étude verset par verset de **{book} {chapter}** révèle la cohérence parfaite de la **Parole de Dieu**. Chaque verset s'harmonise dans l'**analogie de la foi** et contribue à l'édification spirituelle des croyants.
+Cette étude verset par verset de {book} {chapter} révèle the cohérence parfaite de la Parole de Dieu. Chaque verset s'harmonise dans l'analogie de la foi et contribue à l'édification spirituelle des croyants.
 
-Que l'**Esprit Saint** illumine notre compréhension et transforme nos cœurs par la méditation de ces **saintes Écritures**.
+Que l'Esprit Saint illumine notre compréhension et transforme nos cœurs par la méditation de ces saintes Écritures.
 
-## 📚 Principe Herméneutique
+Principe Herméneutique
 
-*Cette étude respecte l'**inspiration plénière** des Écritures et leur **autorité absolue** en matière de foi et de conduite.*
+Cette étude respecte l'inspiration plénière des Écritures et leur autorité absolue en matière de foi et de conduite.
 
----
-**Soli Deo Gloria** - *Étude conforme à la saine doctrine réformée*"""
+Soli Deo Gloria - Étude conforme à la saine doctrine réformée"""
 
         return {"content": content}
         
