@@ -26,23 +26,23 @@ L'Esprit de Dieu se mouvait (ruach Elohim merachephet) - le Saint-Esprit couvait
             },
             3: {
                 "verse": "Dieu dit: Que la lumière soit! Et la lumière fut.",
-                "explanation": """**"Dieu dit"** (*wayomer Elohim*) révèle la **Parole créatrice**. La création s'accomplit par la parole divine, préfigurant le **Logos** johannique. Dieu ne crée pas par effort mais par pure parole.
+                "explanation": """Dieu dit (wayomer Elohim) révèle la Parole créatrice. La création s'accomplit par la parole divine, préfigurant le Logos johannique. Dieu ne crée pas par effort mais par pure parole.
 
-**"Que la lumière soit"** (*yehi or*) - commandement divin irrésistible. La lumière n'existe pas encore physiquement, mais la parole divine la fait instantanément paraître.
+Que la lumière soit (yehi or) - commandement divin irrésistible. La lumière n'existe pas encore physiquement, mais la parole divine la fait instantanément paraître.
 
-**"Et la lumière fut"** (*wayehi or*) - accomplissement immédiat. Entre la parole divine et sa réalisation, il n'y a aucun délai. Cette lumière précède les luminaires du jour 4, révélant que Dieu est Lui-même la source première de toute illumination.
+Et la lumière fut (wayehi or) - accomplissement immédiat. Entre la parole divine et sa réalisation, il n'y a aucun délai. Cette lumière précède les luminaires du jour 4, révélant que Dieu est Lui-même la source première de toute illumination.
 
-**Typologie christologique** : Christ est la "lumière du monde" (Jean 8:12), et la première création préfigure l'incarnation du Logos."""
+Typologie christologique : Christ est la lumière du monde (Jean 8:12), et la première création préfigure l'incarnation du Logos."""
             },
             4: {
                 "verse": "Dieu vit que la lumière était bonne; et Dieu sépara la lumière d'avec les ténèbres.",
-                "explanation": """**"Dieu vit"** (*wayar Elohim*) - approbation divine de Son œuvre. Dieu constate la perfection de Sa création, établissant le critère du "bon" selon Sa nature sainte.
+                "explanation": """Dieu vit (wayar Elohim) - approbation divine de Son œuvre. Dieu constate la perfection de Sa création, établissant le critère du bon selon Sa nature sainte.
 
-**"Que la lumière était bonne"** (*ki tov*) - première évaluation morale de la création. La "bonté" divine devient la norme absolue du bien, révélant que la morale trouve sa source en Dieu.
+Que la lumière était bonne (ki tov) - première évaluation morale de la création. La bonté divine devient la norme absolue du bien, révélant que la morale trouve sa source en Dieu.
 
-**"Sépara la lumière d'avec les ténèbres"** - premier acte de **distinction divine**. Dieu établit des frontières, créant l'ordre à partir du chaos. Cette séparation révèle que Dieu est un Dieu d'ordre, non de confusion.
+Sépara la lumière d'avec les ténèbres - premier acte de distinction divine. Dieu établit des frontières, créant l'ordre à partir du chaos. Cette séparation révèle que Dieu est un Dieu d'ordre, non de confusion.
 
-**Principe herméneutique** : La séparation lumière/ténèbres traverse toute l'Écriture, culminant dans la séparation éternelle entre élus et réprouvés."""
+Principe herméneutique : La séparation lumière/ténèbres traverse toute l'Écriture, culminant dans la séparation éternelle entre élus et réprouvés."""
             },
             5: {
                 "verse": "Dieu appela la lumière jour, et il appela les ténèbres nuit. Ainsi, il y eut un soir, et il y eut un matin: ce fut le premier jour.",
