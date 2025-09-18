@@ -523,8 +523,9 @@ export default function App() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
       
-      // Utiliser l'URL relative au lieu de localhost
-      const response = await fetch('/api/generate-verse-by-verse', {
+      // Utiliser l'URL complète du backend
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+      const response = await fetch(`${backendUrl}/api/generate-verse-by-verse`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
