@@ -624,21 +624,43 @@ body{
 }
 
 .rubriques-left-panel {
-  flex: 0 0 280px;
+  flex: 0 0 350px;
 }
 
 .rubriques-header {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 600;
   color: #0ea5b3;
-  margin: 0 0 20px 0;
+  margin: 0 0 16px 0;
   font-family: "Playfair Display", serif;
+  text-align: center;
+  padding: 12px;
+  background: rgba(14, 165, 179, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(14, 165, 179, 0.1);
 }
 
 .rubriques-cards-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.rubriques-cards-container::-webkit-scrollbar {
+  width: 4px;
+}
+
+.rubriques-cards-container::-webkit-scrollbar-track {
+  background: rgba(14, 165, 179, 0.1);
+  border-radius: 2px;
+}
+
+.rubriques-cards-container::-webkit-scrollbar-thumb {
+  background: #0ea5b3;
+  border-radius: 2px;
 }
 
 .rubrique-study-card {
