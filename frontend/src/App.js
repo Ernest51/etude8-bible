@@ -391,8 +391,8 @@ function App() {
 
   return (
     <div className="app-layout">
-      {/* Sidebar gauche avec les rubriques */}
-      <div className="sidebar">
+      {/* Sidebar cachée - on garde le style mais on la masque */}
+      <div className="sidebar" style={{display: "none"}}>
         <div className="sidebar-header">
           <h2>Rubriques (29)</h2>
         </div>
@@ -419,8 +419,8 @@ function App() {
         </div>
       </div>
 
-      {/* Contenu principal */}
-      <div className="main-content">
+      {/* Contenu principal - sans margin-left car plus de sidebar */}
+      <div className="main-content" style={{marginLeft: "0"}}>
         <div className="container">
           <div className="progress-badge">
             <span id="pct">{Math.round(pct)}%</span>
