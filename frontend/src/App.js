@@ -581,6 +581,9 @@ export default function App() {
       
       // Utiliser l'URL complète du backend
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+      console.log('🌐 Backend URL:', backendUrl);
+      console.log('🌐 Making API call to:', `${backendUrl}/api/generate-verse-by-verse`);
+      
       const response = await fetch(`${backendUrl}/api/generate-verse-by-verse`, {
         method: 'POST',
         headers: {
