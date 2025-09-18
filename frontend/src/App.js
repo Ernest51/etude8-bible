@@ -144,8 +144,24 @@ export default function App() {
   }
 
   function handleReset() {
-    setBook("Jean"); setChapter(3); setVerse(16); setVersion("LSG"); setLength(500);
-    setChatgpt(true); setProgress(0); setSearch(""); setActiveId(0); setContent("");
+    // Remettre tous les paramètres à leur valeur par défaut
+    setBook("Jean"); 
+    setChapter(3); 
+    setVerse(16); 
+    setVersion("LSG"); 
+    setLength(500);
+    setChatgpt(true); 
+    setProgress(0); 
+    setSearch(""); 
+    setActiveId(0); 
+    setContent("");
+    setKnobPosition(0);
+    
+    // Remettre le fond à la couleur par défaut (bleu)
+    updateBackgroundColor(0);
+    
+    // Note: localStorage "lastStudy" est préservé pour que "Dernière étude" continue de fonctionner
+    console.log('Reset effectué - Dernière étude préservée');
   }
 
   function handleLastStudy() {
