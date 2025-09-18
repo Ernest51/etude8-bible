@@ -4,6 +4,7 @@ from pydantic import BaseModel
 import requests
 from typing import List, Optional
 import json
+from theological_content import get_theological_content
 
 app = FastAPI()
 
