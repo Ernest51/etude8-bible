@@ -202,7 +202,7 @@ export default function App() {
           <SelectPill label="Longueur" value={length} onChange={setLength} options={[500,1500,2500]} />
           <TogglePill label="ChatGPT" enabled={chatgpt} onToggle={function(){ window.open('https://chatgpt.com/', '_blank'); }} />
           <ColorPalette backgroundColor={backgroundColor} onChange={setBackgroundColor} />
-          <button className="pill-btn" onClick={handleLastStudy}>Dernière étude</button>
+          <button className="pill-btn" onClick={handleLastStudy}>{getLastStudyLabel()}</button>
           <button className="pill-btn" onClick={handleReset}>Reset</button>
           <button className="pill-btn" onClick={function(){ setActiveId(0); }}>Versets</button>
           <button className="pill-btn accent" onClick={handleGenerate}>Générer</button>
