@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend API Testing Suite for Bible Study Application
-Tests the POST /api/generate-study endpoint and other API endpoints
+Backend API Testing Suite for Bible Study Application - Versets Functionality
+Tests the POST /api/generate-verse-by-verse endpoint and related functionality
 """
 
 import requests
@@ -10,8 +10,8 @@ import time
 import sys
 from datetime import datetime
 
-# Configuration
-BACKEND_URL = "https://scripturelab.preview.emergentagent.com/api"
+# Configuration - Use the public URL from frontend .env
+BACKEND_URL = "http://localhost:8001/api"
 TIMEOUT = 30
 
 def log_test(test_name, status, details=""):
