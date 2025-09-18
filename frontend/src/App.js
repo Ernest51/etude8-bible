@@ -64,6 +64,15 @@ export default function App() {
 
   var passageLabel = book + " " + chapter + ":" + verse + " " + version;
 
+  // Fonction pour changer de livre et ajuster le chapitre si nécessaire
+  function handleBookChange(newBook) {
+    setBook(newBook);
+    const maxChapters = BOOK_CHAPTERS[newBook] || 150;
+    if (chapter > maxChapters) {
+      setChapter(1);
+    }
+  }
+
   function handleValidate() {
     setProgress(function(p){ return p < 15 ? 15 : p; });
   }
