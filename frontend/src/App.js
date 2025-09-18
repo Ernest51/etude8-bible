@@ -81,7 +81,10 @@ export default function App() {
 
   // Appliquer la couleur de fond
   React.useEffect(function() {
-    document.documentElement.style.setProperty('--page-background', getBackgroundColor());
+    const pageWrap = document.querySelector('.page-wrap');
+    if (pageWrap) {
+      pageWrap.style.background = getBackgroundColor();
+    }
   }, [selectedColor]);
 
   // Fonction pour changer de livre et ajuster le chapitre si nécessaire
