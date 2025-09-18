@@ -147,7 +147,144 @@ export default function App() {
   }
 
   function handleValidate() {
-    setProgress(function(p){ return p < 15 ? 15 : p; });
+    if (!search.trim()) {
+      setProgress(function(p){ return p < 15 ? 15 : p; });
+      return;
+    }
+    
+    // Parser intelligent de la recherche
+    const searchText = search.trim().toLowerCase();
+    console.log('Parsing search:', searchText);
+    
+    // Mapping des noms de livres (minuscules vers noms corrects)
+    const bookMapping = {
+      'genese': 'Genèse', 'genesis': 'Genèse',
+      'exode': 'Exode', 'exodus': 'Exode',
+      'levitique': 'Lévitique', 'leviticus': 'Lévitique',
+      'nombres': 'Nombres', 'numbers': 'Nombres',
+      'deuteronome': 'Deutéronome', 'deuteronomy': 'Deutéronome',
+      'josue': 'Josué', 'joshua': 'Josué',
+      'juges': 'Juges', 'judges': 'Juges',
+      'ruth': 'Ruth',
+      '1 samuel': '1 Samuel', '1samuel': '1 Samuel',
+      '2 samuel': '2 Samuel', '2samuel': '2 Samuel',
+      '1 rois': '1 Rois', '1rois': '1 Rois', '1 kings': '1 Rois',
+      '2 rois': '2 Rois', '2rois': '2 Rois', '2 kings': '2 Rois',
+      '1 chroniques': '1 Chroniques', '1chroniques': '1 Chroniques',
+      '2 chroniques': '2 Chroniques', '2chroniques': '2 Chroniques',
+      'esdras': 'Esdras', 'ezra': 'Esdras',
+      'nehemie': 'Néhémie', 'nehemiah': 'Néhémie',
+      'esther': 'Esther',
+      'job': 'Job',
+      'psaumes': 'Psaumes', 'psalms': 'Psaumes',
+      'proverbes': 'Proverbes', 'proverbs': 'Proverbes',
+      'ecclesiaste': 'Ecclésiaste', 'ecclesiastes': 'Ecclésiaste',
+      'cantique': 'Cantique', 'song': 'Cantique',
+      'esaie': 'Ésaïe', 'isaiah': 'Ésaïe',
+      'jeremie': 'Jérémie', 'jeremiah': 'Jérémie',
+      'lamentations': 'Lamentations',
+      'ezechiel': 'Ézéchiel', 'ezekiel': 'Ézéchiel',
+      'daniel': 'Daniel',
+      'osee': 'Osée', 'hosea': 'Osée',
+      'joel': 'Joël',
+      'amos': 'Amos',
+      'abdias': 'Abdias', 'obadiah': 'Abdias',
+      'jonas': 'Jonas', 'jonah': 'Jonas',
+      'michee': 'Michée', 'micah': 'Michée',
+      'nahum': 'Nahum',
+      'habacuc': 'Habacuc', 'habakkuk': 'Habacuc',
+      'sophonie': 'Sophonie', 'zephaniah': 'Sophonie',
+      'aggee': 'Aggée', 'haggai': 'Aggée',
+      'zacharie': 'Zacharie', 'zechariah': 'Zacharie',
+      'malachie': 'Malachie', 'malachi': 'Malachie',
+      'matthieu': 'Matthieu', 'matthew': 'Matthieu', 'matt': 'Matthieu',
+      'marc': 'Marc', 'mark': 'Marc',
+      'luc': 'Luc', 'luke': 'Luc',
+      'jean': 'Jean', 'john': 'Jean',
+      'actes': 'Actes', 'acts': 'Actes',
+      'romains': 'Romains', 'romans': 'Romains', 'rom': 'Romains',
+      '1 corinthiens': '1 Corinthiens', '1corinthiens': '1 Corinthiens', '1 cor': '1 Corinthiens',
+      '2 corinthiens': '2 Corinthiens', '2corinthiens': '2 Corinthiens', '2 cor': '2 Corinthiens',
+      'galates': 'Galates', 'galatians': 'Galates', 'gal': 'Galates',
+      'ephesiens': 'Éphésiens', 'ephesians': 'Éphésiens', 'eph': 'Éphésiens',
+      'philippiens': 'Philippiens', 'philippians': 'Philippiens', 'phil': 'Philippiens',
+      'colossiens': 'Colossiens', 'colossians': 'Colossiens', 'col': 'Colossiens',
+      '1 thessaloniciens': '1 Thessaloniciens', '1thessaloniciens': '1 Thessaloniciens', '1 thess': '1 Thessaloniciens',
+      '2 thessaloniciens': '2 Thessaloniciens', '2thessaloniciens': '2 Thessaloniciens', '2 thess': '2 Thessaloniciens',
+      '1 timothee': '1 Timothée', '1timothee': '1 Timothée', '1 tim': '1 Timothée',
+      '2 timothee': '2 Timothée', '2timothee': '2 Timothée', '2 tim': '2 Timothée',
+      'tite': 'Tite', 'titus': 'Tite',
+      'philemon': 'Philémon',
+      'hebreux': 'Hébreux', 'hebrews': 'Hébreux', 'heb': 'Hébreux',
+      'jacques': 'Jacques', 'james': 'Jacques',
+      '1 pierre': '1 Pierre', '1pierre': '1 Pierre', '1 peter': '1 Pierre',
+      '2 pierre': '2 Pierre', '2pierre': '2 Pierre', '2 peter': '2 Pierre',
+      '1 jean': '1 Jean', '1jean': '1 Jean', '1 john': '1 Jean',
+      '2 jean': '2 Jean', '2jean': '2 Jean', '2 john': '2 Jean',
+      '3 jean': '3 Jean', '3jean': '3 Jean', '3 john': '3 Jean',
+      'jude': 'Jude',
+      'apocalypse': 'Apocalypse', 'revelation': 'Apocalypse', 'rev': 'Apocalypse'
+    };
+    
+    let foundBook = null;
+    let foundChapter = "vide";
+    let foundVerse = "vide";
+    
+    // Pattern 1: "livre chapitre:verset" (ex: "marc 2:3")
+    const pattern1 = searchText.match(/^(.+?)\s+(\d+):(\d+)$/);
+    if (pattern1) {
+      const bookName = pattern1[1].trim();
+      foundBook = bookMapping[bookName];
+      if (foundBook) {
+        foundChapter = parseInt(pattern1[2]);
+        foundVerse = parseInt(pattern1[3]);
+      }
+    }
+    
+    // Pattern 2: "livre chapitre" (ex: "marc 2") 
+    if (!foundBook) {
+      const pattern2 = searchText.match(/^(.+?)\s+(\d+)$/);
+      if (pattern2) {
+        const bookName = pattern2[1].trim();
+        foundBook = bookMapping[bookName];
+        if (foundBook) {
+          foundChapter = parseInt(pattern2[2]);
+          foundVerse = "vide";
+        }
+      }
+    }
+    
+    // Pattern 3: juste le livre (ex: "luc")
+    if (!foundBook) {
+      const bookName = searchText.trim();
+      foundBook = bookMapping[bookName];
+      if (foundBook) {
+        foundChapter = 1;
+        foundVerse = 1;
+      }
+    }
+    
+    // Appliquer les résultats si un livre a été trouvé
+    if (foundBook) {
+      console.log(`Found: ${foundBook} ${foundChapter}:${foundVerse}`);
+      
+      setBook(foundBook);
+      setChapter(foundChapter);
+      setVerse(foundVerse);
+      
+      // Vider la recherche après parsing réussi
+      setSearch("");
+      
+      // Feedback visuel
+      setProgress(50);
+      setTimeout(() => setProgress(0), 1000);
+      
+      console.log(`Search parsed successfully: ${foundBook} ${foundChapter}:${foundVerse}`);
+    } else {
+      // Livre non trouvé
+      console.log('Book not found in search');
+      setProgress(function(p){ return p < 15 ? 15 : p; });
+    }
   }
 
   function handleReset() {
