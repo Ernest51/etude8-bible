@@ -529,7 +529,7 @@ export default function App() {
     );
   }
 
-  async function handleVersetsClick() {
+  const handleVersetsClick = async () => {
     alert('🔵 VERSETS BUTTON CLICKED!'); // Test simple pour confirmer l'exécution
     console.log('🔵 VERSETS BUTTON CLICKED - Starting verse by verse generation');
     setActiveId(0);
