@@ -356,10 +356,10 @@ function App() {
             </div>
           </aside>
 
-          {/* Contenu principal à droite */}
-          <main className="study-content">
-            <div className="content-top-actions">
-              <div>
+          {/* Zone de réponses à droite */}
+          <main className="study-responses">
+            <div className="responses-header">
+              <div className="nav-controls">
                 <button 
                   className="nav-action-btn"
                   onClick={() => setSelectedSection(Math.max(0, selectedSection - 1))}
@@ -378,24 +378,84 @@ function App() {
               <div className="made-with">Made with ❤️ — Espace d'étude</div>
             </div>
 
-            <section className="content-hero">
+            <section className="welcome-section">
               <h1>🙏 Bienvenue dans votre Espace d'Étude Biblique</h1>
               <p>Cet outil vous accompagne dans la méditation approfondie des Écritures avec une approche théologique rigoureuse.</p>
             </section>
 
-            <section className="main-study-sections">
-              {STUDY_SECTIONS.map((section, i) => (
-                <div 
-                  key={section.id}
-                  className={`study-section ${selectedSection === section.id ? 'active' : ''}`}
-                  id={`section-${section.id}`}
-                >
-                  <h3>{i}. {section.title}</h3>
-                  <p>
-                    {section.content || `Contenu détaillé pour la rubrique "${section.title}". Ici on place l'analyse, les versets liés, commentaires théologiques et questions interactives.`}
-                  </p>
+            {/* Zone de réponses dynamique selon la rubrique sélectionnée */}
+            <section className="response-area">
+              <div className="current-study-header">
+                <h2>{selectedSection}. {STUDY_SECTIONS[selectedSection]?.title}</h2>
+                <span className="study-progress">{selectedSection + 1} / {STUDY_SECTIONS.length}</span>
+              </div>
+
+              <div className="study-content-detailed">
+                <div className="study-description">
+                  <h3>📚 Contenu d'étude</h3>
+                  <p>{STUDY_SECTIONS[selectedSection]?.content || "Contenu de l'étude à venir..."}</p>
                 </div>
-              ))}
+
+                <div className="study-questions">
+                  <h3>💡 Questions d'approfondissement</h3>
+                  <div className="questions-grid">
+                    <div className="question-card">
+                      <h4>Question 1 : Contexte</h4>
+                      <p>Quel est le contexte historique et littéraire de ce passage ?</p>
+                      <textarea 
+                        className="response-input" 
+                        placeholder="Votre réponse ici..."
+                        rows="3"
+                      ></textarea>
+                    </div>
+                    
+                    <div className="question-card">
+                      <h4>Question 2 : Signification</h4>
+                      <p>Quelle est la signification théologique principale de cette section ?</p>
+                      <textarea 
+                        className="response-input" 
+                        placeholder="Votre réponse ici..."
+                        rows="3"
+                      ></textarea>
+                    </div>
+                    
+                    <div className="question-card">
+                      <h4>Question 3 : Application</h4>
+                      <p>Comment appliquer concrètement ces enseignements dans votre vie ?</p>
+                      <textarea 
+                        className="response-input" 
+                        placeholder="Votre réponse ici..."
+                        rows="3"
+                      ></textarea>
+                    </div>
+                    
+                    <div className="question-card">
+                      <h4>Question 4 : Réflexion personnelle</h4>
+                      <p>Quelle est votre réflexion personnelle sur ce passage ?</p>
+                      <textarea 
+                        className="response-input" 
+                        placeholder="Votre réponse ici..."
+                        rows="3"
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="study-actions">
+                  <button className="save-btn">💾 Sauvegarder les réponses</button>
+                  <button className="generate-btn" onClick={handleGenerate}>🤖 Générer une méditation IA</button>
+                  <button className="export-btn">📄 Exporter en PDF</button>
+                </div>
+
+                <div className="study-notes">
+                  <h3>📝 Notes personnelles</h3>
+                  <textarea 
+                    className="notes-input"
+                    placeholder="Ajoutez vos notes personnelles, références bibliques, insights spirituels..."
+                    rows="4"
+                  ></textarea>
+                </div>
+              </div>
             </section>
           </main>
         </div>
