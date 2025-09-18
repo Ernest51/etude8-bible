@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+import "./rubriques.css";
 import RubriquesInline from "./RubriquesInline";
 
 const BOOKS = [
@@ -15,7 +16,6 @@ const BOOKS = [
   "3 Jean","Jude","Apocalypse"
 ];
 
-// 29 rubriques (0..28)
 const RUBRIQUES = [
   "Étude verset par verset","Prière d'ouverture","Structure littéraire",
   "Questions du chapitre précédent","Thème doctrinal","Fondements théologiques",
@@ -26,7 +26,9 @@ const RUBRIQUES = [
   "Prière de réponse","Questions d'étude","Points de vigilance",
   "Objections et réponses","Perspective missionnelle","Éthique chrétienne",
   "Louange / liturgie","Méditation guidée","Mémoire / versets clés","Plan d'action"
-].map((t, i) => ({ id: i, title: t }));
+].map(function (t, i) { return { id: i, title: t }; });
+
+function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
 
 export default function App() {
   // passage
@@ -43,11 +45,10 @@ export default function App() {
   const [activeId, setActiveId] = React.useState(0);
   const [content, setContent] = React.useState("");
 
-  const passageLabel = `${book} ${chapter}:${verse} ${version}`;
+  var passageLabel = book + " " + chapter + ":" + verse + " " + version;
 
   function handleValidate() {
-    // mini feedback
-    setProgress((p) => (p < 15 ? 15 : p));
+    setProgress(function(p){ return p < 15 ? 15 : p; });
   }
 
   function handleReset() {
@@ -57,36 +58,36 @@ export default function App() {
 
   function handleLastStudy() {
     try {
-      localStorage.setItem("lastStudy", JSON.stringify({ book, chapter, verse, version, tokens, chatgpt }));
-    } catch {}
+      localStorage.setItem("lastStudy", JSON.stringify({
+        book: book, chapter: chapter, verse: verse, version: version, tokens: tokens, chatgpt: chatgpt
+      }));
+    } catch (e) {}
   }
 
   function handleReadBible() {
-    const q = encodeURIComponent(`${book} ${chapter}:${verse} ${version}`);
-    window.open(`https://www.bible.com/fr/search/bible?query=${q}`, "_blank");
+    var q = encodeURIComponent(passageLabel);
+    window.open("https://www.bible.com/fr/search/bible?query=" + q, "_blank");
   }
 
   async function handleGenerate() {
-    // imitation “progression”
-    setProgress(5);
-    await wait(200);
-    setProgress(25);
-    await wait(250);
-    setProgress(60);
-    await wait(350);
+    setProgress(5); await wait(200);
+    setProgress(25); await wait(250);
+    setProgress(60); await wait(350);
     setProgress(100);
-
     setContent(
-      `🙏 Méditation sur ${passageLabel}\n\n- Dieu aime, Dieu donne, la foi reçoit.\n- La vie éternelle commence déjà par la communion avec le Fils.\n\nPrière : Seigneur, apprends-moi à répondre à ton amour aujourd'hui. Amen.`
+      "🙏 Méditation sur " + passageLabel +
+      "\n\n- Dieu aime, Dieu donne, la foi reçoit." +
+      "\n- La vie éternelle commence déjà par la communion avec le Fils." +
+      "\n\nPrière : Seigneur, apprends-moi à répondre à ton amour aujourd'hui. Amen."
     );
   }
 
-  function goPrev() { setActiveId((i) => Math.max(0, i - 1)); }
-  function goNext() { setActiveId((i) => Math.min(RUBRIQUES.length - 1, i + 1)); }
+  function goPrev() { setActiveId(function(i){ return Math.max(0, i - 1); }); }
+  function goNext() { setActiveId(function(i){ return Math.min(RUBRIQUES.length - 1, i + 1); }); }
 
   return (
     <div className="page-wrap">
-      {/* Top header “0%” + gradient progress like screenshot */}
+      {/* Bandeau haut (bulle %, barre gradient, points) */}
       <div className="topband">
         <div className="progress-bubble">{Math.round(progress)}%</div>
         <div className="progress-card">
@@ -94,19 +95,19 @@ export default function App() {
             <div className="progress-knob" />
           </div>
           <div className="progress-dots">
-            {[...Array(12)].map((_, i) => <span key={i} />)}
+            {Array(12).fill(0).map(function(_, i){ return <span key={i} />; })}
           </div>
         </div>
       </div>
 
-      {/* Controls block */}
+      {/* Bloc contrôles */}
       <div className="controls-card">
         <div className="search-row">
           <input
             className="pill-input"
             placeholder="Rechercher (ex : Marc 5:1, 1 Jean 2, Genèse 1:1-5)"
             value={search}
-            onChange={(e)=>setSearch(e.target.value)}
+            onChange={function(e){ setSearch(e.target.value); }}
           />
           <button className="pill-btn primary" onClick={handleValidate}>Valider</button>
           <button className="pill-btn" onClick={handleReadBible}>Lire la Bible</button>
@@ -118,7 +119,7 @@ export default function App() {
           <NumberPill label="Verset" value={verse} onChange={setVerse} min={1} max={176} />
           <SelectPill label="Version" value={version} onChange={setVersion} options={["LSG","NEG79","BDS"]} />
           <NumberPill label="Tokens" value={tokens} onChange={setTokens} min={128} max={2048} step={64} />
-          <TogglePill label="ChatGPT" enabled={chatgpt} onToggle={()=>setChatgpt(v=>!v)} />
+          <TogglePill label="ChatGPT" enabled={chatgpt} onToggle={function(){ setChatgpt(!chatgpt); }} />
           <button className="pill-btn" onClick={handleLastStudy}>Dernière étude</button>
           <button className="pill-btn" onClick={handleReset}>Reset</button>
           <button className="pill-btn">Versets</button>
@@ -126,24 +127,20 @@ export default function App() {
         </div>
       </div>
 
-      {/* Main two-column layout */}
+      {/* 2 colonnes */}
       <div className="two-cols">
-        {/* Left: Rubriques (29) with elevator */}
         <aside className="left-card">
           <div className="left-header">Rubriques ({RUBRIQUES.length})</div>
           <RubriquesInline
             items={RUBRIQUES}
             activeId={activeId}
-            onSelect={setActiveId}
+            onSelect={function(id){ setActiveId(id); }}
           />
         </aside>
 
-        {/* Right: content */}
         <section className="right-card">
           <div className="right-head">
-            <h3>
-              {activeId}. {RUBRIQUES[activeId]?.title || "Rubrique"}
-            </h3>
+            <h3>{activeId}. {(RUBRIQUES[activeId] && RUBRIQUES[activeId].title) || "Rubrique"}</h3>
             <div className="right-nav">
               <button className="mini-pill" onClick={goPrev}>◂ Précédent</button>
               <button className="mini-pill" onClick={goNext}>Suivant ▸</button>
@@ -152,7 +149,7 @@ export default function App() {
 
           <div className="welcome">
             <h1>🙏 Bienvenue dans votre Espace d'Étude</h1>
-            <p>Cet outil vous accompagne dans une méditation biblique structurée et claire.</p>
+            <p>​Cet outil vous accompagne dans une méditation biblique structurée et claire.</p>
           </div>
 
           <div className="section">
@@ -171,57 +168,52 @@ export default function App() {
   );
 }
 
-/* -------------------- UI sub-components -------------------- */
+/* ---------- UI sub-components ---------- */
 
-function SelectPill({ label, value, onChange, options }) {
+function SelectPill(props) {
+  var label = props.label, value = props.value, onChange = props.onChange, options = props.options;
   return (
     <div className="pill">
       <span className="pill-label">{label}</span>
       <select
         className="pill-select"
         value={value}
-        onChange={(e)=>onChange(e.target.value)}
+        onChange={function(e){ onChange(e.target.value); }}
       >
-        {options.map((opt) => (
-          <option key={opt} value={opt}>{opt}</option>
-        ))}
+        {options.map(function(opt){ return <option key={opt} value={opt}>{opt}</option>; })}
       </select>
       <span className="chev">▾</span>
     </div>
   );
 }
 
-function NumberPill({ label, value, onChange, min=1, max=100, step=1 }) {
-  const list = [];
-  for (let i=min; i<=max; i+=step) list.push(i);
+function NumberPill(props) {
+  var label = props.label, value = props.value, onChange = props.onChange,
+      min = props.min || 1, max = props.max || 100, step = props.step || 1;
+  var list = []; for (var i=min; i<=max; i+=step) list.push(i);
   return (
     <div className="pill">
       <span className="pill-label">{label}</span>
       <select
         className="pill-select"
         value={value}
-        onChange={(e)=>onChange(Number(e.target.value))}
+        onChange={function(e){ onChange(Number(e.target.value)); }}
       >
-        {list.map((n) => <option key={n} value={n}>{n}</option>)}
+        {list.map(function(n){ return <option key={n} value={n}>{n}</option>; })}
       </select>
       <span className="chev">▾</span>
     </div>
   );
 }
 
-function TogglePill({ label, enabled, onToggle }) {
+function TogglePill(props) {
+  var label = props.label, enabled = props.enabled, onToggle = props.onToggle;
   return (
-    <button
-      className={`pill toggle ${enabled ? "on" : ""}`}
-      onClick={onToggle}
-      type="button"
-    >
+    <button className={"pill toggle " + (enabled ? "on" : "")} onClick={onToggle} type="button">
       <span className="pill-label">{label}</span>
-      <span className={`switch ${enabled ? "sw-on" : ""}`}>
+      <span className={"switch " + (enabled ? "sw-on" : "")}>
         <span className="dot" />
       </span>
     </button>
   );
 }
-
-function wait(ms){ return new Promise(r=>setTimeout(r,ms)); }
