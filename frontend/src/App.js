@@ -61,6 +61,7 @@ export default function App() {
   const [activeId, setActiveId] = React.useState(0);
   const [content, setContent] = React.useState("");
   const [pageBackground, setPageBackground] = React.useState("#f7fbfb");
+  const [knobPosition, setKnobPosition] = React.useState(0); // Position du bouton sur la palette (0-100%)
 
   var passageLabel = book + " " + chapter + ":" + verse + " " + version;
 
