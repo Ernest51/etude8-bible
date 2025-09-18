@@ -230,6 +230,7 @@ export default function App() {
           <NumberPill label="Verset" value={verse} onChange={setVerse} min={1} max={176} />
           <SelectPill label="Version" value={version} onChange={setVersion} options={["LSG","NEG79","BDS"]} />
           <SelectPill label="Longueur" value={length} onChange={setLength} options={[500,1500,2500]} />
+          <SelectPill label="Thème" value={selectedColor} onChange={setSelectedColor} options={["default","orange","rose","vert","bleu","violet","jaune","rouge"]} />
           <button className="pill-btn" onClick={function(){ window.open('https://chatgpt.com/', '_blank'); }}>ChatGPT</button>
           <button className="pill-btn" onClick={handleLastStudy}>{getLastStudyLabel()}</button>
           <button className="pill-btn" onClick={handleReset}>Reset</button>
