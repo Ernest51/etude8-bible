@@ -497,26 +497,14 @@ export default function App() {
     setActiveId(0);
     console.log('Versets button clicked - activeId set to 0');
     
-    // Pour le test, forcer Genèse 1 si les champs sont vides
-    if (book === "vide" || chapter === "vide") {
-      console.log('Setting default values for verse by verse generation');
-      setBook("Genèse");
-      setChapter(1);
-      setVerse(1);
-      
-      // Petit délai pour que les états se mettent à jour
-      await wait(1000);
-      
-      // Forcer la mise à jour de l'interface
-      const bookSelect = document.querySelector('select');
-      if (bookSelect) bookSelect.value = 'Genèse';
-      
-      const chapterSelect = document.querySelectorAll('select')[1];
-      if (chapterSelect) chapterSelect.value = '1';
-      
-      const verseSelect = document.querySelectorAll('select')[2];
-      if (verseSelect) verseSelect.value = '1';
-    }
+    // TOUJOURS forcer Genèse 1:1 pour l'étude verset par verset
+    console.log('Setting Genèse 1:1 for verse by verse generation');
+    setBook("Genèse");
+    setChapter(1);
+    setVerse(1);
+    
+    // Petit délai pour que les états se mettent à jour
+    await wait(1000);
     
     // Générer automatiquement l'étude verset par verset
     await generateVerseByVerse();
