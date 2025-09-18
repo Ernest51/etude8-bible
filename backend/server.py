@@ -174,12 +174,12 @@ Cette étude examine chaque verset de {book} {chapter} selon les principes de l'
         
         # Ajouter chaque verset avec son explication
         for i, verse_data in enumerate(verses_content, 1):
-            content += f"""Verset {verse_data['verse_number']}
+            content += f"""VERSET {verse_data['verse_number']}
 
-Texte Biblique :
+TEXTE BIBLIQUE :
 {verse_data['verse_text']}
 
-Explication Théologique :
+EXPLICATION THÉOLOGIQUE :
 
 {verse_data['explanation']}
 
