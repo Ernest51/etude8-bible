@@ -618,9 +618,11 @@ function toast(message) {
 }
 
 function ToastContainer() {
-  const [, force] = React.useReducer((x)=>x+1, 0);
-  React.useEffect(() => {
-    const onPush = () => force();
+  const [, force] = useState(0);
+  const forceUpdate = () => force(x => x + 1);
+  
+  useEffect(() => {
+    const onPush = () => forceUpdate();
     window.addEventListener("__toast_push", onPush);
     return () => window.removeEventListener("__toast_push", onPush);
   }, []);
