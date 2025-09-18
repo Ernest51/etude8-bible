@@ -2376,18 +2376,20 @@ body{
   backdrop-filter: blur(10px);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .three-column-container {
+/* Responsive pour l'interface d'étude */
+@media (max-width: 980px) {
+  .study-app-container {
     flex-direction: column;
   }
   
-  .rubriques-left-panel, .current-study-center-panel, .right-content-panel {
-    flex: none;
+  .study-sidebar {
+    width: 100%;
+    min-width: 0;
+    order: 2;
   }
   
-  .welcome-bible-title, .welcome-bible-title-right {
-    font-size: 20px;
+  .content-hero h1 {
+    font-size: 24px;
   }
   
   .main-app-container {
