@@ -82,9 +82,34 @@ function App() {
   const [selectedVersion, setSelectedVersion] = useState("LSG");
   const [selectedLength, setSelectedLength] = useState("500");
 
+  // Nouveaux états pour le code de méditation
+  const [activeRubriqueId, setActiveRubriqueId] = useState(0);
+  const [status, setStatus] = useState("idle"); // idle | generating | done | error
+  const [output, setOutput] = useState("");
+  const [progress, setProgress] = useState(0);
+  const [search, setSearch] = useState("");
+  const [useChatGPT, setUseChatGPT] = useState(true);
+
   // Refs pour le slider
   const barRef = useRef(null);
   const knobRef = useRef(null);
+
+  // Charger la dernière étude si présente
+  useEffect(() => {
+    const last = localStorage.getItem("lastStudy");
+    if (last) {
+      try {
+        const parsed = JSON.parse(last);
+        setSelectedBook(parsed.book);
+        setSelectedChapter(parsed.chapter.toString());
+        setSelectedVerse(parsed.verse.toString());
+        setSelectedVersion(parsed.version);
+        setSelectedLength((parsed.tokens ?? 500).toString());
+      } catch {}
+    }
+  }, []);
+
+  const passageLabel = `${selectedBook} ${selectedChapter}:${selectedVerse} ${selectedVersion}`;
 
   // Slider functionality
   const setPctFunc = (p) => {
