@@ -201,9 +201,6 @@ export default function App() {
       <div className="topband">
         <div className="progress-bubble">{Math.round(progress)}%</div>
         <div className="progress-card">
-          <div className="progress-gradient">
-            <div className="progress-knob" />
-          </div>
         </div>
       </div>
 
