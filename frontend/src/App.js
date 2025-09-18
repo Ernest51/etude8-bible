@@ -64,6 +64,26 @@ export default function App() {
 
   var passageLabel = book + " " + chapter + ":" + verse + " " + version;
 
+  // Fonction pour obtenir la couleur de fond basée sur la sélection
+  function getBackgroundColor() {
+    const colors = {
+      "default": "linear-gradient(180deg,#f7fbfb 0%, #ecfdf5 100%)",
+      "orange": "linear-gradient(180deg,#fff7ed 0%, #fef3c7 100%)",
+      "rose": "linear-gradient(180deg,#fef7ff 0%, #fce7f3 100%)",
+      "vert": "linear-gradient(180deg,#f0fdf4 0%, #dcfce7 100%)",
+      "bleu": "linear-gradient(180deg,#f0f9ff 0%, #dbeafe 100%)",
+      "violet": "linear-gradient(180deg,#f5f3ff 0%, #e9d5ff 100%)",
+      "jaune": "linear-gradient(180deg,#fefce8 0%, #fef08a 100%)",
+      "rouge": "linear-gradient(180deg,#fef2f2 0%, #fecaca 100%)"
+    };
+    return colors[selectedColor] || colors["default"];
+  }
+
+  // Appliquer la couleur de fond
+  React.useEffect(function() {
+    document.documentElement.style.setProperty('--page-background', getBackgroundColor());
+  }, [selectedColor]);
+
   // Fonction pour changer de livre et ajuster le chapitre si nécessaire
   function handleBookChange(newBook) {
     setBook(newBook);
