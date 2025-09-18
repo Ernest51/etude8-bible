@@ -12,9 +12,7 @@ function RubriquesInline(props) {
   var activeId = typeof props.activeId === "number" ? props.activeId : 0;
   var onSelect = typeof props.onSelect === "function" ? props.onSelect : null;
 
-  function handleSelect(id) {
-    if (onSelect) onSelect(id);
-  }
+  function handleSelect(id) { if (onSelect) onSelect(id); }
 
   return (
     <div className="rubriques">
