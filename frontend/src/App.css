@@ -2008,11 +2008,12 @@ body{
 }
 
 .bible-reflection-section-right {
-  background: rgba(14, 165, 179, 0.05);
-  border: 1px solid rgba(14, 165, 179, 0.15);
-  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(14, 165, 179, 0.08) 0%, rgba(14, 165, 179, 0.04) 100%);
+  border: 1px solid rgba(14, 165, 179, 0.2);
+  border-radius: 14px;
   padding: 16px;
-  margin: 16px 0;
+  margin: 14px 0;
+  box-shadow: 0 4px 12px rgba(14, 165, 179, 0.06);
 }
 
 .bible-reflection-section-right h4 {
@@ -2020,6 +2021,7 @@ body{
   font-size: 14px;
   font-weight: 600;
   margin: 0 0 10px 0;
+  text-shadow: 0 1px 2px rgba(14, 165, 179, 0.1);
 }
 
 .bible-reflection-section-right ul {
@@ -2027,11 +2029,16 @@ body{
   padding-left: 18px;
   color: #5a7381;
   line-height: 1.5;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .bible-reflection-section-right li {
-  margin-bottom: 4px;
+  margin-bottom: 6px;
+  position: relative;
+}
+
+.bible-reflection-section-right li::marker {
+  color: #0ea5b3;
 }
 
 .bible-detailed-navigation-right {
