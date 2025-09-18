@@ -1888,6 +1888,121 @@ body{
   cursor: not-allowed;
 }
 
+/* Colonne de droite - Bienvenue + Contenu détaillé */
+.welcome-bible-section-right {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(14, 165, 179, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.welcome-bible-title-right {
+  font-family: "Playfair Display", serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #0ea5b3;
+  margin: 0 0 16px 0;
+  line-height: 1.2;
+}
+
+.welcome-bible-text-right {
+  font-size: 14px;
+  color: #5a7381;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.detailed-bible-content-right {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(14, 165, 179, 0.1);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.detailed-bible-content-right h2 {
+  font-family: "Playfair Display", serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #0ea5b3;
+  margin: 0 0 16px 0;
+}
+
+.bible-content-text-right {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #0f2d3a;
+  margin: 0 0 20px 0;
+  text-align: justify;
+}
+
+.bible-reflection-section-right {
+  background: rgba(14, 165, 179, 0.05);
+  border: 1px solid rgba(14, 165, 179, 0.15);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 16px 0;
+}
+
+.bible-reflection-section-right h4 {
+  color: #0ea5b3;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+}
+
+.bible-reflection-section-right ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #5a7381;
+  line-height: 1.5;
+  font-size: 13px;
+}
+
+.bible-reflection-section-right li {
+  margin-bottom: 4px;
+}
+
+.bible-detailed-navigation-right {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 2px solid rgba(14, 165, 179, 0.1);
+}
+
+.bible-nav-btn-right {
+  padding: 8px 16px;
+  border: 2px solid rgba(14, 165, 179, 0.3);
+  background: rgba(14, 165, 179, 0.05);
+  color: #0ea5b3;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 12px;
+}
+
+.bible-nav-btn-right:hover:not(:disabled) {
+  background: #0ea5b3;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.bible-nav-btn-right:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.bible-nav-progress-right {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0ea5b3;
+}
+
 .bible-nav-progress {
   font-size: 16px;
   font-weight: 700;
