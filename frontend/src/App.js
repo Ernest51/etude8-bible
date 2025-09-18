@@ -74,6 +74,21 @@ export default function App() {
     updateBackgroundColor(knobPosition);
   }, [knobPosition]);
 
+  // Mettre à jour le statut des rubriques quand livre/chapitre change
+  React.useEffect(() => {
+    if (book !== "vide" && chapter !== "vide") {
+      // Tous les rubriques sont prêts (LEDs jaunes)
+      const newStatus = {};
+      for (let i = 0; i < RUBRIQUES.length; i++) {
+        newStatus[i] = 'ready';
+      }
+      setRubriquesStatus(newStatus);
+    } else {
+      // Reset des LEDs si pas de sélection
+      setRubriquesStatus({});
+    }
+  }, [book, chapter]);
+
   var passageLabel = (book === "vide" || chapter === "vide" || verse === "vide") 
     ? "Sélectionnez un passage" 
     : book + " " + chapter + ":" + verse + " " + version;
