@@ -504,20 +504,13 @@ function App() {
             </div>
           </div>
 
-          {/* GRILLE 2 COLONNES */}
-          <div className="grid">
-            <div className="card section">
-              <h3>Rubriques (29)</h3>
-              <p style={{color:"#5a7381", margin:0}}>Cliquez sur une rubrique dans la sidebar pour afficher son contenu détaillé ci-dessous</p>
-            </div>
-
-            <div className="card section">
-              <h3>{selectedSection}. {STUDY_SECTIONS[selectedSection]?.title || "Étude verset par verset"}</h3>
-              <div className="footer-controls">
-                <span className="pill">◀ Précédent</span>
-                <span className="pill">Made with Emergent</span>
-              </div>
-            </div>
+          {/* NOUVEAU COMPOSANT RUBRIQUES INLINE */}
+          <div style={{marginBottom: "32px"}}>
+            <RubriquesInline 
+              items={STUDY_SECTIONS}
+              activeId={selectedSection}
+              onSelect={setSelectedSection}
+            />
           </div>
 
           {/* CONTENU DES 29 RUBRIQUES - EN DESSOUS DE LA GRILLE */}
