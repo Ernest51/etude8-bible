@@ -333,10 +333,7 @@ export default function App() {
           <button className="pill-btn" onClick={handleReset}>Reset</button>
           <button 
             className={`pill-btn special ${activeId === 0 ? 'active' : ''}`} 
-            onClick={function(){ 
-              setActiveId(0); 
-              console.log('Versets button clicked - activeId set to 0');
-            }}
+            onClick={handleVersetsClick}
           >
             📖 Versets
           </button>
