@@ -423,14 +423,21 @@ function SelectPill(props) {
 function NumberPill(props) {
   var label = props.label, value = props.value, onChange = props.onChange,
       min = props.min || 1, max = props.max || 100, step = props.step || 1;
-  var list = []; for (var i=min; i<=max; i+=step) list.push(i);
+  
+  var list = ["vide"]; // Ajouter "vide" en premier
+  for (var i=min; i<=max; i+=step) list.push(i);
+  
   return (
     <div className="pill">
       <span className="pill-label">{label}</span>
       <select
         className="pill-select"
         value={value}
-        onChange={function(e){ onChange(Number(e.target.value)); }}
+        onChange={function(e){ 
+          const val = e.target.value;
+          // Convertir en nombre si ce n'est pas "vide"
+          onChange(val === "vide" ? "vide" : Number(val)); 
+        }}
       >
         {list.map(function(n){ return <option key={n} value={n}>{n}</option>; })}
       </select>
