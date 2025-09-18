@@ -60,7 +60,6 @@ export default function App() {
   const [search, setSearch] = React.useState("");
   const [activeId, setActiveId] = React.useState(0);
   const [content, setContent] = React.useState("");
-  const [pageBackground, setPageBackground] = React.useState("#f7fbfb");
   const [knobPosition, setKnobPosition] = React.useState(0); // Position du bouton sur la palette (0-100%)
 
   var passageLabel = book + " " + chapter + ":" + verse + " " + version;
@@ -122,7 +121,6 @@ export default function App() {
       gradientEnd = "#86efac";
     }
     
-    setPageBackground(newColor);
     console.log('Changing page background to:', newColor, 'at position:', percentage + '%');
     
     // Appliquer immédiatement à la page
@@ -201,7 +199,8 @@ export default function App() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
       
-      const response = await fetch(`/api/generate-study`, {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+      const response = await fetch(`${backendUrl}/api/generate-study`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -266,6 +265,18 @@ export default function App() {
 
   return (
     <div className="page-wrap">
+      {/* HEADER avec Marquee MEDITATION */}
+      <div className="header-marquee">
+        <div className="marquee-container">
+          <div className="marquee-content" data-text="✨ MEDITATION BIBLIQUE ✨ ÉTUDE SPIRITUELLE ✨ SAGESSE DIVINE ✨ MÉDITATION THÉOLOGIQUE ✨ CONTEMPLATION SACRÉE ✨ RÉFLEXION INSPIRÉE ✨">
+            ✨ MEDITATION BIBLIQUE ✨ ÉTUDE SPIRITUELLE ✨ SAGESSE DIVINE ✨ MÉDITATION THÉOLOGIQUE ✨ CONTEMPLATION SACRÉE ✨ RÉFLEXION INSPIRÉE ✨
+          </div>
+        </div>
+        <div className="header-subtitle">
+          🙏 Espace d'étude biblique moderne et responsive
+        </div>
+      </div>
+
       {/* Bandeau haut (bulle %, barre gradient, points) */}
       <div className="topband">
         <div className="progress-bubble">{Math.round(progress)}%</div>
