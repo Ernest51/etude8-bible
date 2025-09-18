@@ -109,4 +109,18 @@ body{margin:0; color:#0f2d33; font-family:Inter,Segoe UI,Roboto,Helvetica,Arial}
   background:#fff; border:1px solid var(--border); border-radius:18px; box-shadow:0 10px 30px rgba(0,0,0,.04);
   padding:14px 14px 22px;
 }
-.right-head{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; border-radius:12px; background:#f5fbff; border:1px solid var(-
+.right-head{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px; border-radius:12px; background:#f5fbff; border:1px solid var(--border);}
+.right-head h3{margin:0; font-size:16px; color:#0b7392}
+.right-nav{display:flex; gap:6px}
+.mini-pill{height:32px; padding:0 12px; border-radius:8px; border:1px solid var(--ring); background:#f8fbff; cursor:pointer; font-size:13px}
+.mini-pill:hover{background:#f1f7ff}
+
+.welcome{text-align:center; margin:16px 0}
+.welcome h1{font-size:22px; color:#0b7392; margin:0 0 6px}
+.welcome p{color:var(--muted); margin:0}
+
+.section{padding:14px; border-radius:12px; background:linear-gradient(180deg,#ffffff,#fbffff); margin-bottom:14px}
+.content-pre{white-space:pre-wrap; margin:0; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; background:#f8fafc; border:1px solid #eef2f7; padding:12px; border-radius:10px}
+.muted{color:var(--muted); font-style:italic}
+
+.page-wrap{min-height:100vh; background:linear-gradient(180deg,#fff7ed 0%, #ecfdf5 100%)}
