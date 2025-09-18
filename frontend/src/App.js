@@ -108,20 +108,28 @@ export default function App() {
 
   // Fonction pour mettre à jour la couleur de fond selon le pourcentage
   function updateBackgroundColor(percentage) {
-    let newColor, gradientEnd;
+    let newColor, gradientEnd, buttonColor, buttonColorHover;
     
     if (percentage < 25) {
       newColor = "#dbeafe"; // Bleu
       gradientEnd = "#bfdbfe";
+      buttonColor = "#3b82f6";
+      buttonColorHover = "#2563eb";
     } else if (percentage < 50) {
       newColor = "#e9d5ff"; // Violet
       gradientEnd = "#ddd6fe";
+      buttonColor = "#8b5cf6";
+      buttonColorHover = "#7c3aed";
     } else if (percentage < 75) {
       newColor = "#fed7aa"; // Orange
       gradientEnd = "#fdba74";
+      buttonColor = "#f59e0b";
+      buttonColorHover = "#d97706";
     } else {
       newColor = "#bbf7d0"; // Vert
       gradientEnd = "#86efac";
+      buttonColor = "#10b981";
+      buttonColorHover = "#059669";
     }
     
     console.log('Changing page background to:', newColor, 'at position:', percentage + '%');
@@ -131,6 +139,11 @@ export default function App() {
     if (pageWrap) {
       pageWrap.style.background = `linear-gradient(180deg, ${newColor} 0%, ${gradientEnd} 100%)`;
     }
+    
+    // Appliquer la couleur aux boutons dynamiques
+    const root = document.documentElement;
+    root.style.setProperty('--dynamic-button-color', buttonColor);
+    root.style.setProperty('--dynamic-button-hover', buttonColorHover);
   }
 
   // Fonction pour changer de livre et ajuster le chapitre si nécessaire
