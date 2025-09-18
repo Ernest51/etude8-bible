@@ -70,26 +70,60 @@ export default function App() {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const width = rect.width;
-    const percentage = x / width;
+    const percentage = (x / width) * 100;
     
-    // Définir les couleurs selon la position du clic
+    // Mettre à jour la position du bouton
+    setKnobPosition(Math.max(0, Math.min(100, percentage)));
+    
+    // Appliquer la couleur selon la position
+    updateBackgroundColor(percentage);
+  }
+
+  // Fonction pour gérer le drag du bouton
+  function handleKnobMouseDown(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const gradient = e.currentTarget.parentElement;
+    const rect = gradient.getBoundingClientRect();
+    
+    function handleMouseMove(moveEvent) {
+      const x = moveEvent.clientX - rect.left;
+      const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+      
+      setKnobPosition(percentage);
+      updateBackgroundColor(percentage);
+    }
+    
+    function handleMouseUp() {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    }
+    
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  }
+
+  // Fonction pour mettre à jour la couleur de fond selon le pourcentage
+  function updateBackgroundColor(percentage) {
     let newColor, gradientEnd;
-    if (percentage < 0.25) {
-      newColor = "#dbeafe"; // Bleu plus visible
+    
+    if (percentage < 25) {
+      newColor = "#dbeafe"; // Bleu
       gradientEnd = "#bfdbfe";
-    } else if (percentage < 0.5) {
-      newColor = "#e9d5ff"; // Violet plus visible  
+    } else if (percentage < 50) {
+      newColor = "#e9d5ff"; // Violet
       gradientEnd = "#ddd6fe";
-    } else if (percentage < 0.75) {
-      newColor = "#fed7aa"; // Orange plus visible
+    } else if (percentage < 75) {
+      newColor = "#fed7aa"; // Orange
       gradientEnd = "#fdba74";
     } else {
-      newColor = "#bbf7d0"; // Vert plus visible
+      newColor = "#bbf7d0"; // Vert
       gradientEnd = "#86efac";
     }
     
     setPageBackground(newColor);
-    console.log('Changing page background to:', newColor);
+    console.log('Changing page background to:', newColor, 'at position:', percentage + '%');
     
     // Appliquer immédiatement à la page
     const pageWrap = document.querySelector('.page-wrap');
