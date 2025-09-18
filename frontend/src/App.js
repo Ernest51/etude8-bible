@@ -273,6 +273,17 @@ export default function App() {
   function goPrev() { setActiveId(function(i){ return Math.max(0, i - 1); }); }
   function goNext() { setActiveId(function(i){ return Math.min(RUBRIQUES.length - 1, i + 1); }); }
 
+  async function handleVersetsClick() {
+    setActiveId(0);
+    console.log('Versets button clicked - activeId set to 0');
+    
+    // Attendre un peu pour que l'état se mette à jour
+    await wait(100);
+    
+    // Générer automatiquement l'étude verset par verset
+    handleGenerate();
+  }
+
   return (
     <div className="page-wrap">
       {/* HEADER avec Marquee MEDITATION */}
