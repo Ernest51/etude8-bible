@@ -62,6 +62,7 @@ export default function App() {
   const [content, setContent] = React.useState("");
   const [knobPosition, setKnobPosition] = React.useState(0); // Position du bouton sur la palette (0-100%)
   const [isResetting, setIsResetting] = React.useState(false); // Flag pour éviter la sauvegarde lors du reset
+  const [rubriquesStatus, setRubriquesStatus] = React.useState({}); // État des LEDs de chaque rubrique
 
   // Initialiser les couleurs au chargement
   React.useEffect(() => {
