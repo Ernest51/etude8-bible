@@ -571,7 +571,17 @@ export default function App() {
       if (response.ok) {
         const data = await response.json();
         setProgress(100);
-        setContent(data.content || "Étude verset par verset générée avec succès");
+        let content = data.content || "Étude verset par verset générée avec succès";
+        
+        // Améliorer la lisibilité en rendant certains éléments en gras
+        content = content.replace(/VERSET (\d+)/g, '**VERSET $1**');
+        content = content.replace(/TEXTE BIBLIQUE :/g, '**TEXTE BIBLIQUE :**');
+        content = content.replace(/EXPLICATION THÉOLOGIQUE :/g, '**EXPLICATION THÉOLOGIQUE :**');
+        content = content.replace(/Introduction au Chapitre/g, '**Introduction au Chapitre**');
+        content = content.replace(/Synthèse Spirituelle/g, '**Synthèse Spirituelle**');
+        content = content.replace(/Principe Herméneutique/g, '**Principe Herméneutique**');
+        
+        setContent(content);
         
         // Marquer la rubrique 0 comme complétée (LED verte)
         setRubriquesStatus(prev => ({
