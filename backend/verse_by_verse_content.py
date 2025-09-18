@@ -157,6 +157,112 @@ Pour éclairer la terre - finalité terrestre de l'astronomie. Les astres serven
 Pour séparer la lumière d'avec les ténèbres - fonction de distinction. Les astres perpétuent l'œuvre de séparation inaugurée au premier jour.
 
 Dieu vit que cela était bon - quatrième approbation divine. L'ordre astronomique reçoit la sanction divine."""
+            },
+            19: {
+                "verse": "Ainsi, il y eut un soir, et il y eut un matin: ce fut le quatrième jour.",
+                "explanation": """Quatrième jour - achèvement de l'œuvre astronomique. L'univers physique est maintenant complet avec ses régulateurs temporels."""
+            },
+            20: {
+                "verse": "Dieu dit: Que les eaux produisent en abondance des animaux vivants, et que des oiseaux volent sur la terre vers l'étendue du ciel.",
+                "explanation": """Que les eaux produisent en abondance (yishretsu hamayim) - sixième parole créatrice. Création de la vie animale aquatique et aérienne.
+
+Des animaux vivants (nephesh chayah) - êtres dotés d'âme animale. Première apparition de la vie consciente dans la création.
+
+Que des oiseaux volent - création simultanée de la faune aquatique et aérienne. Les deux domaines fluides de la création reçoivent leurs habitants."""
+            },
+            21: {
+                "verse": "Dieu créa les grands poissons et tous les animaux vivants qui se meuvent, et que les eaux produisirent en abondance selon leur espèce; il créa aussi tout oiseau ailé selon son espèce. Dieu vit que cela était bon.",
+                "explanation": """Dieu créa (wayivra) - emploi du verbe bara pour souligner la nouveauté radicale de la vie animale. Passage de l'inanimé à l'animé.
+
+Les grands poissons - création des grands mammifères marinos. Ces créatures impressionnantes témoignent de la puissance créatrice.
+
+Selon leur espèce - ordre taxonomique maintenu dans le règne animal. Stabilité des espèces voulue par Dieu.
+
+Dieu vit que cela était bon - cinquième approbation divine. La vie animale reçoit la bénédiction créatrice."""
+            },
+            22: {
+                "verse": "Dieu les bénit, en disant: Soyez féconds, multipliez, et remplissez les eaux des mers; et que les oiseaux multiplient sur la terre.",
+                "explanation": """Dieu les bénit - première bénédiction divine dans la création. Les animaux reçoivent la capacité reproductive.
+
+Soyez féconds, multipliez - commandement de reproduction. Dieu veut que Sa création se perpétue et se développe.
+
+Remplissez les eaux des mers - colonisation des océans par la vie aquatique. Expansion géographique de la vie.
+
+Que les oiseaux multiplient sur la terre - développement de la faune aérienne. Conquête de l'espace atmosphérique."""
+            },
+            23: {
+                "verse": "Ainsi, il y eut un soir, et il y eut un matin: ce fut le cinquième jour.",
+                "explanation": """Cinquième jour - achèvement de la création animale aquatique et aérienne. Préparation immédiate de la création terrestre et humaine."""
+            },
+            24: {
+                "verse": "Dieu dit: Que la terre produise des animaux vivants selon leur espèce, du bétail, des reptiles et des animaux terrestres, selon leur espèce. Et cela fut ainsi.",
+                "explanation": """Que la terre produise des animaux vivants - septième parole créatrice. Création de la faune terrestre, dernière avant l'homme.
+
+Selon leur espèce - maintien de l'ordre taxonomique. Classification tripartite : bétail (domestique), reptiles, animaux sauvages.
+
+Et cela fut ainsi - obéissance immédiate de la terre au commandement divin. La création terrestre s'accomplit selon la parole."""
+            },
+            25: {
+                "verse": "Dieu fit les animaux de la terre selon leur espèce, et tout ce qui se meut sur la terre selon son espèce. Dieu vit que cela était bon.",
+                "explanation": """Dieu fit les animaux de la terre - création directe de la faune terrestre par l'action divine. Accomplissement de la parole créatrice.
+
+Selon leur espèce - respect de l'ordre taxonomique voulu par Dieu. Diversité dans l'unité du plan créateur.
+
+Dieu vit que cela était bon - sixième approbation divine. La création animale terrestre reçoit la sanction divine avant la création de l'homme."""
+            },
+            26: {
+                "verse": "Puis Dieu dit: Faisons l'homme à notre image, selon notre ressemblance, et qu'il domine sur les poissons de la mer, sur les oiseaux du ciel, sur le bétail, sur toute la terre, et sur tous les reptiles qui rampent sur la terre.",
+                "explanation": """Faisons l'homme (na'aseh adam) - huitième et dernière parole créatrice. Délibération trinitaire avant la création de l'homme.
+
+À notre image, selon notre ressemblance - l'homme créé à l'image de Dieu. Dignité unique de l'humanité dans la création.
+
+Qu'il domine - mandat dominateur confié à l'homme. Gérance responsable de la création sous l'autorité divine.
+
+Sur les poissons... oiseaux... bétail... terre... reptiles - autorité universelle de l'homme sur le règne animal et terrestre."""
+            },
+            27: {
+                "verse": "Dieu créa l'homme à son image, il le créa à l'image de Dieu, il créa l'homme et la femme.",
+                "explanation": """Dieu créa l'homme (wayivra Elohim et-ha'adam) - troisième emploi du verbe bara dans le récit. Nouveauté radicale de la création humaine.
+
+À son image - répétition qui souligne l'importance de l'image divine dans l'homme. Fondement de la dignité humaine.
+
+Il créa l'homme et la femme - création simultanée des deux sexes. Complémentarité voulue par Dieu dès l'origine."""
+            },
+            28: {
+                "verse": "Dieu les bénit, et Dieu leur dit: Soyez féconds, multipliez, remplissez la terre, et l'assujettissez; et dominez sur les poissons de la mer, sur les oiseaux du ciel, et sur tout animal qui se meut sur la terre.",
+                "explanation": """Dieu les bénit - bénédiction spéciale accordée à l'humanité. Grâce créatrice qui accompagne le mandat humain.
+
+Soyez féconds, multipliez - commandement de reproduction étendu à l'humanité. Croissance démographique selon la volonté divine.
+
+Remplissez la terre - colonisation planétaire par l'humanité. Expansion géographique de l'image divine.
+
+Assujettissez... dominez - double mandat de domination. Gérance responsable de la terre et autorité sur le règne animal."""
+            },
+            29: {
+                "verse": "Et Dieu dit: Voici, je vous donne toute herbe portant de la semence et qui est à la surface de toute la terre, et tout arbre ayant en lui du fruit d'arbre et portant de la semence: ce sera votre nourriture.",
+                "explanation": """Je vous donne - don divin de la nourriture. Provision divine pour les besoins humains. Générosité du Créateur envers Sa créature.
+
+Toute herbe portant de la semence - régime végétarien originel. L'humanité se nourrit initialement des productions végétales.
+
+Ce sera votre nourriture - prescription alimentaire divine. Dieu pourvoit aux besoins de Sa création."""
+            },
+            30: {
+                "verse": "Et à tout animal de la terre, à tout oiseau du ciel, et à tout ce qui se meut sur la terre, ayant en soi un souffle de vie, je donne toute herbe verte pour nourriture. Et cela fut ainsi.",
+                "explanation": """À tout animal... oiseau... - provision divine pour le règne animal. Extension de la générosité créatrice à toute vie animale.
+
+Ayant en soi un souffle de vie (nephesh chayah) - définition de la vie animale. Distinction entre animé et inanimé.
+
+Je donne toute herbe verte - régime végétarien originel pour les animaux. Harmonie pacifique dans la création originelle.
+
+Et cela fut ainsi - accomplissement de la providence divine. Dieu pourvoit effectivement aux besoins de toute Sa création."""
+            },
+            31: {
+                "verse": "Dieu vit tout ce qu'il avait fait et voici, cela était très bon. Ainsi, il y eut un soir, et il y eut un matin: ce fut le sixième jour.",
+                "explanation": """Dieu vit tout ce qu'il avait fait - évaluation finale de l'œuvre créatrice. Vision d'ensemble de la création achevée.
+
+Voici, cela était très bon (tov meod) - appréciation suprême. Non plus seulement bon mais très bon. Perfection absolue de la création originelle.
+
+Ce fut le sixième jour - achèvement de l'œuvre créatrice. Préparation du repos sabbatique. Accomplissement du dessein divin dans la création."""
             }
         },
         2: {
