@@ -318,6 +318,13 @@ body {
   transform: translateY(-3px);
 }
 
+.pill-btn.special.active {
+  background: linear-gradient(135deg, var(--success-color), #059669);
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.7), var(--shadow-xl);
+  transform: translateY(-2px);
+  animation: pulse 2s infinite;
+}
+
 .pill {
   position: relative;
   display: inline-flex;
