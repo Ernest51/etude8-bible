@@ -729,7 +729,9 @@ Soli Deo Gloria - Étude conforme à la sainte doctrine
 
           <div className="section">
             {content ? (
-              <pre className="content-pre">{content}</pre>
+              <div className="content-formatted">
+                {formatContent(content)}
+              </div>
             ) : (
               <p className="muted">
                 Sélectionnez une rubrique puis cliquez sur <b>Générer</b> pour afficher du contenu
