@@ -46,13 +46,51 @@ L'Esprit de Dieu se mouvait (ruach Elohim merachephet) - le Saint-Esprit couvait
             },
             5: {
                 "verse": "Dieu appela la lumière jour, et il appela les ténèbres nuit. Ainsi, il y eut un soir, et il y eut un matin: ce fut le premier jour.",
-                "explanation": """**"Dieu appela"** (*wayiqra Elohim*) - acte de **nomination divine**. Nommer, c'est exercer l'autorité souveraine. Adam exercera cette prérogative sur les animaux par délégation divine.
+                "explanation": """Dieu appela (wayiqra Elohim) - acte de nomination divine. Nommer, c'est exercer l'autorité souveraine. Adam exercera cette prérogative sur les animaux par délégation divine.
 
-**"Jour... nuit"** (*yom... laylah*) - établissement du **rythme temporel**. Dieu institue la succession temporelle, cadre de l'existence créaturelle. Le temps devient le théâtre de l'histoire du salut.
+Jour... nuit (yom... laylah) - établissement du rythme temporel. Dieu institue la succession temporelle, cadre de l'existence créaturelle. Le temps devient le théâtre de l'histoire du salut.
 
-**"Il y eut un soir, et il y eut un matin"** - définition du jour selon la perspective hébraïque (de soir en soir). Le jour commence dans l'obscurité pour s'achever dans la lumière, symbolisant le passage des ténèbres spirituelles à la lumière divine.
+Il y eut un soir, et il y eut un matin - définition du jour selon la perspective hébraïque (de soir en soir). Le jour commence dans l'obscurité pour s'achever dans la lumière, symbolisant le passage des ténèbres spirituelles à la lumière divine.
 
-**"Premier jour"** (*yom echad*) - commencement de l'histoire. Chaque jour créateur révèle un aspect de la gloire divine et prépare l'habitation de l'homme."""
+Premier jour (yom echad) - commencement de l'histoire. Chaque jour créateur révèle un aspect de la gloire divine et prépare l'habitation de l'homme."""
+            },
+            6: {
+                "verse": "Dieu dit: Qu'il y ait une étendue entre les eaux, et qu'elle sépare les eaux d'avec les eaux.",
+                "explanation": """Qu'il y ait une étendue (yehi raqia) - seconde parole créatrice. Le raqia désigne l'espace atmosphérique, la voûte céleste qui sépare les eaux terrestres des eaux supérieures.
+
+Qu'elle sépare les eaux d'avec les eaux - second acte de séparation divine. Dieu continue son œuvre d'organisation en distinguant les différents éléments de la création.
+
+Cette séparation révèle la sagesse divine qui ordonne le cosmos selon un plan parfait, établissant les conditions nécessaires à la vie."""
+            },
+            7: {
+                "verse": "Et Dieu fit l'étendue, et il sépara les eaux qui sont au-dessous de l'étendue d'avec les eaux qui sont au-dessus de l'étendue. Et cela fut ainsi.",
+                "explanation": """Et Dieu fit l'étendue (wayaas Elohim et-haraqia) - accomplissement de la parole divine. Ce qui est dit par Dieu s'accomplit immédiatement.
+
+Il sépara les eaux - distinction entre les eaux atmosphériques et les eaux terrestres, créant l'espace habitable pour les créatures futures.
+
+Et cela fut ainsi (wayehi-chen) - formule d'accomplissement. La création obéit parfaitement à la volonté divine, révélant l'autorité absolue du Créateur."""
+            },
+            8: {
+                "verse": "Dieu appela l'étendue ciel. Ainsi, il y eut un soir, et il y eut un matin: ce fut le second jour.",
+                "explanation": """Dieu appela l'étendue ciel (shamayim) - nomination du firmament. Le terme hébreu shamayim évoque les eaux élevées, soulignant la séparation entre le terrestre et le céleste.
+
+Second jour - poursuite de l'œuvre créatrice selon l'ordre divin. Chaque jour ajoute une nouvelle dimension à la création en préparation de l'œuvre finale."""
+            },
+            9: {
+                "verse": "Dieu dit: Que les eaux qui sont au-dessous du ciel se rassemblent en un seul lieu, et que le sec paraisse. Et cela fut ainsi.",
+                "explanation": """Que les eaux se rassemblent (yiqawu hamayim) - troisième parole créatrice. Formation des océans et des continents par la séparation des éléments liquides et solides.
+
+Que le sec paraisse (weteraeh hayabashah) - émergence de la terre ferme, fondement nécessaire pour la vie végétale et animale future.
+
+Cette organisation révèle la providence divine qui prépare méthodiquement l'habitat des créatures."""
+            },
+            10: {
+                "verse": "Dieu appela le sec terre, et il appela l'amas des eaux mers. Dieu vit que cela était bon.",
+                "explanation": """Dieu appela le sec terre (eretz) - nomination de la terre ferme, domaine de l'humanité future. L'amas des eaux mers (yammim) - formation des océans.
+
+Dieu vit que cela était bon (ki-tov) - seconde évaluation divine de la création. La bonté divine se manifeste dans l'harmonie et l'ordre de la création.
+
+Cette approbation divine établit la valeur intrinsèque de la création matérielle, réfutant tout dualisme spirituel."""
             }
         },
         2: {
