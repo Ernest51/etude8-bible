@@ -393,18 +393,6 @@ export default function App() {
     }
   }
 
-  // Récupérer la dernière étude pour l'affichage
-  function getLastStudyLabel() {
-    try {
-      const stored = localStorage.getItem("lastStudy");
-      if (stored) {
-        const data = JSON.parse(stored);
-        return `${data.book || "Jean"} ${data.chapter || 3}`;
-      }
-    } catch (e) {}
-    return "Dernière étude";
-  }
-
   function handleReadBible() {
     var q = encodeURIComponent(passageLabel);
     window.open("https://www.bible.com/fr/search/bible?query=" + q, "_blank");
