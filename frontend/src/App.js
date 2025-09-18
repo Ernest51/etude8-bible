@@ -638,7 +638,7 @@ export default function App() {
             </div>
           </div>
 
-          <div className="welcome">
+          <div className="welcome" style={{display: content ? 'none' : 'block'}}>
             <h1>🙏 Bienvenue dans votre Espace d'Étude</h1>
             <p>​Cet outil vous accompagne dans une méditation biblique structurée et claire.</p>
           </div>
