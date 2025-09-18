@@ -63,6 +63,16 @@ export default function App() {
   const [knobPosition, setKnobPosition] = React.useState(0); // Position du bouton sur la palette (0-100%)
   const [isResetting, setIsResetting] = React.useState(false); // Flag pour éviter la sauvegarde lors du reset
 
+  // Initialiser les couleurs au chargement
+  React.useEffect(() => {
+    updateBackgroundColor(knobPosition);
+  }, []);
+
+  // Mettre à jour les couleurs quand knobPosition change
+  React.useEffect(() => {
+    updateBackgroundColor(knobPosition);
+  }, [knobPosition]);
+
   var passageLabel = (book === "vide" || chapter === "vide" || verse === "vide") 
     ? "Sélectionnez un passage" 
     : book + " " + chapter + ":" + verse + " " + version;
