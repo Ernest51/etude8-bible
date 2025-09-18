@@ -180,12 +180,15 @@ frontend:
 
   - task: "Composants UI (Select, NumberSelect, Toggle, Button)"
     implemented: true
-    working: true
+    working: false
     file: "frontend/src/App.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
+      - working: false
+        agent: "testing"
+        comment: "UI components mostly functional, but critical issue with special button styling. The .pill-btn.special.active class has problematic CSS animations that prevent normal user interaction. Specifically, the continuous pulse animation makes buttons unstable and unclickable. Other button variants (Reset, Générer) work correctly. Issue is in App.css lines around .pill-btn.special.active animation rules."
       - working: true
         agent: "main"
         comment: "Added lightweight UI components: Select for dropdowns, NumberSelect for numeric inputs, Toggle for ChatGPT switch, Button with variants (default, ghost, secondary, primary), Badge, and Article components."
