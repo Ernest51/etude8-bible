@@ -560,48 +560,41 @@ export default function App() {
       setProgress(100);
       
       // Contenu de fallback détaillé pour Genèse 1
-      setContent(`# 📖 Étude Verset par Verset - Genèse Chapitre 1
+      setContent(`Étude Verset par Verset - Genèse Chapitre 1
 
-## 🎯 Introduction au Chapitre
+Introduction au Chapitre
 
-Cette étude examine chaque verset de **Genèse 1** selon les principes de l'**exégèse grammatico-historique** et de l'**herméneutique orthodoxe**.
+Cette étude examine chaque verset de Genèse 1 selon les principes de l'exégèse grammatico-historique et de l'herméneutique orthodoxe.
 
----
+Verset 1
 
-## 📝 Verset 1
+Texte Biblique :
+"Au commencement, Dieu créa les cieux et la terre."
 
-### **Texte Biblique :**
-*"Au commencement, Dieu créa les cieux et la terre."*
+Explication Théologique :
 
-### **💡 Explication Théologique :**
+Au commencement (Bereshit) ouvre la révélation divine par l'affirmation de l'origine absolue. Le terme hébraïque implique un commencement temporel de l'univers matériel.
 
-**"Au commencement"** (*Bereshit*) ouvre la révélation divine par l'affirmation de l'origine absolue. Le terme hébraïque implique un commencement temporel de l'univers matériel.
+Dieu (Elohim) - forme plurielle indiquant la majesté divine et suggérant la Trinité. Ce pluriel d'excellence révèle la plénitude de la divinité engagée dans l'acte créateur.
 
-**"Dieu"** (*Elohim*) - forme plurielle indiquant la majesté divine et suggérant la Trinité. Ce pluriel d'excellence révèle la plénitude de la divinité engagée dans l'acte créateur.
+Créa (bara) - verbe exclusivement divin signifiant création ex nihilo. Contrairement à yatsar (façonner) ou asah (faire), bara indique une création absolue, du néant vers l'existence.
 
-**"Créa"** (*bara*) - verbe exclusivement divin signifiant création ex nihilo. Contrairement à *yatsar* (façonner) ou *asah* (faire), *bara* indique une création absolue, du néant vers l'existence.
+Verset 2
 
----
+Texte Biblique :
+"La terre était informe et vide : il y avait des ténèbres à la surface de l'abîme, et l'esprit de Dieu se mouvait au-dessus des eaux."
 
-## 📝 Verset 2
+Explication Théologique :
 
-### **Texte Biblique :**
-*"La terre était informe et vide : il y avait des ténèbres à la surface de l'abîme, et l'esprit de Dieu se mouvait au-dessus des eaux."*
+Informe et vide (tohu wa-bohu) décrit l'état initial de la matière créée. Les ténèbres précèdent la lumière dans l'ordre créateur.
 
-### **💡 Explication Théologique :**
+L'Esprit de Dieu se mouvait (ruach Elohim merachephet) - le Saint-Esprit couvait comme un oiseau sur son nid, préparant l'éclosion de la création ordonnée.
 
-**"Informe et vide"** (*tohu wa-bohu*) décrit l'état initial de la matière créée. Les ténèbres précèdent la lumière dans l'ordre créateur.
+Synthèse Spirituelle
 
-**"L'Esprit de Dieu se mouvait"** (*ruach Elohim merachephet*) - le Saint-Esprit couvait comme un oiseau sur son nid, préparant l'éclosion de la création ordonnée.
+Cette étude verset par verset révèle la cohérence parfaite de la Parole de Dieu. Chaque verset s'harmonise dans l'analogie de la foi.
 
----
-
-## 🙏 Synthèse Spirituelle
-
-Cette étude verset par verset révèle la cohérence parfaite de la **Parole de Dieu**. Chaque verset s'harmonise dans l'**analogie de la foi**.
-
----
-**Soli Deo Gloria** - *Étude conforme à la sainte doctrine*
+Soli Deo Gloria - Étude conforme à la sainte doctrine
 
 [Note: Erreur API - ${error.message}]`);
       
