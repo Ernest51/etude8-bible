@@ -611,16 +611,25 @@ body{
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
 }
 
-/* 7. Section avec 3 colonnes */
-.three-column-container {
+/* 7. Interface avec sidebar 28 rubriques et ascenseur */
+.study-app-container {
   display: flex;
-  gap: 20px;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(0,0,0,.06);
+  min-height: 70vh;
+  gap: 24px;
+  padding: 28px;
+  background: linear-gradient(180deg, #f8feff 0%, #f6fbfb 100%);
   border-radius: 18px;
-  box-shadow: 0 10px 30px rgba(16,38,55,.08);
-  padding: 20px;
   margin-bottom: 40px;
+}
+
+/* Variables pour l'interface d'étude */
+:root {
+  --accent: #0ea5a4;
+  --muted: #7b8a90;
+  --card-bg: #f3faf9;
+  --soft: #eef7f7;
+  --white: #ffffff;
+  --radius: 14px;
 }
 
 .rubriques-left-panel {
