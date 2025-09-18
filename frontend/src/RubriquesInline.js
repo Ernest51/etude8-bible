@@ -1,32 +1,30 @@
 import React from "react";
 
 /**
- * RubriquesInline
- * Colonne gauche scrollable + sticky (desktop) pour lister les rubriques.
+ * RubriquesInline (version sans Tailwind)
+ * - Colonne gauche sticky (desktop) + ascenseur interne
  *
  * Props:
  * - items: Array<{ id:number, title:string, subtitle?:string }>
  * - activeId?: number
- * - onSelect?: (id:number) => void
- * - sticky?: boolean (true par défaut)
- * - topClass?: string (offset sticky Tailwind, ex: 'lg:top-36 xl:top-40')
+ * - onSelect?: (id:number)=>void
+ * - stickyTop?: number (px) offset sous le header, défaut 160
  */
 export default function RubriquesInline({
   items = [],
   activeId = 0,
   onSelect,
-  sticky = true,
-  topClass = "lg:top-36 xl:top-40",
+  stickyTop = 160,
 }) {
   return (
-    <aside className={`w-full ${sticky ? `lg:sticky ${topClass}` : ""}`}>
-      <div className="rounded-2xl border bg-white/60 p-2">
-        <div
-          className="max-h-[calc(100vh-16rem)] overflow-y-auto pr-2 overscroll-contain"
-          style={{ scrollbarGutter: "stable both-edges" }}
-          aria-label="Liste des rubriques"
-        >
-          <ul className="flex flex-col gap-2">
+    <aside
+      className="rubriques-aside"
+      style={{ position: "sticky", top: stickyTop }}
+      aria-label="Liste des rubriques"
+    >
+      <div className="rubriques-aside-card">
+        <div className="rubriques-scroll">
+          <ul className="rubriques-list">
             {items.map((it, idx) => {
               const id = it.id ?? idx;
               const isActive = id === activeId;
@@ -34,27 +32,16 @@ export default function RubriquesInline({
                 <li key={id}>
                   <button
                     type="button"
-                    onClick={() => onSelect?.(id)}
-                    className={[
-                      "w-full text-left rounded-xl border px-3 py-2 transition",
-                      isActive
-                        ? "border-emerald-400 bg-emerald-50"
-                        : "hover:bg-gray-50",
-                    ].join(" ")}
+                    className={`rubrique-btn ${isActive ? "is-active" : ""}`}
+                    onClick={() => onSelect && onSelect(id)}
                   >
-                    <div className="flex items-center gap-3">
-                      <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border text-xs">
-                        {idx}
-                      </span>
-                      <div className="min-w-0">
-                        <div className="font-medium truncate">{it.title}</div>
-                        {it.subtitle ? (
-                          <div className="text-xs text-gray-500 truncate">
-                            {it.subtitle}
-                          </div>
-                        ) : null}
-                      </div>
-                    </div>
+                    <span className="rubrique-index">{idx}</span>
+                    <span className="rubrique-texts">
+                      <span className="rubrique-title">{it.title}</span>
+                      {it.subtitle ? (
+                        <span className="rubrique-subtitle">{it.subtitle}</span>
+                      ) : null}
+                    </span>
                   </button>
                 </li>
               );
