@@ -766,6 +766,63 @@ body {
 
 /* Style pour les versets - on utilisera JavaScript pour les rendre gras */
 
+.content-formatted {
+  font-family: 'Georgia', serif;
+  font-size: 1.05rem;
+  line-height: 1.9;
+  color: var(--text-dark);
+  background: linear-gradient(135deg, #ffffff, #f8fafc);
+  padding: 2.5rem;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-gray);
+  max-height: 600px;
+  overflow-y: auto;
+  letter-spacing: 0.3px;
+}
+
+.content-formatted-inner {
+  /* Container pour le contenu formaté */
+}
+
+.content-bold {
+  font-weight: 700;
+  color: var(--primary-color);
+  font-size: 1.1rem;
+  margin: 1.2rem 0 0.8rem 0;
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.content-line {
+  margin: 0.4rem 0;
+  text-align: justify;
+}
+
+.content-space {
+  height: 0.8rem;
+}
+
+.content-formatted::-webkit-scrollbar {
+  width: 8px;
+}
+
+.content-formatted::-webkit-scrollbar-track {
+  background: var(--bg-gray-100);
+  border-radius: 4px;
+}
+
+.content-formatted::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 4px;
+}
+
+.content-formatted::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-light);
+}
+
 .content-pre::-webkit-scrollbar {
   width: 8px;
 }
