@@ -36,11 +36,7 @@ export default function App() {
   const [chapter, setChapter] = React.useState(3);
   const [verse, setVerse] = React.useState(16);
   const [version, setVersion] = React.useState("LSG");
-<<<<<<< HEAD
   const [length, setLength] = React.useState(500);
-=======
-  const [tokens, setTokens] = React.useState(500);
->>>>>>> ed4327de77fff5ce14e6c50845888dcf08aedae5
   const [chatgpt, setChatgpt] = React.useState(true);
 
   // UI
@@ -48,10 +44,7 @@ export default function App() {
   const [search, setSearch] = React.useState("");
   const [activeId, setActiveId] = React.useState(0);
   const [content, setContent] = React.useState("");
-<<<<<<< HEAD
   const [backgroundColor, setBackgroundColor] = React.useState("#f7fbfb");
-=======
->>>>>>> ed4327de77fff5ce14e6c50845888dcf08aedae5
 
   var passageLabel = book + " " + chapter + ":" + verse + " " + version;
 
@@ -60,17 +53,12 @@ export default function App() {
   }
 
   function handleReset() {
-<<<<<<< HEAD
     setBook("Jean"); setChapter(3); setVerse(16); setVersion("LSG"); setLength(500);
-=======
-    setBook("Jean"); setChapter(3); setVerse(16); setVersion("LSG"); setTokens(500);
->>>>>>> ed4327de77fff5ce14e6c50845888dcf08aedae5
     setChatgpt(true); setProgress(0); setSearch(""); setActiveId(0); setContent("");
   }
 
   function handleLastStudy() {
     try {
-<<<<<<< HEAD
       const stored = localStorage.getItem("lastStudy");
       if (stored) {
         const data = JSON.parse(stored);
@@ -96,12 +84,6 @@ export default function App() {
       }
     } catch (e) {}
     return "Dernière étude";
-=======
-      localStorage.setItem("lastStudy", JSON.stringify({
-        book: book, chapter: chapter, verse: verse, version: version, tokens: tokens, chatgpt: chatgpt
-      }));
-    } catch (e) {}
->>>>>>> ed4327de77fff5ce14e6c50845888dcf08aedae5
   }
 
   function handleReadBible() {
@@ -112,11 +94,8 @@ export default function App() {
   async function handleGenerate() {
     setProgress(5); await wait(200);
     setProgress(25); await wait(250);
-<<<<<<< HEAD
     
     try {
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || "http://localhost:8001";
-      console.log('Backend URL:', backendUrl);
       console.log('Making API call with payload:', {
         passage: passageLabel,
         version: version,
@@ -187,27 +166,13 @@ export default function App() {
         );
       }
     }
-=======
-    setProgress(60); await wait(350);
-    setProgress(100);
-    setContent(
-      "🙏 Méditation sur " + passageLabel +
-      "\n\n- Dieu aime, Dieu donne, la foi reçoit." +
-      "\n- La vie éternelle commence déjà par la communion avec le Fils." +
-      "\n\nPrière : Seigneur, apprends-moi à répondre à ton amour aujourd'hui. Amen."
-    );
->>>>>>> ed4327de77fff5ce14e6c50845888dcf08aedae5
   }
 
   function goPrev() { setActiveId(function(i){ return Math.max(0, i - 1); }); }
   function goNext() { setActiveId(function(i){ return Math.min(RUBRIQUES.length - 1, i + 1); }); }
 
   return (
-<<<<<<< HEAD
     <div className="page-wrap" style={{background: `linear-gradient(180deg, ${backgroundColor} 0%, #ecfdf5 100%)`}}>
-=======
-    <div className="page-wrap">
->>>>>>> ed4327de77fff5ce14e6c50845888dcf08aedae5
       {/* Bandeau haut (bulle %, barre gradient, points) */}
       <div className="topband">
         <div className="progress-bubble">{Math.round(progress)}%</div>
@@ -241,6 +206,7 @@ export default function App() {
           <SelectPill label="Version" value={version} onChange={setVersion} options={["LSG","NEG79","BDS"]} />
           <SelectPill label="Longueur" value={length} onChange={setLength} options={[500,1500,2500]} />
           <button className="pill-btn" onClick={function(){ window.open('https://chatgpt.com/', '_blank'); }}>ChatGPT</button>
+          <ColorPalette backgroundColor={backgroundColor} onChange={setBackgroundColor} />
           <button className="pill-btn" onClick={handleLastStudy}>{getLastStudyLabel()}</button>
           <button className="pill-btn" onClick={handleReset}>Reset</button>
           <button className="pill-btn" onClick={function(){ setActiveId(0); }}>Versets</button>
@@ -289,14 +255,15 @@ export default function App() {
   );
 }
 
-<<<<<<< HEAD
+/* ---------- UI sub-components ---------- */
+
 function ColorPalette(props) {
   var backgroundColor = props.backgroundColor, onChange = props.onChange;
   var colors = ["#f7fbfb", "#fff7ed", "#fef7ff", "#f0fdf4", "#ecfdf5", "#f0f9ff", "#fefce8", "#fdf2f8"];
   
   return (
     <div className="pill">
-      <span className="pill-label">Couleur</span>
+      <span className="pill-label">Palette</span>
       <div className="color-options">
         {colors.map(function(color) {
           return (
@@ -313,9 +280,6 @@ function ColorPalette(props) {
     </div>
   );
 }
-=======
-/* ---------- UI sub-components ---------- */
->>>>>>> ed4327de77fff5ce14e6c50845888dcf08aedae5
 
 function SelectPill(props) {
   var label = props.label, value = props.value, onChange = props.onChange, options = props.options;
@@ -350,17 +314,5 @@ function NumberPill(props) {
       </select>
       <span className="chev">▾</span>
     </div>
-  );
-}
-
-function TogglePill(props) {
-  var label = props.label, enabled = props.enabled, onToggle = props.onToggle;
-  return (
-    <button className={"pill toggle " + (enabled ? "on" : "")} onClick={onToggle} type="button">
-      <span className="pill-label">{label}</span>
-      <span className={"switch " + (enabled ? "sw-on" : "")}>
-        <span className="dot" />
-      </span>
-    </button>
   );
 }
