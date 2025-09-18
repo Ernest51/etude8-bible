@@ -1,54 +1,33 @@
 import React from "react";
 
 /**
- * RubriquesInline (version sans Tailwind)
- * - Colonne gauche sticky (desktop) + ascenseur interne
- *
- * Props:
- * - items: Array<{ id:number, title:string, subtitle?:string }>
- * - activeId?: number
- * - onSelect?: (id:number)=>void
- * - stickyTop?: number (px) offset sous le header, défaut 160
+ * Liste des rubriques à gauche, scrollable + sticky comme la capture.
+ * Ascenseur natif, styles fournis par App.css.
  */
-export default function RubriquesInline({
-  items = [],
-  activeId = 0,
-  onSelect,
-  stickyTop = 160,
-}) {
+export default function RubriquesInline({ items = [], activeId = 0, onSelect }) {
   return (
-    <aside
-      className="rubriques-aside"
-      style={{ position: "sticky", top: stickyTop }}
-      aria-label="Liste des rubriques"
-    >
-      <div className="rubriques-aside-card">
-        <div className="rubriques-scroll">
-          <ul className="rubriques-list">
-            {items.map((it, idx) => {
-              const id = it.id ?? idx;
-              const isActive = id === activeId;
-              return (
-                <li key={id}>
-                  <button
-                    type="button"
-                    className={`rubrique-btn ${isActive ? "is-active" : ""}`}
-                    onClick={() => onSelect && onSelect(id)}
-                  >
-                    <span className="rubrique-index">{idx}</span>
-                    <span className="rubrique-texts">
-                      <span className="rubrique-title">{it.title}</span>
-                      {it.subtitle ? (
-                        <span className="rubrique-subtitle">{it.subtitle}</span>
-                      ) : null}
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
+    <div className="rubriques">
+      <div className="rubriques-scroll">
+        {items.map((it) => {
+          const active = it.id === activeId;
+          return (
+            <button
+              key={it.id}
+              id={`rubrique-${it.id}`}
+              className={`rubrique ${active ? "active" : ""}`}
+              onClick={()=>onSelect?.(it.id)}
+              type="button"
+            >
+              <span className="idx">{it.id}</span>
+              <span className="r-texts">
+                <span className="r-title">{it.title}</span>
+                <span className="r-sub">Cliquez pour voir le contenu détaillé.</span>
+              </span>
+              <span className="status-dot" />
+            </button>
+          );
+        })}
       </div>
-    </aside>
+    </div>
   );
 }
