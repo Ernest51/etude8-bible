@@ -59,10 +59,31 @@ export default function App() {
 
   function handleLastStudy() {
     try {
-      localStorage.setItem("lastStudy", JSON.stringify({
-        book: book, chapter: chapter, verse: verse, version: version, length: length, chatgpt: chatgpt
-      }));
+      const stored = localStorage.getItem("lastStudy");
+      if (stored) {
+        const data = JSON.parse(stored);
+        setBook(data.book || "Jean");
+        setChapter(data.chapter || 3);
+        setVerse(data.verse || 16);
+        setVersion(data.version || "LSG");
+        setLength(data.length || 500);
+        setChatgpt(data.chatgpt !== undefined ? data.chatgpt : true);
+      }
+    } catch (e) {
+      console.error("Erreur lors du chargement de la dernière étude:", e);
+    }
+  }
+
+  // Récupérer la dernière étude pour l'affichage
+  function getLastStudyLabel() {
+    try {
+      const stored = localStorage.getItem("lastStudy");
+      if (stored) {
+        const data = JSON.parse(stored);
+        return `${data.book || "Jean"} ${data.chapter || 3}`;
+      }
     } catch (e) {}
+    return "Dernière étude";
   }
 
   function handleReadBible() {
