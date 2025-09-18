@@ -16,13 +16,13 @@ Les cieux et la terre - expression hébraïque désignant la totalité de l'univ
             },
             2: {
                 "verse": "La terre était informe et vide : il y avait des ténèbres à la surface de l'abîme, et l'esprit de Dieu se mouvait au-dessus des eaux.",
-                "explanation": """**"Informe et vide"** (*tohu wa-bohu*) décrit l'état initial de la matière créée. *Tohu* évoque le chaos, l'absence d'ordre, tandis que *bohu* indique la vacuité, l'absence de contenu.
+                "explanation": """Informe et vide (tohu wa-bohu) décrit l'état initial de la matière créée. Tohu évoque le chaos, l'absence d'ordre, tandis que bohu indique la vacuité, l'absence de contenu.
 
-**"Ténèbres"** (*choshek*) représentent non seulement l'absence physique de lumière, mais symboliquement l'état spirituel séparé de Dieu. Les ténèbres précèdent la lumière dans l'ordre créateur.
+Ténèbres (choshek) représentent non seulement l'absence physique de lumière, mais symboliquement l'état spirituel séparé de Dieu. Les ténèbres précèdent la lumière dans l'ordre créateur.
 
-**"L'abîme"** (*tehom*) désigne les eaux primordiales, masse liquide sur laquelle l'Esprit de Dieu planait. Ce terme évoque la profondeur mystérieuse des eaux originelles.
+L'abîme (tehom) désigne les eaux primordiales, masse liquide sur laquelle l'Esprit de Dieu planait. Ce terme évoque la profondeur mystérieuse des eaux originelles.
 
-**"L'Esprit de Dieu se mouvait"** (*ruach Elohim merachephet*) - le Saint-Esprit couvait comme un oiseau sur son nid, préparant l'éclosion de la création ordonnée. Première manifestation trinitaire dans l'Écriture."""
+L'Esprit de Dieu se mouvait (ruach Elohim merachephet) - le Saint-Esprit couvait comme un oiseau sur son nid, préparant l'éclosion de la création ordonnée. Première manifestation trinitaire dans l'Écriture."""
             },
             3: {
                 "verse": "Dieu dit: Que la lumière soit! Et la lumière fut.",
