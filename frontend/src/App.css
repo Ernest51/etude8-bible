@@ -749,18 +749,22 @@ body{
 }
 
 .current-study-center-panel {
-  flex: 0 0 300px;
+  flex: 0 0 280px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   padding: 20px;
+  background: rgba(14, 165, 179, 0.02);
+  border-radius: 16px;
+  border: 1px solid rgba(14, 165, 179, 0.08);
 }
 
 .right-content-panel {
   flex: 1;
   min-width: 0;
+  max-width: 450px;
 }
 
 .current-study-header {
