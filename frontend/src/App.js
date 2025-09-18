@@ -633,7 +633,8 @@ export default function App() {
         throw new Error(`Erreur ${response.status}: ${await response.text()}`);
       }
     } catch (error) {
-      console.error('Verse by verse generation error:', error);
+      console.error('❌ VERSE BY VERSE ERROR:', error);
+      console.error('❌ Error details:', error.message);
       setProgress(100);
       
       // Contenu de fallback détaillé pour Genèse 1
