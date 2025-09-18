@@ -648,6 +648,12 @@ Soli Deo Gloria - Étude conforme à la sainte doctrine
     }
   }
 
+  // TEST FUNCTION - Simple test
+  const testFunction = () => {
+    console.log('TEST FUNCTION WORKS!');
+    alert('TEST BUTTON CLICKED!');
+  };
+
   // Handler pour le bouton Versets - doit être défini avant le JSX
   const handleVersetsClick = async () => {
     console.log('🔵 VERSETS BUTTON CLICKED - Starting verse by verse generation');
