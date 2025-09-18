@@ -458,6 +458,8 @@ function App() {
       <div className="emergent-logo">
         Made with Emergent
       </div>
+
+      <ToastContainer />
     </div>
   );
 }
