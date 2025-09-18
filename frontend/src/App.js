@@ -340,7 +340,7 @@ export default function App() {
           <SelectPill label="Longueur" value={length} onChange={setLength} options={[500,1500,2500]} />
           <button className="pill-btn" onClick={function(){ window.open('https://chatgpt.com/', '_blank'); }}>ChatGPT</button>
           <button className="pill-btn" onClick={handleLastStudy}>{getLastStudyLabel()}</button>
-          <button className="pill-btn" onClick={handleReset}>Reset</button>
+          <button className="pill-btn reset" onClick={handleReset}>🔄 Reset</button>
           <button 
             className={`pill-btn special ${activeId === 0 ? 'active' : ''}`} 
             onClick={handleVersetsClick}
