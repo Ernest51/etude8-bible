@@ -310,37 +310,38 @@ body {
 }
 
 .pill-btn.special {
-  background: linear-gradient(135deg, var(--success-color), #34d399);
+  background: linear-gradient(135deg, var(--dynamic-button-color), var(--dynamic-button-hover));
   color: white;
-  border-color: var(--success-color);
+  border-color: var(--dynamic-button-color);
   font-weight: 700;
+  transition: var(--transition);
 }
 
 .pill-btn.special:hover {
-  background: linear-gradient(135deg, #34d399, var(--success-color));
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.5), var(--shadow-lg);
+  background: linear-gradient(135deg, var(--dynamic-button-hover), var(--dynamic-button-color));
+  box-shadow: 0 0 20px rgba(var(--dynamic-button-color), 0.5), var(--shadow-lg);
   transform: translateY(-3px);
 }
 
 .pill-btn.special.active {
-  background: linear-gradient(135deg, var(--success-color), #059669);
-  box-shadow: 0 0 25px rgba(16, 185, 129, 0.7), var(--shadow-xl);
+  background: linear-gradient(135deg, var(--dynamic-button-color), var(--dynamic-button-hover));
+  box-shadow: 0 0 25px rgba(var(--dynamic-button-color), 0.7), var(--shadow-xl);
   transform: translateY(-2px);
   animation: pulse 2s infinite;
 }
 
 .pill-btn.reset {
-  background: linear-gradient(135deg, #f97316, #ea580c);
+  background: linear-gradient(135deg, var(--dynamic-button-color), var(--dynamic-button-hover));
   color: white;
-  border-color: #f97316;
+  border-color: var(--dynamic-button-color);
   font-weight: 600;
+  transition: var(--transition);
 }
 
 .pill-btn.reset:hover {
-  background: linear-gradient(135deg, #ea580c, #c2410c);
-  box-shadow: 0 0 20px rgba(249, 115, 22, 0.5), var(--shadow-lg);
+  background: linear-gradient(135deg, var(--dynamic-button-hover), var(--dynamic-button-color));
+  box-shadow: 0 0 20px rgba(var(--dynamic-button-color), 0.5), var(--shadow-lg);
   transform: translateY(-2px) rotate(-5deg);
-  transition: var(--transition);
 }
 
 .pill-btn.reset:active {
@@ -348,10 +349,18 @@ body {
   animation: resetPulse 0.3s ease-out;
 }
 
-@keyframes resetPulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(0.95); }
-  100% { transform: scale(1); }
+.pill-btn.accent {
+  background: linear-gradient(135deg, var(--dynamic-button-color), var(--dynamic-button-hover));
+  color: white;
+  border-color: var(--dynamic-button-color);
+  animation: glow 2s ease-in-out infinite alternate;
+  transition: var(--transition);
+}
+
+.pill-btn.accent:hover {
+  background: linear-gradient(135deg, var(--dynamic-button-hover), var(--dynamic-button-color));
+  animation: none;
+  box-shadow: 0 0 25px rgba(var(--dynamic-button-color), 0.6), var(--shadow-xl);
 }
 
 .pill {
