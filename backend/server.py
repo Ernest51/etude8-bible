@@ -177,7 +177,7 @@ Cette étude examine chaque verset de {book} {chapter} selon les principes de l'
             content += f"""Verset {verse_data['verse_number']}
 
 Texte Biblique :
-"{verse_data['verse_text']}"
+{verse_data['verse_text']}
 
 Explication Théologique :
 
