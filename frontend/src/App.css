@@ -763,21 +763,43 @@ body{
   line-height: 1.4;
 }
 
-/* Contenu principal à droite */
-.study-content {
+/* Zone de réponses à droite */
+.study-responses {
   flex: 1;
   border-radius: 18px;
-  padding: 28px;
+  padding: 24px;
   background: var(--white);
   box-shadow: 0 8px 30px rgba(8, 48, 58, 0.04);
   min-width: 0;
+  max-height: 80vh;
+  overflow-y: auto;
 }
 
-.content-top-actions {
+.study-responses::-webkit-scrollbar {
+  width: 8px;
+}
+
+.study-responses::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.study-responses::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #cfeff0, #bfe8e7);
+  border-radius: 8px;
+}
+
+.responses-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid #f3faf9;
+}
+
+.nav-controls {
+  display: flex;
+  gap: 8px;
 }
 
 .nav-action-btn {
