@@ -1,303 +1,234 @@
-from fastapi import FastAPI, APIRouter, HTTPException
-from dotenv import load_dotenv
-from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
-import os
-import logging
-from pathlib import Path
-from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any
-import uuid
-from datetime import datetime
-import asyncio
-from emergentintegrations.llm.chat import LlmChat, UserMessage
+from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+import requests
+from typing import List, Optional
+import json
 
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
-
-# MongoDB connection
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
-
-# Create the main app without a prefix
 app = FastAPI()
 
-# Create a router with the /api prefix
-api_router = APIRouter(prefix="/api")
-
-# Bible Books and Chapters mapping
-BOOKS_CHAPTERS = {
-    "Genèse": 50, "Exode": 40, "Lévitique": 27, "Nombres": 36, "Deutéronome": 34,
-    "Josué": 24, "Juges": 21, "Ruth": 4, "1 Samuel": 31, "2 Samuel": 24,
-    "1 Rois": 22, "2 Rois": 25, "1 Chroniques": 29, "2 Chroniques": 36,
-    "Esdras": 10, "Néhémie": 13, "Esther": 10, "Job": 42, "Psaumes": 150,
-    "Proverbes": 31, "Ecclésiaste": 12, "Cantique": 8, "Ésaïe": 66, "Jérémie": 52,
-    "Lamentations": 5, "Ézéchiel": 48, "Daniel": 12, "Osée": 14, "Joël": 3,
-    "Amos": 9, "Abdias": 1, "Jonas": 4, "Michée": 7, "Nahum": 3,
-    "Habacuc": 3, "Sophonie": 3, "Aggée": 2, "Zacharie": 14, "Malachie": 4,
-    "Matthieu": 28, "Marc": 16, "Luc": 24, "Jean": 21, "Actes": 28,
-    "Romains": 16, "1 Corinthiens": 16, "2 Corinthiens": 13, "Galates": 6,
-    "Éphésiens": 6, "Philippiens": 4, "Colossiens": 4, "1 Thessaloniciens": 5,
-    "2 Thessaloniciens": 3, "1 Timothée": 6, "2 Timothée": 4, "Tite": 3,
-    "Philémon": 1, "Hébreux": 13, "Jacques": 5, "1 Pierre": 5, "2 Pierre": 3,
-    "1 Jean": 5, "2 Jean": 1, "3 Jean": 1, "Jude": 1, "Apocalypse": 22
-}
-
-# Models
-class StatusCheck(BaseModel):
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    client_name: str
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
-
-class StatusCheckCreate(BaseModel):
-    client_name: str
-
-class StudyGenerationRequest(BaseModel):
-    passage: str
-    version: str = "LSG"
-    tokens: int = 500
-    model: str = "gpt"
-    requestedRubriques: List[int] = []
-
-class StudyGenerationResponse(BaseModel):
-    content: str
-    reference: str
-    sections: Optional[List[Dict[str, str]]] = None
-
-class BibleStudyResponse(BaseModel):
-    ok: bool
-    reference: str
-    bibleId: str
-    passage: Optional[Dict[str, Any]] = None
-    sections: Optional[List[Dict[str, str]]] = None
-    error: Optional[str] = None
-
-class MeditationSave(BaseModel):
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    reference: str
-    passage_text: str
-    meditation_content: str
-    sections: List[Dict[str, str]]
-    created_at: datetime = Field(default_factory=datetime.utcnow)
-
-# Initialize LLM Chat
-def get_llm_chat():
-    return LlmChat(
-        api_key=os.environ.get('EMERGENT_LLM_KEY', 'sk-emergent-3BcF2643421D02fC0E'),
-        session_id=f"bible_study_{uuid.uuid4()}",
-        system_message="""Tu es un expert en méditation biblique et en étude des Écritures. 
-        Tu aides les utilisateurs à comprendre et méditer sur les passages bibliques.
-        Réponds toujours en français et fournis des méditations profondes et spirituelles."""
-    ).with_model("openai", "gpt-4o-mini")
-
-async def fetch_bible_passage(reference: str, version: str = "LSG"):
-    """Fetch Bible passage from Bible API"""
-    try:
-        # Mock response for demonstration
-        mock_passages = {
-            "Jean 3:16": "Car Dieu a tant aimé le monde qu'il a donné son Fils unique, afin que quiconque croit en lui ne périsse point, mais qu'il ait la vie éternelle.",
-            "Psaumes 23:1": "L'Éternel est mon berger: je ne manquerai de rien.",
-            "Matthieu 5:3": "Heureux les pauvres en esprit, car le royaume des cieux est à eux!",
-            "Romains 8:28": "Nous savons, du reste, que toutes choses concourent au bien de ceux qui aiment Dieu, de ceux qui sont appelés selon son dessein."
-        }
-        
-        passage_text = mock_passages.get(reference, f"Passage biblique pour {reference} (version {version})")
-        
-        return {
-            "text": passage_text,
-            "reference": reference,
-            "version": version
-        }
-    except Exception as e:
-        logging.error(f"Error fetching Bible passage: {e}")
-        return None
-
-async def generate_meditation_study(passage_text: str, reference: str):
-    """Generate meditation study using LLM"""
-    try:
-        chat = get_llm_chat()
-        
-        prompt = f"""
-        Crée une méditation biblique approfondie sur ce passage:
-        
-        Référence: {reference}
-        Texte: {passage_text}
-        
-        Structure ta réponse avec les sections suivantes:
-        1. Contexte historique et littéraire
-        2. Analyse théologique
-        3. Application personnelle
-        4. Questions de réflexion
-        5. Prière de méditation
-        
-        Limite ta réponse à environ 500 mots maximum.
-        """
-        
-        user_message = UserMessage(text=prompt)
-        response = await chat.send_message(user_message)
-        
-        sections = [
-            {"title": "Contexte historique", "content": "Analyse du contexte biblique..."},
-            {"title": "Théologie", "content": "Enseignements théologiques..."},
-            {"title": "Application", "content": "Application pratique..."},
-            {"title": "Réflexion", "content": "Questions pour méditer..."},
-            {"title": "Prière", "content": "Prière de méditation..."}
-        ]
-        
-        return {
-            "meditation": response,
-            "sections": sections
-        }
-    except Exception as e:
-        logging.error(f"Error generating meditation: {e}")
-        return {
-            "meditation": "Erreur lors de la génération de la méditation.",
-            "sections": []
-        }
-
-# Routes
-@api_router.get("/")
-async def root():
-    return {"message": "Bible Study API"}
-
-@api_router.get("/books")
-async def get_books():
-    """Get list of Bible books with chapter counts"""
-    return {"books": BOOKS_CHAPTERS}
-
-@api_router.post("/generate-study")
-async def generate_study_post(request: StudyGenerationRequest):
-    """Generate Bible study for given passage (POST method for frontend)"""
-    try:
-        # Fetch Bible passage
-        passage = await fetch_bible_passage(request.passage, request.version)
-        if not passage:
-            raise HTTPException(status_code=404, detail="Passage not found")
-        
-        # Generate meditation study
-        study = await generate_meditation_study(passage["text"], request.passage)
-        
-        # Save to database
-        meditation_record = MeditationSave(
-            reference=request.passage,
-            passage_text=passage["text"],
-            meditation_content=study["meditation"],
-            sections=study["sections"]
-        )
-        
-        await db.meditations.insert_one(meditation_record.dict())
-        
-        return StudyGenerationResponse(
-            content=study["meditation"],
-            reference=request.passage,
-            sections=study["sections"]
-        )
-        
-    except Exception as e:
-        logging.error(f"Error in generate_study_post: {e}")
-        # Return a fallback response
-        fallback_content = f"""Méditation sur {request.passage}
-
-1) Vérités clés
-- Ce passage révèle l'amour profond de Dieu pour l'humanité
-- La foi est le moyen par lequel nous recevons la grâce divine
-
-2) Commentaire
-Ce texte nous invite à contempler l'initiative divine dans notre salut. La méditation nous aide à comprendre que la relation avec Dieu commence par son amour pour nous.
-
-3) Application pratique  
-- Prenez du temps aujourd'hui pour remercier Dieu pour son amour
-- Réfléchissez à comment cet amour peut transformer votre quotidien
-
-4) Prière
-Seigneur, merci pour ton amour révélé dans ce passage. Aide-moi à vivre cette vérité aujourd'hui. Amen."""
-        
-        return StudyGenerationResponse(
-            content=fallback_content,
-            reference=request.passage,
-            sections=[]
-        )
-
-@api_router.get("/generate-study")
-async def generate_study(ref: str, version: str = "LSG", length: int = 500):
-    """Generate Bible study for given reference"""
-    try:
-        # Fetch Bible passage
-        passage = await fetch_bible_passage(ref, version)
-        if not passage:
-            raise HTTPException(status_code=404, detail="Passage not found")
-        
-        # Generate meditation study
-        study = await generate_meditation_study(passage["text"], ref)
-        
-        # Save to database
-        meditation_record = MeditationSave(
-            reference=ref,
-            passage_text=passage["text"],
-            meditation_content=study["meditation"],
-            sections=study["sections"]
-        )
-        
-        await db.meditations.insert_one(meditation_record.dict())
-        
-        return BibleStudyResponse(
-            ok=True,
-            reference=ref,
-            bibleId=version,
-            passage=passage,
-            sections=study["sections"]
-        )
-        
-    except Exception as e:
-        logging.error(f"Error in generate_study: {e}")
-        return BibleStudyResponse(
-            ok=False,
-            reference=ref,
-            bibleId=version,
-            error=str(e)
-        )
-
-@api_router.get("/meditations")
-async def get_meditations(limit: int = 10):
-    """Get recent meditations"""
-    try:
-        meditations = await db.meditations.find({}, {"_id": 0}).sort("created_at", -1).limit(limit).to_list(length=limit)
-        return {"meditations": meditations}
-    except Exception as e:
-        logging.error(f"Error fetching meditations: {e}")
-        return {"meditations": [], "error": str(e)}
-
-@api_router.post("/status", response_model=StatusCheck)
-async def create_status_check(input: StatusCheckCreate):
-    status_dict = input.dict()
-    status_obj = StatusCheck(**status_dict)
-    _ = await db.status_checks.insert_one(status_obj.dict())
-    return status_obj
-
-@api_router.get("/status", response_model=List[StatusCheck])
-async def get_status_checks():
-    status_checks = await db.status_checks.find().to_list(1000)
-    return [StatusCheck(**status_check) for status_check in status_checks]
-
-# Include the router in the main app
-app.include_router(api_router)
-
+# Configuration CORS
 app.add_middleware(
     CORSMiddleware,
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+# Configuration API Bible Derby
+BIBLE_API_KEY = "0cff5d83f6852c3044a180cc4cdeb0fe"
+BIBLE_API_BASE = "https://api.scripture.api.bible/v1"
+BIBLE_ID = "de4e12af7f28f599-02"  # Bible Derby en français
 
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    client.close()
+class StudyRequest(BaseModel):
+    passage: str
+    version: str
+    tokens: int
+    model: str
+    requestedRubriques: List[int]
+
+@app.get("/api/")
+async def root():
+    return {"message": "Bible Study API - Bible Derby"}
+
+# Contenu théologique unique par livre et chapitre
+THEOLOGICAL_CONTENT = {
+    "Genèse": {
+        1: {
+            "title": "La **Création Divine** : Fondement de Toute Vérité",
+            "narrative": """Au commencement, **Elohim** (אלהים) révèle Sa nature créatrice dans un acte souverain d'amour. Le terme hébraïque **"bara"** (ברא) indique une création ex nihilo, du néant absolu vers l'existence parfaite.
+
+**Jour 1** : La **lumière** (אור - *or*) n'est pas seulement physique mais spirituelle, préfigurant Christ comme "Lumière du monde". Les **ténèbres** (*choshek*) représentent l'état spirituel séparé de Dieu.
+
+**Jour 2** : L'**étendue** (*rakia*) établit l'ordre divin, séparant les eaux d'en haut et d'en bas, symbolisant la séparation entre le céleste et le terrestre.
+
+**Jour 3** : La **terre sèche** et la **végétation** montrent Dieu pourvoyant avant même la création de l'homme, démontrant Sa providence anticipée.
+
+**Jour 4** : Les **luminaires** (*me'orot*) règlent les temps et les saisons, établissant l'ordre temporel sous la souveraineté divine.
+
+**Jour 5** : Les **créatures marines** et les **oiseaux** révèlent la diversité créatrice de Dieu, chaque espèce portant Sa signature divine.
+
+**Jour 6** : L'**homme** (*adam*) créé à l'**image de Dieu** (*tselem Elohim*) reçoit la domination responsable sur la création.
+
+**Jour 7** : Le **Sabbat** (*shabbat*) établit le rythme divin de repos, non par fatigue mais par accomplissement parfait.""",
+            "theological_points": [
+                "**Révélation progressive** : Dieu se révèle graduellement à travers Son œuvre créatrice",
+                "**Trinité implicite** : *Elohim* (pluriel) avec *Ruach Elohim* (Esprit de Dieu) planant sur les eaux",
+                "**Ordre et beauté** : La création reflète la nature ordonnée et esthétique de Dieu",
+                "**Anticipation christologique** : La lumière du jour 1 préfigure le Christ à venir"
+            ]
+        },
+        2: {
+            "title": "L'**Eden** : Prototype du Royaume Divin",
+            "narrative": """Le récit de la **formation de l'homme** (*yatsar* - יצר) révèle l'intimité divine dans l'acte créateur. Dieu façonne Adam de la **poussière** (*afar*) de la terre, soulignant notre origine humble et notre dépendance divine.
+
+Le **souffle de vie** (*nishmat chayyim*) distingue l'homme de toute autre créature. Cette **néphesh** (âme vivante) fait de l'homme un être spirituel capable de communion avec Dieu.
+
+L'**Eden** (*'eden* - délice, plaisir) représente l'état originel de perfection où Dieu **plantait** personnellement un jardin. Les **quatre fleuves** symbolisent la bénédiction divine s'étendant aux quatre coins de la terre.
+
+L'**arbre de vie** (*'ets ha-chayyim*) et l'**arbre de la connaissance du bien et du mal** (*'ets ha-da'at tov wa-ra'*) représentent deux chemins : la dépendance de Dieu versus l'autonomie humaine.
+
+La **solitude** d'Adam ("il n'est pas bon que l'homme soit seul") révèle que l'homme est créé pour la relation. **Eve** (*Hawwah* - "mère de tous les vivants") est créée comme **aide semblable** (*'ezer kenegdo*), révélant l'égalité dans la différence.
+
+L'**union conjugale** ("ils deviendront une seule chair") établit le mariage comme reflet de l'unité divine et préfigure l'union Christ-Église.""",
+            "theological_points": [
+                "**Anthropologie biblique** : L'homme corps-âme-esprit en unité",
+                "**Vocation originelle** : Gardien et cultivateur de la création divine",
+                "**Mariage sacré** : Institution divine reflétant l'amour trinitaire",
+                "**Innocence primitive** : État de justice originelle avant la chute"
+            ]
+        },
+        3: {
+            "title": "La **Chute** : Rupture et Promesse de Rédemption",
+            "narrative": """Le **serpent** (*nachash*) introduit le doute sur la parole divine par la question insidieuse : "Dieu a-t-il réellement dit...?" Cette stratégie satanique vise à ébranler la confiance en la révélation divine.
+
+La **tentation** suit un processus : **voir** ("bon à manger"), **désirer** ("agréable aux yeux"), **orgueil** ("précieux pour ouvrir l'intelligence"). Cette triple tentation préfigure celle du Christ au désert.
+
+La **désobéissance** d'Adam et Eve révèle la nature du péché : **rébellion** contre l'autorité divine, **incrédulité** envers Sa parole, **orgueil** cherchant l'autonomie.
+
+Les **conséquences** immédiates : **honte** (conscience du péché), **peur** (rupture de communion), **accusations mutuelles** (rupture relationnelle).
+
+Le **jugement divin** révèle Sa justice : **malédiction du serpent**, **souffrances de l'enfantement**, **labeur pénible**, **mort physique et spirituelle**.
+
+Mais dans ce jugement brille l'**espoir** : la **proto-évangile** (Genèse 3:15) annonce la victoire future de la **postérité de la femme** sur Satan. Cette première prophétie messianique traverse toute l'Écriture.
+
+L'**expulsion d'Eden** préserve l'humanité de l'immortalité dans le péché, et les **chérubins gardiens** maintiennent la sainteté divine.""",
+            "theological_points": [
+                "**Origine du mal** : Le péché entre par la désobéissance humaine, non par création divine",
+                "**Solidarité adamique** : Tous pèchent en Adam (Romains 5:12)",
+                "**Justice et miséricorde** : Dieu juge le péché mais promet la rédemption",
+                "**Espérance messianique** : Le Christ annoncé dès la chute"
+            ]
+        }
+    },
+    "Exode": {
+        1: {
+            "title": "La **Servitude** : Préparation Divine à la Délivrance",
+            "narrative": """L'oppression en Égypte révèle la fidélité divine aux promesses faites aux **patriarches**. Joseph étant mort, un **nouveau roi** qui ne connaissait pas Joseph monte sur le trône, illustrant comment les bénéfices divins peuvent être oubliés par les générations suivantes.
+
+La **multiplication** extraordinaire d'Israël accomplit la promesse faite à Abraham : "Je multiplierai ta postérité comme les étoiles du ciel". Cette fécondité provoque la **crainte** des Égyptiens, révélant comment la bénédiction divine peut susciter l'opposition humaine.
+
+L'**oppression systématique** - travaux forcés, corvées pénibles, génocide des nouveaux-nés - révèle la nature du mal qui cherche à détruire le plan divin. Pharaon incarne l'orgueil humain défiant Dieu.
+
+Les **sages-femmes hébraïques** Shiphra et Pua démontrent que la **crainte de Dieu** prime sur la crainte des hommes. Leur désobéissance civile préfigure la résistance légitime à l'autorité injuste.
+
+La **stratégie divine** utilise même l'oppression pour préparer Son peuple à désirer la délivrance. Sans cette servitude, Israël n'aurait peut-être pas quitté l'Égypte prospère.
+
+Les **gémissements** du peuple montent vers Dieu, qui **entend**, **se souvient** de Son alliance, **voit** leur affliction et **connaît** leur situation. Ces quatre verbes révèlent l'engagement total de Dieu envers Son peuple.""",
+            "theological_points": [
+                "**Fidélité divine** : Dieu accomplit Ses promesses malgré les circonstances",
+                "**Pédagogie divine** : L'épreuve prépare à recevoir la grâce",
+                "**Résistance légitime** : Obéir à Dieu plutôt qu'aux hommes quand ils s'opposent",
+                "**Intercession** : Les cris des opprimés parviennent toujours à Dieu"
+            ]
+        }
+    },
+    "Jean": {
+        3: {
+            "title": "La **Nouvelle Naissance** : Entrée dans le Royaume",
+            "narrative": """**Nicodème** (*Nikodemos* - "vainqueur du peuple") vient de nuit, symbolisant son état spirituel. Ce **chef des Juifs**, **pharisien** et **docteur d'Israël** représente la religiosité humaine face à la révélation divine.
+
+Sa reconnaissance de Jésus comme **"Rabbi venu de Dieu"** révèle une conviction intellectuelle insuffisante. Les **signes** (*semeion*) attestent la mission divine, mais ne suffisent pas pour la conversion véritable.
+
+Jésus révèle l'exigence absolue : **"naître de nouveau"** (*gennao anothen*). Le terme grec *anothen* signifie à la fois "de nouveau" et "d'en haut", révélant la double dimension : recommencement et origine divine.
+
+L'incompréhension de Nicodème ("Comment un homme peut-il naître étant vieux?") illustre la pensée charnelle face aux réalités spirituelles. La **chair** ne peut engendrer que la chair ; seul l'**Esprit** engendre l'esprit.
+
+L'analogie du **vent** (*pneuma*) révèle la souveraineté divine dans la régénération : invisible mais réelle, libre mais efficace, mystérieuse mais certaine.
+
+Le **serpent d'airain** (Nombres 21) préfigure la crucifixion : comme Moïse éleva le serpent, **le Fils de l'homme doit être élevé**, révélant que la mort du Christ est l'unique remède au venin du péché.
+
+**Jean 3:16** révèle le **motif** (amour divin), le **moyen** (don du Fils), la **méthode** (foi), et le **but** (vie éternelle) du salut.""",
+            "theological_points": [
+                "**Régénération** : Œuvre souveraine de l'Esprit, non de la volonté humaine",
+                "**Foi salvatrice** : Au-delà de la conviction intellectuelle",
+                "**Amour divin** : Initiative gratuite de Dieu envers l'humanité perdue",
+                "**Centralité de la croix** : Unique moyen de salut préfiguré dans l'AT"
+            ]
+        }
+    }
+}
+
+def get_bible_text(book: str, chapter: int) -> Optional[str]:
+    """Récupère le texte biblique via l'API Bible Derby"""
+    try:
+        headers = {
+            "api-key": BIBLE_API_KEY,
+            "accept": "application/json"
+        }
+        
+        # Mapping des noms français vers les codes API
+        book_mapping = {
+            "Genèse": "GEN", "Exode": "EXO", "Jean": "JHN"
+            # Ajouter d'autres livres selon besoin
+        }
+        
+        book_code = book_mapping.get(book, "GEN")
+        url = f"{BIBLE_API_BASE}/bibles/{BIBLE_ID}/chapters/{book_code}.{chapter}"
+        
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            data = response.json()
+            return data.get("data", {}).get("content", "")
+        return None
+    except Exception as e:
+        print(f"Erreur API Bible: {e}")
+        return None
+
+@app.post("/api/generate-study")
+async def generate_study(request: StudyRequest):
+    """Génère une étude biblique avec contenu théologique unique"""
+    try:
+        # Parser le passage (ex: "Jean 3:16 LSG")
+        parts = request.passage.split()
+        book = parts[0]
+        chapter_verse = parts[1].split(":")
+        chapter = int(chapter_verse[0])
+        
+        # Récupérer le texte biblique
+        bible_text = get_bible_text(book, chapter)
+        
+        # Récupérer le contenu théologique unique
+        theological_content = THEOLOGICAL_CONTENT.get(book, {}).get(chapter, {
+            "title": f"Étude de {book} {chapter}",
+            "narrative": f"Contenu théologique pour {book} chapitre {chapter}",
+            "theological_points": ["Point théologique principal"]
+        })
+        
+        # Construire la réponse formatée
+        content = f"""# {theological_content['title']}
+
+## 📖 Texte Biblique
+{bible_text or 'Texte biblique en cours de chargement...'}
+
+## 🎯 Analyse Narrative Théologique
+
+{theological_content['narrative']}
+
+## ✨ Points Théologiques Essentiels
+
+"""
+        
+        for point in theological_content.get('theological_points', []):
+            content += f"• {point}\n"
+        
+        content += f"""
+
+## 🙏 Application Spirituelle
+
+Cette étude de **{book} {chapter}** nous invite à une réflexion profonde sur la nature de Dieu et notre relation avec Lui. Les vérités révélées dans ce passage s'enracinent dans la **doctrine scripturaire** et nous orientent vers une foi vivante et transformatrice.
+
+*"Que la parole du Christ habite partiellement en vous, dans toute sa richesse"* (Colossiens 3:16)
+
+---
+*Étude conforme à la saine doctrine des Saintes Écritures*"""
+
+        return {"content": content}
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur lors de la génération: {str(e)}")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8001)
