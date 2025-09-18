@@ -145,6 +145,9 @@ export default function App() {
   }
 
   function handleReset() {
+    // Marquer qu'on est en train de faire un reset
+    setIsResetting(true);
+    
     // Remettre tous les paramètres à leur première valeur (index 0)
     setBook("Genèse");  // Premier livre biblique
     setChapter(1);      // Premier chapitre
@@ -161,8 +164,8 @@ export default function App() {
     // Remettre le fond à la couleur par défaut (bleu)
     updateBackgroundColor(0);
     
-    // Note: localStorage "lastStudy" est préservé pour que "Dernière étude" continue de fonctionner
-    console.log('Reset effectué - Tout remis à 0/1, Dernière étude préservée');
+    // Note: localStorage "lastStudy" est préservé et ne sera pas modifié par cette action
+    console.log('Reset effectué - Tout remis à 0/1, Dernière étude inchangée');
   }
 
   function handleLastStudy() {
