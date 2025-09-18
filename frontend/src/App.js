@@ -648,6 +648,11 @@ Soli Deo Gloria - Étude conforme à la sainte doctrine
     }
   }
 
+  // Handler pour le bouton Versets - doit être défini avant le JSX
+  const handleVersetsClick = () => {
+    alert('VERSETS CLICKED!');
+  };
+
   return (
     <div className="page-wrap">
       {/* HEADER avec Marquee MEDITATION */}
