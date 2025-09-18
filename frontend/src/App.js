@@ -625,6 +625,7 @@ export default function App() {
             items={RUBRIQUES}
             activeId={activeId}
             onSelect={function(id){ setActiveId(id); }}
+            rubriquesStatus={rubriquesStatus}
           />
         </aside>
 
