@@ -91,6 +91,72 @@ Cette organisation révèle la providence divine qui prépare méthodiquement l'
 Dieu vit que cela était bon (ki-tov) - seconde évaluation divine de la création. La bonté divine se manifeste dans l'harmonie et l'ordre de la création.
 
 Cette approbation divine établit la valeur intrinsèque de la création matérielle, réfutant tout dualisme spirituel."""
+            },
+            11: {
+                "verse": "Puis Dieu dit: Que la terre produise de la verdure, de l'herbe portant de la semence, des arbres fruitiers donnant du fruit selon leur espèce et ayant en eux leur semence sur la terre. Et cela fut ainsi.",
+                "explanation": """Que la terre produise (tadsheh ha'arets) - quatrième parole créatrice. Dieu donne à la terre la capacité de produire la vie végétale selon des lois naturelles établies.
+
+De la verdure, de l'herbe portant de la semence - création des végétaux selon leurs espèces. Le principe de reproduction est intégré dès l'origine.
+
+Des arbres fruitiers donnant du fruit selon leur espèce - ordre taxonomique divin. Chaque espèce reproduit selon son genre, révélant la sagesse créatrice.
+
+Ayant en eux leur semence - principe de perpétuation autonome. Dieu établit les lois biologiques qui régissent la reproduction."""
+            },
+            12: {
+                "verse": "La terre produisit de la verdure, de l'herbe portant de la semence selon son espèce, et des arbres donnant du fruit et ayant en eux leur semence selon leur espèce. Dieu vit que cela était bon.",
+                "explanation": """La terre produisit - obéissance immédiate de la création à la parole divine. La terre répond parfaitement au commandement créateur.
+
+Selon son espèce - répétition qui souligne l'ordre taxonomique voulu par Dieu. Stabilité des espèces créées selon le dessein divin.
+
+Dieu vit que cela était bon - troisième approbation divine. La végétation, fondement de la chaîne alimentaire, reçoit l'approbation divine."""
+            },
+            13: {
+                "verse": "Ainsi, il y eut un soir, et il y eut un matin: ce fut le troisième jour.",
+                "explanation": """Troisième jour - achèvement du jour de la végétation. La terre est maintenant préparée à accueillir la vie animale et humaine.
+
+L'ordre créateur progresse méthodiquement vers l'accomplissement du dessein divin."""
+            },
+            14: {
+                "verse": "Dieu dit: Qu'il y ait des luminaires dans l'étendue du ciel, pour séparer le jour d'avec la nuit; que ce soient des signes pour marquer les époques, les jours et les années;",
+                "explanation": """Qu'il y ait des luminaires (yehi meorot) - cinquième parole créatrice. Formation du soleil, de la lune et des étoiles comme régulateurs du temps.
+
+Pour séparer le jour d'avec la nuit - fonction première des luminaires. Organisation définitive du rythme temporel.
+
+Que ce soient des signes - les astres servent de calendrier naturel. Ils marquent les saisons et permettent la navigation.
+
+Pour marquer les époques, les jours et les années - division du temps selon les cycles astronomiques. Fondement du calendrier liturgique."""
+            },
+            15: {
+                "verse": "Et qu'ils servent de luminaires dans l'étendue du ciel, pour éclairer la terre. Et cela fut ainsi.",
+                "explanation": """Qu'ils servent de luminaires - fonction d'éclairage de la terre. Les astres ne sont pas des divinités mais des serviteurs de la création.
+
+Et cela fut ainsi - accomplissement immédiat de la parole divine. L'univers astronomique se met en place selon l'ordre divin."""
+            },
+            16: {
+                "verse": "Dieu fit les deux grands luminaires: le plus grand luminaire pour présider au jour, et le plus petit luminaire pour présider à la nuit; il fit aussi les étoiles.",
+                "explanation": """Dieu fit les deux grands luminaires - création du soleil et de la lune. Le terme luminaires évite toute connotation idolâtrique.
+
+Le plus grand luminaire pour présider au jour - le soleil comme régulateur diurne. Autorité déléguée par Dieu aux astres.
+
+Le plus petit luminaire pour présider à la nuit - la lune comme régulateur nocturne. Hiérarchie astronomique établie par Dieu.
+
+Il fit aussi les étoiles - création de l'ensemble stellaire. L'univers dans son immensité témoigne de la grandeur divine."""
+            },
+            17: {
+                "verse": "Dieu les plaça dans l'étendue du ciel, pour éclairer la terre,",
+                "explanation": """Dieu les plaça - positionnement précis des astres dans l'espace. L'astronomie révèle l'ordre géométrique voulu par Dieu.
+
+Dans l'étendue du ciel - le firmament comme cadre de l'activité stellaire. L'espace cosmique organisé selon la sagesse divine.
+
+Pour éclairer la terre - finalité terrestre de l'astronomie. Les astres servent l'humanité dans sa vocation dominatrice."""
+            },
+            18: {
+                "verse": "Pour présider au jour et à la nuit, et pour séparer la lumière d'avec les ténèbres. Dieu vit que cela était bon.",
+                "explanation": """Pour présider au jour et à la nuit - autorité régulatrice des luminaires. Ils gouvernent les cycles temporels par délégation divine.
+
+Pour séparer la lumière d'avec les ténèbres - fonction de distinction. Les astres perpétuent l'œuvre de séparation inaugurée au premier jour.
+
+Dieu vit que cela était bon - quatrième approbation divine. L'ordre astronomique reçoit la sanction divine."""
             }
         },
         2: {
