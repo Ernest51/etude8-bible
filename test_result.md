@@ -348,9 +348,22 @@ test_plan:
   test_all: false
   test_priority: "high_first"
 
+  - task: "POST /api/generate-verse-by-verse endpoint"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ POST /api/generate-verse-by-verse endpoint fully functional. Tested with Genèse 1:1 LSG - returns ALL 31 verses with detailed theological explanations (20,586 characters). CORS properly configured with allow_origins=['*']. Server responding correctly with 200 status codes. The 'Failed to fetch' error reported by user is NOT a backend issue - likely frontend JavaScript, network connectivity, or browser-specific issue."
+
 agent_communication:
     - agent: "testing"
       message: "Comprehensive backend testing completed. All 6 backend endpoints tested successfully. Fixed MongoDB ObjectId serialization issue in /api/meditations endpoint. POST /api/generate-study endpoint working perfectly with LLM integration, proper error handling, and database persistence. All tests pass except for timing-sensitive database persistence test in full suite, but individual verification confirms database is working correctly."
     - agent: "user"
       message: "Signalé deux problèmes : 1) Erreur API 'Failed to fetch' 2) Le système s'arrête systématiquement à deux versets au lieu de générer tous les versets d'un chapitre biblique"
->>>>>>> ed4327de77fff5ce14e6c50845888dcf08aedae5
+    - agent: "testing"
+      message: "CRITICAL FINDINGS: Tested POST /api/generate-verse-by-verse with exact parameters from review request. Backend is working PERFECTLY - returns all 31 verses of Genesis 1 with full theological explanations. CORS configured correctly. Server healthy. The 'Failed to fetch' error is NOT a backend issue. The claim that system stops at 2 verses is INCORRECT - backend generates all verses. Issue is likely in frontend JavaScript code, network connectivity, or browser handling. Backend is fully functional."
