@@ -187,27 +187,23 @@ async def generate_study(request: StudyRequest):
         chapter_verse = parts[1].split(":")
         chapter = int(chapter_verse[0])
         
-        # Récupérer le texte biblique
+        # Récupérer le texte biblique via API Bible Derby
         bible_text = get_bible_text(book, chapter)
         
-        # Récupérer le contenu théologique unique
-        theological_content = THEOLOGICAL_CONTENT.get(book, {}).get(chapter, {
-            "title": f"Étude de {book} {chapter}",
-            "narrative": f"Contenu théologique pour {book} chapitre {chapter}",
-            "theological_points": ["Point théologique principal"]
-        })
+        # Récupérer le contenu théologique unique depuis notre bibliothèque
+        theological_content = get_theological_content(book, chapter)
         
-        # Construire la réponse formatée
+        # Construire la réponse formatée selon les standards théologiques
         content = f"""# {theological_content['title']}
 
-## 📖 Texte Biblique
-{bible_text or 'Texte biblique en cours de chargement...'}
+## 📖 Texte Biblique - Bible Derby
+{bible_text or 'Texte biblique en cours de chargement via API Bible Derby...'}
 
-## 🎯 Analyse Narrative Théologique
+## 🎯 Analyse Narrative et Théologique
 
 {theological_content['narrative']}
 
-## ✨ Points Théologiques Essentiels
+## ✨ Points Doctrinaux Essentiels
 
 """
         
@@ -216,14 +212,18 @@ async def generate_study(request: StudyRequest):
         
         content += f"""
 
-## 🙏 Application Spirituelle
+## 🙏 Méditation Spirituelle
 
-Cette étude de **{book} {chapter}** nous invite à une réflexion profonde sur la nature de Dieu et notre relation avec Lui. Les vérités révélées dans ce passage s'enracinent dans la **doctrine scripturaire** et nous orientent vers une foi vivante et transformatrice.
+Cette étude de **{book} {chapter}** nous conduit dans les profondeurs de la **révélation divine**. Les vérités exposées s'enracinent dans l'**exégèse rigoureuse** et l'**herméneutique orthodoxe**, nous orientant vers une **foi éclairée** et une **piété transformatrice**.
 
-*"Que la parole du Christ habite partiellement en vous, dans toute sa richesse"* (Colossiens 3:16)
+Que l'**Esprit Saint** nous guide dans toute la vérité alors que nous méditons ces **saintes Écritures**, **inspirées de Dieu** et utiles pour l'enseignement, la conviction, la correction et l'instruction dans la justice.
+
+## 📚 Références Canoniques
+
+*Cette étude respecte l'**analogie de la foi** et s'harmonise avec l'ensemble du **canon scripturaire**.*
 
 ---
-*Étude conforme à la saine doctrine des Saintes Écritures*"""
+**Soli Deo Gloria** - *Étude conforme à la saine doctrine des Saintes Écritures*"""
 
         return {"content": content}
         
