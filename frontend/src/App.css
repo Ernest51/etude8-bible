@@ -764,7 +764,11 @@ body{
 .right-content-panel {
   flex: 1;
   min-width: 0;
-  max-width: 450px;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .current-study-header {
