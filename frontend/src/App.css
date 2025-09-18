@@ -202,6 +202,14 @@ body{
 #result .small{color:#5a7381;font-size:14px;margin-bottom:8px}
 .small{color:#5a7381;font-size:14px;margin-bottom:8px}
 
+/* Classes Tailwind manquantes pour RubriquesInline */
+.text-muted-foreground { color: #7895a2; }
+.border-primary\/50 { border-color: rgba(14, 165, 179, 0.5); }
+.bg-primary\/5 { background-color: rgba(14, 165, 179, 0.05); }
+.border-border { border-color: rgba(0, 0, 0, 0.06); }
+.hover\:bg-muted:hover { background-color: rgba(248, 250, 252, 0.8); }
+.size-8 { width: 2rem; height: 2rem; }
+
 /* Responsive */
 @media (max-width:1200px){
   .sidebar { width: 280px; }
