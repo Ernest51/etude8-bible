@@ -21,37 +21,56 @@ const BOOKS_CHAPTERS = {
   "1 Jean":5,"2 Jean":1,"3 Jean":1,"Jude":1,"Apocalypse":22
 };
 
-// Rubriques d'étude biblique (28 sections comme dans l'HTML)
-const STUDY_SECTIONS = [
-  { id: 0, title: "Étude verset par verset", content: "Analyse minutieuse de chaque verset dans son contexte immédiat. Examen des termes clés, de la structure grammaticale et des nuances linguistiques." },
-  { id: 1, title: "Prière d'ouverture", content: "Moment de recueillement pour demander l'illumination divine. Invocation de l'Esprit Saint pour comprendre la Parole de Dieu." },
-  { id: 2, title: "Structure littéraire", content: "Identification de la structure narrative ou poétique du passage. Analyse des parallélismes, chiasmes et autres figures rhétoriques." },
-  { id: 3, title: "Questions du chapitre précédent", content: "Révision des points clés étudiés précédemment. Connexions avec les thèmes développés dans les chapitres antérieurs." },
-  { id: 4, title: "Contexte historique et géographique", content: "Situation historique et géographique du passage étudié. Contexte politique, social et religieux de l'époque." },
-  { id: 5, title: "Genre littéraire & style", content: "Identification du genre littéraire et analyse stylistique. Caractéristiques spécifiques au type de littérature biblique." },
-  { id: 6, title: "Thèmes théologiques majeurs", content: "Exploration des grands thèmes théologiques présents dans le passage. Doctrine et enseignements centraux." },
-  { id: 7, title: "Personnages et rôles", content: "Étude des personnages principaux et de leur rôle dans le récit. Caractérisation biblique et développement." },
-  { id: 8, title: "Mot-clé et lexique", content: "Analyse des termes clés et du vocabulaire spécialisé. Étude étymologique et sémantique des mots importants." },
-  { id: 9, title: "Analyse syntaxique", content: "Examen de la structure grammaticale et syntaxique du texte original. Relations logiques entre les propositions." },
-  { id: 10, title: "Originalité du texte", content: "Étude de l'originalité et de la spécificité du passage. Éléments distinctifs et contributions uniques." },
-  { id: 11, title: "Parallèles bibliques", content: "Identification des passages parallèles dans l'Écriture. Comparaison avec d'autres textes bibliques similaires." },
-  { id: 12, title: "Applications pratiques", content: "Translation des vérités bibliques dans la vie quotidienne. Mise en pratique concrète des enseignements." },
-  { id: 13, title: "Points de doctrine", content: "Enseignements doctrinaux spécifiques du passage. Implications pour la foi et la pratique chrétiennes." },
-  { id: 14, title: "Perspectives patristiques", content: "Interprétations des Pères de l'Église et des commentateurs anciens. Tradition exégétique historique." },
-  { id: 15, title: "Réception dans l'église", content: "Histoire de la réception et de l'interprétation du passage dans la tradition ecclésiale." },
-  { id: 16, title: "Problèmes herméneutiques", content: "Questions d'interprétation complexes et débats herméneutiques. Approches méthodologiques." },
-  { id: 17, title: "Comparaison intertestamentaire", content: "Relations entre l'Ancien et le Nouveau Testament. Typologie et accomplissement prophétique." },
-  { id: 18, title: "Éléments christologiques", content: "Aspects christologiques du passage. Préfigurations et révélations concernant le Christ." },
-  { id: 19, title: "Saint-Esprit & pneumatologie", content: "Dimension pneumatologique du texte. Rôle et action du Saint-Esprit dans le passage." },
-  { id: 20, title: "Éthique et comportement", content: "Implications éthiques et morales du passage. Principes de conduite pour la vie chrétienne." },
-  { id: 21, title: "Responsabilité du croyant", content: "Devoirs et responsabilités du croyant selon les enseignements du passage." },
-  { id: 22, title: "Communauté de foi", content: "Dimension communautaire et ecclésiale du passage. Vie en communauté chrétienne." },
-  { id: 23, title: "Espérance eschatologique", content: "Perspective eschatologique et espérance future révélée dans le passage." },
-  { id: 24, title: "Sagesse pratique", content: "Enseignements de sagesse pratique pour la vie quotidienne. Principes de vie sage." },
-  { id: 25, title: "Combat spirituel", content: "Aspects du combat spirituel présents dans le passage. Lutte contre les forces du mal." },
-  { id: 26, title: "Mystères & sacrements", content: "Dimension mystique et sacramentelle du passage. Liens avec les sacrements chrétiens." },
-  { id: 27, title: "Conclusion & prière de clôture", content: "Synthèse finale de l'étude et prière de conclusion. Récapitulatif des enseignements principaux." }
+// Rubriques d'étude biblique (29 sections du nouveau code)
+const RUBRIQUES = [
+  { id: 0, title: "Étude verset par verset", subtitle: "Analyse détaillée" },
+  { id: 1, title: "Prière d'ouverture", subtitle: "Invocation de l'Esprit" },
+  { id: 2, title: "Structure littéraire", subtitle: "Architecture du passage" },
+  { id: 3, title: "Questions du chapitre précédent", subtitle: "Synthèse" },
+  { id: 4, title: "Thème doctrinal", subtitle: "Enseignements clés" },
+  { id: 5, title: "Fondements théologiques", subtitle: "Bases scripturaires" },
+  { id: 6, title: "Contexte historique", subtitle: "Cadre et auteur" },
+  { id: 7, title: "Contexte culturel", subtitle: "Us et coutumes" },
+  { id: 8, title: "Contexte géographique", subtitle: "Lieux et cartes" },
+  { id: 9, title: "Analyse lexicale", subtitle: "Mots clés (hébreu/grec)" },
+  { id: 10, title: "Parallèles bibliques", subtitle: "Passages associés" },
+  { id: 11, title: "Prophétie et accomplissement", subtitle: "Lien canonique" },
+  { id: 12, title: "Personnages", subtitle: "Rôles et motivations" },
+  { id: 13, title: "Structure rhétorique", subtitle: "Arguments et logique" },
+  { id: 14, title: "Théologie trinitaire", subtitle: "Père / Fils / Esprit" },
+  { id: 15, title: "Christ au centre", subtitle: "Christologie du texte" },
+  { id: 16, title: "Évangile et grâce", subtitle: "Bonne nouvelle ici" },
+  { id: 17, title: "Application personnelle", subtitle: "Vie pratique" },
+  { id: 18, title: "Application communautaire", subtitle: "Église / famille" },
+  { id: 19, title: "Prière de réponse", subtitle: "Adoration et supplication" },
+  { id: 20, title: "Questions d'étude", subtitle: "Pour groupe ou perso" },
+  { id: 21, title: "Points de vigilance", subtitle: "Mésusages à éviter" },
+  { id: 22, title: "Objections et réponses", subtitle: "Apologétique succincte" },
+  { id: 23, title: "Perspective missionnelle", subtitle: "Témoignage et service" },
+  { id: 24, title: "Éthique chrétienne", subtitle: "Choix et vertus" },
+  { id: 25, title: "Louange / liturgie", subtitle: "Usage cultuel" },
+  { id: 26, title: "Méditation guidée", subtitle: "Silence et contemplation" },
+  { id: 27, title: "Mémoire / versets clés", subtitle: "À retenir par cœur" },
+  { id: 28, title: "Plan d'action", subtitle: "Pas concrets pour la semaine" },
 ];
+
+const BOOKS_FR = [
+  "Genèse","Exode","Lévitique","Nombres","Deutéronome",
+  "Josué","Juges","Ruth","1 Samuel","2 Samuel","1 Rois","2 Rois",
+  "1 Chroniques","2 Chroniques","Esdras","Néhémie","Esther","Job",
+  "Psaumes","Proverbes","Ecclésiaste","Cantique des Cantiques","Ésaïe",
+  "Jérémie","Lamentations","Ézéchiel","Daniel","Osée","Joël","Amos",
+  "Abdias","Jonas","Michée","Nahum","Habacuc","Sophonie","Aggée",
+  "Zacharie","Malachie","Matthieu","Marc","Luc","Jean","Actes",
+  "Romains","1 Corinthiens","2 Corinthiens","Galates","Éphésiens",
+  "Philippiens","Colossiens","1 Thessaloniciens","2 Thessaloniciens",
+  "1 Timothée","2 Timothée","Tite","Philémon","Hébreux","Jacques",
+  "1 Pierre","2 Pierre","1 Jean","2 Jean","3 Jean","Jude","Apocalypse",
+];
+
+// Max bornes raisonnables (couvre toute la Bible)
+const MAX_CHAPTERS = 150; // Psaumes
+const MAX_VERSES = 176;   // Psaume 119
 
 function App() {
   const [selectedSection, setSelectedSection] = useState(0);
