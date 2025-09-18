@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./App.css";
+import RubriquesInline from "./RubriquesInline";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
