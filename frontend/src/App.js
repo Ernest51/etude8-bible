@@ -239,19 +239,11 @@ export default function App() {
           <NumberPill label="Chapitre" value={chapter} onChange={setChapter} min={1} max={150} />
           <NumberPill label="Verset" value={verse} onChange={setVerse} min={1} max={176} />
           <SelectPill label="Version" value={version} onChange={setVersion} options={["LSG","NEG79","BDS"]} />
-<<<<<<< HEAD
           <SelectPill label="Longueur" value={length} onChange={setLength} options={[500,1500,2500]} />
-          <TogglePill label="ChatGPT" enabled={chatgpt} onToggle={function(){ window.open('https://chatgpt.com/', '_blank'); }} />
+          <button className="pill-btn" onClick={function(){ window.open('https://chatgpt.com/', '_blank'); }}>ChatGPT</button>
           <button className="pill-btn" onClick={handleLastStudy}>{getLastStudyLabel()}</button>
           <button className="pill-btn" onClick={handleReset}>Reset</button>
           <button className="pill-btn" onClick={function(){ setActiveId(0); }}>Versets</button>
-=======
-          <NumberPill label="Tokens" value={tokens} onChange={setTokens} min={128} max={2048} step={64} />
-          <TogglePill label="ChatGPT" enabled={chatgpt} onToggle={function(){ setChatgpt(!chatgpt); }} />
-          <button className="pill-btn" onClick={handleLastStudy}>Dernière étude</button>
-          <button className="pill-btn" onClick={handleReset}>Reset</button>
-          <button className="pill-btn">Versets</button>
->>>>>>> ed4327de77fff5ce14e6c50845888dcf08aedae5
           <button className="pill-btn accent" onClick={handleGenerate}>Générer</button>
         </div>
       </div>
