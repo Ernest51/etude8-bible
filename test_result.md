@@ -100,9 +100,6 @@
 
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
-<<<<<<< HEAD
-#====================================================================================================
-=======
 #====================================================================================================
 
 user_problem_statement: "Intégrer le nouveau code de méditation React fourni par l'utilisateur dans l'application existante, en commençant juste après la palette de couleurs arc-en-ciel. Le nouveau code inclut des contrôles pour sélectionner des passages bibliques, 29 rubriques d'étude, et une interface complète de méditation avec génération IA."
