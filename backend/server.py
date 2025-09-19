@@ -1,32 +1,47 @@
-# server.py
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Optional, Tuple, Dict
-import requests, re, html as ihtml
+import requests
+from typing import List, Optional, Dict, Any
+import re
 
-# --- modules internes (inchangés) ---
 from theological_content import get_theological_content
 from verse_by_verse_content import get_all_verses_for_chapter
 
 app = FastAPI()
 
-# CORS
+# ---------- CORS ----------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # en prod: restreindre si besoin
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Scripture API Bible
+# ---------- Config API Bible ----------
 BIBLE_API_KEY = "0cff5d83f6852c3044a180cc4cdeb0fe"
 BIBLE_API_BASE = "https://api.scripture.api.bible/v1"
-BIBLE_ID = "de4e12af7f28f599-02"  # Bible Derby FR (LSG)
+BIBLE_ID = "de4e12af7f28f599-02"  # Bible Derby (FR)
 
-# Mapping FR -> codes API
-BOOK_CODES: Dict[str, str] = {
+# ---------- Modèles ----------
+class StudyRequest(BaseModel):
+    passage: str
+    version: str
+    tokens: Optional[int] = 500
+    model: Optional[str] = "gpt"
+    requestedRubriques: Optional[List[int]] = None
+
+class VerseByVerseRequest(BaseModel):
+    passage: str
+    version: str
+
+class Generate28Request(BaseModel):
+    passage: str
+    version: str
+
+# ---------- Utils ----------
+BOOK_CODE_MAP = {
     "Genèse": "GEN", "Exode": "EXO", "Lévitique": "LEV", "Nombres": "NUM", "Deutéronome": "DEU",
     "Josué": "JOS", "Juges": "JDG", "Ruth": "RUT", "1 Samuel": "1SA", "2 Samuel": "2SA",
     "1 Rois": "1KI", "2 Rois": "2KI", "1 Chroniques": "1CH", "2 Chroniques": "2CH",
@@ -45,241 +60,151 @@ BOOK_CODES: Dict[str, str] = {
     "3 Jean": "3JN", "Jude": "JUD", "Apocalypse": "REV"
 }
 
-# --------- Modèles ---------
-class StudyRequest(BaseModel):
-    passage: str
-    version: str
-    tokens: int
-    model: str
-    requestedRubriques: List[int]
+RUBRIQUES_28 = [
+    "Étude verset par verset","Prière d'ouverture","Structure littéraire",
+    "Questions du chapitre précédent","Thème doctrinal","Fondements théologiques",
+    "Contexte historique","Contexte culturel","Contexte géographique",
+    "Analyse lexicale","Parallèles bibliques","Prophétie et accomplissement",
+    "Personnages","Structure rhétorique","Théologie trinitaire","Christ au centre",
+    "Évangile et grâce","Application personnelle","Application communautaire",
+    "Prière de réponse","Questions d'étude","Points de vigilance",
+    "Objections et réponses","Perspective missionnelle","Éthique chrétienne",
+    "Louange / liturgie","Méditation guidée","Mémoire / versets clés","Plan d'action"
+]
 
-class VerseByVerseRequest(BaseModel):
-    passage: str
-    version: str
-
-class Generate28Request(BaseModel):
-    passage: str
-    version: str
-
-# --------- Utils parsing ---------
-PASSAGE_RE = re.compile(r"^(?P<book>.+?)\s+(?P<chapter>\d+)(?::(?P<verse>\d+))?\b", re.IGNORECASE)
-
-def parse_passage(passage: str) -> Tuple[str, int, Optional[int]]:
+def parse_passage(passage: str, default_version: str = "LSG") -> Dict[str, Any]:
     """
-    Accepte 'Jean 3:16 LSG' ou 'Nombres 2 LSG' etc.
-    Renvoie (book, chapter, verse|None)
+    Supporte: 'Jean 3:16 LSG', 'Jean 3 LSG', '1 Samuel 17 LSG', 'Nombres 2 LSG'
+    Retourne dict: {'book': <str>, 'chapter': <int>, 'verse': Optional[int], 'version': <str>}
     """
-    m = PASSAGE_RE.search(passage.strip())
-    if not m:
-        raise ValueError(f"Passage invalide: {passage}")
-    book = m.group("book").strip()
-    chapter = int(m.group("chapter"))
-    verse = int(m.group("verse")) if m.group("verse") else None
-    return book, chapter, verse
+    txt = passage.strip()
+    tokens = txt.split()
 
-def get_headers() -> Dict[str, str]:
-    return {"api-key": BIBLE_API_KEY, "accept": "application/json"}
+    # Cherche le premier token de type chapitre/verset (ex: 3, 3:16, 3:1-5)
+    chap_token_idx = None
+    for idx, tok in enumerate(tokens):
+        if re.match(r"^\d+(:\d+(-\d+)?)?$", tok):
+            chap_token_idx = idx
+            break
 
-def fetch_chapter_content(book: str, chapter: int, content_type: str = "html") -> Optional[str]:
-    """
-    Récupère le contenu du chapitre au format HTML ou TEXT.
-    """
-    code = BOOK_CODES.get(book)
-    if not code:
-        return None
-    url = f"{BIBLE_API_BASE}/bibles/{BIBLE_ID}/chapters/{code}.{chapter}"
-    params = {
-        "contentType": content_type,  # "html" | "text"
-        "includeChapterNumbers": "false",
-        "includeVerseNumbers": "true",
-        "includeVerseSpans": "true",
-    }
+    version = default_version
+    # Le dernier token est parfois la version
+    if len(tokens) >= 2 and re.match(r"^[A-Z0-9\-]{2,8}$", tokens[-1]):
+        version = tokens[-1]
+
+    if chap_token_idx is not None:
+        book = " ".join(tokens[:chap_token_idx]).strip()
+        chap_tok = tokens[chap_token_idx]
+        # extraire chapitre et (optionnellement) verset
+        if ":" in chap_tok:
+            ch, v = chap_tok.split(":", 1)
+            chapter = int(ch)
+            try:
+                verse = int(v.split("-")[0])
+            except:
+                verse = None
+        else:
+            chapter = int(chap_tok)
+            verse = None
+    else:
+        # fallback: pas de chapitre trouvé -> chapitre 1
+        book = " ".join(tokens[:-1]).strip() if len(tokens) > 1 else tokens[0]
+        chapter = 1
+        verse = None
+
+    return {"book": book, "chapter": chapter, "verse": verse, "version": version}
+
+def get_bible_text(book: str, chapter: int) -> Optional[str]:
+    """Récupère le contenu HTML du chapitre via l'API Scripture."""
     try:
-        r = requests.get(url, headers=get_headers(), params=params, timeout=15)
+        headers = {"api-key": BIBLE_API_KEY, "accept": "application/json"}
+        code = BOOK_CODE_MAP.get(book)
+        if not code:
+            return None
+        url = f"{BIBLE_API_BASE}/bibles/{BIBLE_ID}/chapters/{code}.{chapter}"
+        r = requests.get(url, headers=headers, timeout=15)
         if r.status_code == 200:
             data = r.json()
             return data.get("data", {}).get("content", "")
         return None
-    except Exception:
+    except Exception as e:
+        print(f"[API Bible] Erreur: {e}")
         return None
 
-def html_to_text(html_content: str) -> str:
-    """
-    Convertit l'HTML de Scripture API en texte brut en insérant un saut de ligne avant les numéros de verset.
-    """
-    if not html_content:
-        return ""
-    s = html_content
-
-    # Verses numbers like <sup class="v">1</sup> -> "\n1 "
-    s = re.sub(r"<\s*sup[^>]*>\s*(\d{1,3})\s*<\s*/\s*sup\s*>", r"\n\1 ", s, flags=re.IGNORECASE)
-
-    # Retirer le reste des balises
-    s = re.sub(r"<[^>]+>", "", s)
-
-    # Décoder entités HTML
-    s = ihtml.unescape(s)
-
-    # Normaliser espaces
-    s = re.sub(r"\r?\n\s*\n+", "\n", s)
-    s = re.sub(r"[ \t]+", " ", s)
-    s = s.strip()
-    return s
-
-def split_verses_from_text(text: str) -> List[Tuple[int, str]]:
-    """
-    Extrait (numéro, texte) pour chaque verset.
-    On s'appuie sur le fait que html_to_text a inséré '\nN ' avant chaque verset.
-    """
-    if not text:
-        return []
-    verses = []
-    # chaque ligne qui commence par un numéro de verset
-    for m in re.finditer(r"^\s*(\d{1,3})\s+([^\n]+(?:\n(?!\s*\d+\s).+)*)", text, flags=re.MULTILINE):
-        num = int(m.group(1))
-        vtext = m.group(2).strip()
-        verses.append((num, vtext))
-    # si rien n'a été capturé, tenter une séparation plus naïve (rare)
-    if not verses:
-        chunks = re.split(r"\n(?=\d{1,3}\s)", text)
-        for c in chunks:
-            m = re.match(r"^\s*(\d{1,3})\s+(.*)$", c.strip(), flags=re.DOTALL)
-            if m:
-                verses.append((int(m.group(1)), m.group(2).strip()))
-    return verses
-
-def get_bible_text(book: str, chapter: int) -> Optional[str]:
-    """
-    (Compat) récupère le contenu brut (HTML -> texte) pour un chapitre.
-    """
-    html = fetch_chapter_content(book, chapter, content_type="html") or \
-           fetch_chapter_content(book, chapter, content_type="text")
-    if not html:
-        return None
-    # quand contentType=text, l'API renvoie déjà du texte, mais on passe quand même par le même pipeline
-    if "<" in html or "</" in html:
-        return html_to_text(html)
-    return html.strip()
-
-# --------- Routes simples ---------
+# ---------- Routes de base ----------
 @app.get("/api/")
 async def root():
-    return {"message": "Bible Study API - Bible Derby (LSG) - OK"}
+    return {"message": "Bible Study API - Bible Derby"}
 
 @app.get("/api/health")
 async def health():
     return {"ok": True}
 
-# --------- Endpoints existants (compat) ---------
+# ---------- Étude classique (déjà présente) ----------
 @app.post("/api/generate-study")
 async def generate_study(request: StudyRequest):
-    """
-    Étude 'synthétique' (endpoint existant). On le laisse pour compatibilité,
-    mais on recommande désormais /api/generate-28 pour la version en 28 rubriques.
-    """
     try:
-        book, chapter, _ = parse_passage(request.passage)
-        bible_text = get_bible_text(book, chapter) or "Texte biblique en cours de chargement via API Bible Derby..."
-        theological_content = get_theological_content(book, chapter)
+        meta = parse_passage(request.passage, request.version)
+        book, chapter = meta["book"], meta["chapter"]
 
-        content = f"""# {theological_content['title']}
+        bible_text = get_bible_text(book, chapter)
+        theo = get_theological_content(book, chapter)
+
+        content = f"""# {theo.get('title','Étude biblique')}
 
 ## 📖 Texte Biblique - Bible Derby
-{bible_text}
+{bible_text or 'Texte biblique en cours de chargement via API Bible Derby...'}
 
 ## 🎯 Analyse Narrative et Théologique
 
-{theological_content['narrative']}
+{theo.get('narrative','')}
 
 ## ✨ Points Doctrinaux Essentiels
 """
-        for point in theological_content.get('theological_points', []):
+        for point in theo.get("theological_points", []):
             content += f"• {point}\n"
 
         content += f"""
 
 ## 🙏 Méditation Spirituelle
 
-Cette étude de **{book} {chapter}** nous conduit dans les profondeurs de la **révélation divine**. Les vérités exposées s'enracinent dans l'**exégèse rigoureuse** et l'**herméneutique orthodoxe**, nous orientant vers une **foi éclairée** et une **piété transformatrice**.
+Cette étude de **{book} {chapter}** nous conduit dans les profondeurs de la **révélation divine**.
 
 ## 📚 Références Canoniques
 
-*Cette étude respecte l'**analogie de la foi** et s'harmonise avec l'ensemble du **canon scripturaire**.*
+*Étude conforme à l'analogie de la foi.*
 
 ---
-**Soli Deo Gloria**"""
+**Soli Deo Gloria**
+"""
         return {"content": content}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors de la génération: {str(e)}")
 
-# --------- Verset par verset (amélioré) ---------
+# ---------- Verset par verset (déjà présent) ----------
 @app.post("/api/generate-verse-by-verse")
 async def generate_verse_by_verse(request: VerseByVerseRequest):
-    """
-    Étude verset par verset : 
-    1) on tente la librairie interne (contenu sur-mesure),
-    2) sinon on récupère tout le chapitre via Scripture API et on split versets.
-    """
     try:
-        book, chapter, _ = parse_passage(request.passage)
+        meta = parse_passage(request.passage, request.version)
+        book, chapter = meta["book"], meta["chapter"]
 
-        # 1) Contenu interne sur-mesure
         verses_content = get_all_verses_for_chapter(book, chapter)
 
-        if verses_content:
-            # Construire avec le format attendu par le front
-            content = f"""Étude Verset par Verset - {book} Chapitre {chapter}
+        if not verses_content:
+            bible_text = get_bible_text(book, chapter)
+            return {
+                "content": f"""Étude Verset par Verset - {book} Chapitre {chapter}
 
-Introduction au Chapitre
-
-Cette étude examine chaque verset de {book} {chapter} selon les principes de l'exégèse grammatico-historique et de l'herméneutique orthodoxe. Chaque verset révèle les richesses de la révélation divine dans son contexte canonique.
-
-"""
-            for vd in verses_content:
-                content += f"""VERSET {vd['verse_number']}
-
-TEXTE BIBLIQUE :
-{vd['verse_text']}
-
-EXPLICATION THÉOLOGIQUE :
-
-{vd['explanation']}
-
-"""
-            content += """Synthèse Spirituelle
-
-Que l'Esprit Saint illumine notre compréhension et transforme nos cœurs par la méditation de ces saintes Écritures.
-
-Principe Herméneutique
-
-Cette étude respecte l'inspiration plénière des Écritures et leur autorité absolue en matière de foi et de conduite.
-
-Soli Deo Gloria - Étude conforme à la saine doctrine"""
-            return {"content": content}
-
-        # 2) Fallback automatique : récupérer le texte par verset via Scripture API
-        raw = fetch_chapter_content(book, chapter, content_type="html") or \
-              fetch_chapter_content(book, chapter, content_type="text")
-        if not raw:
-            # Dernier recours : message court
-            return {"content": f"""# 📖 Étude Verset par Verset - {book} {chapter}
-
-**Texte indisponible pour le moment (API). Réessayez plus tard.**"""}
-
-        flat = html_to_text(raw)
-        verses = split_verses_from_text(flat)
-
-        if not verses:
-            # Si on n'a pas pu découper, afficher tout le texte
-            return {"content": f"""# 📖 Étude Verset par Verset - {book} {chapter}
+# 📖 
 
 ## Texte Biblique Complet - Bible Derby
-{flat}
+{bible_text or 'Texte biblique disponible via API Bible Derby...'}
 
 ## 🔍 Analyse Verset par Verset
-*Découpage automatique indisponible — affichage du chapitre complet.*"""}
+*Contenu détaillé en cours d’enrichissement pour {book} {chapter}.*
+"""
+            }
 
-        # Construire la réponse formatée
         content = f"""Étude Verset par Verset - {book} Chapitre {chapter}
 
 Introduction au Chapitre
@@ -287,101 +212,195 @@ Introduction au Chapitre
 Cette étude examine chaque verset de {book} {chapter} selon une exégèse grammatico-historique.
 
 """
-        for num, vtext in verses:
-            content += f"""VERSET {num}
+        for v in verses_content:
+            content += f"""VERSET {v['verse_number']}
 
 TEXTE BIBLIQUE :
-{vtext}
+{v['verse_text']}
 
 EXPLICATION THÉOLOGIQUE :
 
-— Observation : relevez le sens littéral du verset.
-— Doctrine : quelles vérités divines sont affirmées ?
-— Application : quelle réponse de foi/pratique aujourd’hui ?
+{v['explanation']}
 
 """
         content += "Soli Deo Gloria"
         return {"content": content}
-
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erreur lors de la génération verset par verset: {str(e)}")
 
-# --------- Étude complète en 28 rubriques ---------
-RUBRIQUES_28 = [
-  "Étude verset par verset","Prière d'ouverture","Structure littéraire",
-  "Questions du chapitre précédent","Thème doctrinal","Fondements théologiques",
-  "Contexte historique","Contexte culturel","Contexte géographique",
-  "Analyse lexicale","Parallèles bibliques","Prophétie et accomplissement",
-  "Personnages","Structure rhétorique","Théologie trinitaire","Christ au centre",
-  "Évangile et grâce","Application personnelle","Application communautaire",
-  "Prière de réponse","Questions d'étude","Points de vigilance",
-  "Objections et réponses","Perspective missionnelle","Éthique chrétienne",
-  "Louange / liturgie","Méditation guidée","Mémoire / versets clés","Plan d'action"
-]
-
+# ---------- NOUVEAU : Étude complète en 28 rubriques ----------
 @app.post("/api/generate-28")
 async def generate_28(request: Generate28Request):
     """
-    Rend une étude structurée en 28 rubriques (texte formaté lisible).
+    Produit un document '28 rubriques' pour le livre+chapitre éventuellement sans verset.
     """
     try:
-        book, chapter, verse = parse_passage(request.passage)
-        theo = get_theological_content(book, chapter)
+        meta = parse_passage(request.passage, request.version)
+        book, chapter = meta["book"], meta["chapter"]
+        version = meta["version"]
 
-        # Points doctrinaux depuis la lib (si présents)
-        pts = theo.get("theological_points", []) or []
+        bible_text_html = get_bible_text(book, chapter)
+        theo = get_theological_content(book, chapter)  # peut retourner des points utiles
 
-        def h(idx: int, title: str) -> str:
-            return f"\n**{idx}. {title}**\n"
+        # Utilitaires contenus
+        theo_points = theo.get("theological_points", []) if isinstance(theo, dict) else []
+        narrative = theo.get("narrative", "") if isinstance(theo, dict) else ""
+        title = theo.get("title", f"Étude de {book} {chapter}")
 
-        content = f"""# Étude complète — {book} {chapter}{(':'+str(verse)) if verse else ''}
+        # Corps
+        lines = []
+        lines.append(f"**Étude complète en 28 rubriques — {book} {chapter} ({version})**")
+        lines.append("")
+        lines.append("**📖 Texte biblique (chapitre complet – Bible Derby)**")
+        lines.append(bible_text_html or "Texte biblique disponible via API Bible Derby...")
+        lines.append("")
 
-**Titre :** {theo.get('title','Étude biblique')}
-        
-**Résumé narratif :**
-{theo.get('narrative','')}
+        # 1. Étude verset par verset = renvoi synthétique
+        lines.append("**1. Étude verset par verset (aperçu)**")
+        lines.append("Pour le détail, utilisez le bouton 📖 Versets. Ci-dessous : synthèse des mouvements principaux du chapitre.")
+        if narrative:
+            lines.append(narrative)
+        lines.append("")
 
-"""
+        # 2. Prière d'ouverture
+        lines.append("**2. Prière d'ouverture**")
+        lines.append("Seigneur, ouvre nos cœurs et notre intelligence afin de recevoir ta Parole avec foi, humilité et obéissance. Amen.")
+        lines.append("")
 
-        for i, title in enumerate(RUBRIQUES_28, start=1):
-            content += h(i, title)
-            if title == "Étude verset par verset":
-                content += "Utilisez le bouton **📖 Versets** pour la lecture détaillée verset par verset.\n"
-            elif title == "Thème doctrinal":
-                content += (pts[0] if pts else "Synthèse doctrinale du passage (sainteté de Dieu, alliance, grâce, foi, obéissance).") + "\n"
-            elif title == "Fondements théologiques":
-                if pts:
-                    content += "".join(f"• {p}\n" for p in pts)
-                else:
-                    content += "• Autorité de l’Écriture\n• Souveraineté de Dieu\n• Centralité du Christ\n• Grâce et foi\n"
-            elif title == "Parallèles bibliques":
-                content += "• Relier le passage aux textes canoniques connexes (AT/NT) pour l’analogie de la foi.\n"
-            elif title == "Théologie trinitaire":
-                content += "• Repérer l’œuvre du Père, du Fils et du Saint-Esprit dans le passage.\n"
-            elif title == "Christ au centre":
-                content += "• Montrer comment le passage pointe vers l’œuvre et la personne de Christ.\n"
-            elif title == "Évangile et grâce":
-                content += "• Mettre en lumière la bonne nouvelle : initiative divine, grâce imméritée, appel à la foi.\n"
-            elif title == "Application personnelle":
-                content += "• 3 pistes concrètes (pensée, caractère, pratique).\n"
-            elif title == "Application communautaire":
-                content += "• 3 pistes pour l’Église (adoration, formation, mission).\n"
-            elif title == "Méditation guidée":
-                content += "• Prier avec le texte : adoration, confession, action de grâce, intercession.\n"
-            elif title == "Mémoire / versets clés":
-                content += "• Sélectionner 1–3 versets à mémoriser du chapitre.\n"
-            elif title == "Plan d'action":
-                content += "• 1 engagement pour cette semaine en lien avec le passage.\n"
-            else:
-                # gabarit générique court
-                content += "• Points principaux à relever pour cette rubrique (synthèse brève et fidèle au texte).\n"
+        # 3. Structure littéraire
+        lines.append("**3. Structure littéraire**")
+        lines.append(f"{book} {chapter} se découpe en unités cohérentes (introduction, développement, conclusion). Identifiez les refrains, répétitions, parallélismes ou inclusios.")
+        lines.append("")
 
-        content += "\n---\n**Soli Deo Gloria**"
+        # 4. Questions du chapitre précédent
+        lines.append("**4. Questions du chapitre précédent**")
+        lines.append("Quels fils narratifs/argumentatifs mènent à ce chapitre ? Quelles tensions étaient ouvertes et reçoivent ici une réponse ?")
+        lines.append("")
+
+        # 5. Thème doctrinal
+        lines.append("**5. Thème doctrinal**")
+        if theo_points:
+            lines.append(" • " + "\n • ".join(theo_points[:4]))
+        else:
+            lines.append(" • Souveraineté de Dieu\n • Révélation et Alliance\n • Sainteté / justice de Dieu\n • Grâce et foi")
+        lines.append("")
+
+        # 6. Fondements théologiques
+        lines.append("**6. Fondements théologiques**")
+        lines.append("Principes : inspiration, inerrance, analogie de la foi, centralité du Christ, unité canonique.")
+        lines.append("")
+
+        # 7-9. Contextes
+        lines.append("**7. Contexte historique**")
+        lines.append("Situer date, auteurs, destinataires, événements majeurs environnants.")
+        lines.append("")
+        lines.append("**8. Contexte culturel**")
+        lines.append("Usages, institutions, vie quotidienne ; éviter les anachronismes.")
+        lines.append("")
+        lines.append("**9. Contexte géographique**")
+        lines.append("Repères de lieux, itinéraires, reliefs ; impact sur la compréhension du texte.")
+        lines.append("")
+
+        # 10. Analyse lexicale
+        lines.append("**10. Analyse lexicale**")
+        lines.append("Termes-clés (hébreu/grec) et champ sémantique ; mots répétés et leur portée.")
+        lines.append("")
+
+        # 11. Parallèles bibliques
+        lines.append("**11. Parallèles bibliques**")
+        lines.append("Comparer avec passages connexes dans la Loi, les Prophètes, les Évangiles et les Épîtres.")
+        lines.append("")
+
+        # 12. Prophétie et accomplissement
+        lines.append("**12. Prophétie et accomplissement**")
+        lines.append("Identifier promesses/typologies et leur accomplissement en Christ et dans l’Église.")
+        lines.append("")
+
+        # 13. Personnages
+        lines.append("**13. Personnages**")
+        lines.append("Qui agit ? Motivations, faiblesses, vertus, rôle dans l’économie du salut.")
+        lines.append("")
+
+        # 14. Structure rhétorique
+        lines.append("**14. Structure rhétorique**")
+        lines.append("Logique interne, arguments, connecteurs, chiasmes, crescendos, contrastes.")
+        lines.append("")
+
+        # 15. Théologie trinitaire
+        lines.append("**15. Théologie trinitaire**")
+        lines.append("Repérer l’œuvre du Père, du Fils et de l’Esprit ; leurs missions et l’unité de leur action.")
+        lines.append("")
+
+        # 16. Christ au centre
+        lines.append("**16. Christ au centre**")
+        lines.append("Lire Christocentriquement : types, ombres, accomplissements, seigneurie du Christ.")
+        lines.append("")
+
+        # 17-18. Applications
+        lines.append("**17. Évangile et grâce**")
+        lines.append("Comment l’Évangile est-il déployé ici ? Grâce offerte, repentance et foi.")
+        lines.append("")
+        lines.append("**18. Application personnelle**")
+        lines.append("Exemples concrets : disciplines spirituelles, caractères à cultiver, péchés à abandonner.")
+        lines.append("")
+        lines.append("**19. Application communautaire**")
+        lines.append("Église / famille / société : adoration, service, justice, compassion, mission.")
+        lines.append("")
+
+        # 20. Prière de réponse
+        lines.append("**20. Prière de réponse**")
+        lines.append("Seigneur, grave ta Parole dans nos vies ; rends-nous praticiens de ta vérité. Amen.")
+        lines.append("")
+
+        # 21. Questions d’étude
+        lines.append("**21. Questions d’étude**")
+        lines.append("1) Quel est l’axe principal du chapitre ? 2) Qu’apprend-on sur Dieu ? 3) Quelles implications pour aujourd’hui ?")
+        lines.append("")
+
+        # 22. Points de vigilance
+        lines.append("**22. Points de vigilance**")
+        lines.append("Éviter les surinterprétations ; respecter le contexte ; ne pas isoler des versets.")
+        lines.append("")
+
+        # 23. Objections et réponses
+        lines.append("**23. Objections et réponses**")
+        lines.append("Formuler les objections possibles et y répondre bibliquement et charitablement.")
+        lines.append("")
+
+        # 24. Perspective missionnelle
+        lines.append("**24. Perspective missionnelle**")
+        lines.append("Comment ce chapitre motive-t-il l’annonce de l’Évangile aux nations ?")
+        lines.append("")
+
+        # 25. Éthique chrétienne
+        lines.append("**25. Éthique chrétienne**")
+        lines.append("Repères pour la sainteté, la justice, la dignité humaine, la création, l’économie, etc.")
+        lines.append("")
+
+        # 26. Louange / liturgie
+        lines.append("**26. Louange / liturgie**")
+        lines.append("Chants, prières, liturgie possibles en écho aux thèmes du chapitre.")
+        lines.append("")
+
+        # 27. Méditation guidée / versets clés
+        lines.append("**27. Méditation guidée / versets clés**")
+        lines.append("Choisir 2–3 versets à mémoriser et méditer dans la semaine.")
+        lines.append("")
+
+        # 28. Plan d’action
+        lines.append("**28. Plan d’action**")
+        lines.append("Objectifs précis pour mettre en pratique ; une chose à prier, une à changer, une à partager.")
+        lines.append("")
+        lines.append("Soli Deo Gloria")
+
+        # Le front met en forme les lignes et le gras (**...**)
+        content = "\n".join(lines)
         return {"content": content}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erreur 28 rubriques: {str(e)}")
 
-# --------- Lancement local ---------
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Erreur génération 28 rubriques: {str(e)}")
+
+# ---------- Main ----------
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
