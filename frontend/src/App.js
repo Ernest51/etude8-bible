@@ -65,12 +65,13 @@ export default function App() {
   const [rubriquesStatus, setRubriquesStatus] = React.useState({});
   const [lastStudyLabel, setLastStudyLabel] = React.useState("Dernière étude");
 
-  // Init couleurs + label “Dernière étude”
+  // Initialiser couleurs + label
   React.useEffect(() => {
     updateBackgroundColor(knobPosition);
     updateLastStudyLabel();
   }, []);
 
+  // Mettre à jour couleurs quand le knob bouge
   React.useEffect(() => {
     updateBackgroundColor(knobPosition);
   }, [knobPosition]);
@@ -94,17 +95,22 @@ export default function App() {
   React.useEffect(() => {
     if (book !== "vide" && chapter !== "vide") {
       const newStatus = {};
-      for (let i = 0; i < RUBRIQUES.length; i++) newStatus[i] = "ready";
+      for (let i = 0; i < RUBRIQUES.length; i++) newStatus[i] = 'ready';
       setRubriquesStatus(newStatus);
     } else {
       setRubriquesStatus({});
     }
   }, [book, chapter]);
 
-  const passageLabel = (book === "vide" || chapter === "vide" || verse === "vide")
-    ? "Sélectionnez un passage"
-    : `${book} ${chapter}:${verse} ${version}`;
+  // -------- passageLabel (OK livre+chapitre, verset optionnel) --------
+  const passageLabel =
+    (book === "vide" || chapter === "vide")
+      ? "Sélectionnez un passage"
+      : (verse === "vide"
+          ? `${book} ${chapter} ${version}`
+          : `${book} ${chapter}:${verse} ${version}`);
 
+  // Palette
   function handleGradientClick(e) {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -169,6 +175,7 @@ export default function App() {
     }
   }
 
+  // Recherche rapide
   function handleValidate() {
     if (!search.trim()) {
       setProgress(p => p < 15 ? 15 : p);
@@ -331,18 +338,23 @@ export default function App() {
     window.open("https://www.bible.com/fr/search/bible?query=" + q, "_blank");
   }
 
-  // ---------- BACKEND URL (safe pour Vercel + Railway) ----------
+  // ---------- BACKEND URL ----------
   const backendUrl = (process.env.REACT_APP_BACKEND_URL && process.env.REACT_APP_BACKEND_URL.replace(/\/$/, "")) 
     || "https://etude8-bible-api-production.up.railway.app";
 
   // ---------- Étude complète (28 rubriques) ----------
   async function handleGenerate() {
-    // On garde ta règle actuelle : il faut livre+chapitre+verset sélectionnés
-    if (book === "vide" || chapter === "vide" || verse === "vide") {
-      setContent("⚠️ Veuillez d'abord sélectionner un livre, un chapitre et un verset pour générer une étude biblique.");
+    // On autorise Livre + Chapitre (verset optionnel)
+    if (book === "vide" || chapter === "vide") {
+      setContent("⚠️ Veuillez d'abord sélectionner au moins un livre et un chapitre.");
       setProgress(0);
       return;
     }
+
+    const passageForApi =
+      verse === "vide"
+        ? `${book} ${chapter} ${version}`           // ex: "Nombres 2 LSG"
+        : `${book} ${chapter}:${verse} ${version}`; // ex: "Jean 3:16 LSG"
 
     setProgress(5); await wait(200);
     setProgress(25); await wait(250);
@@ -351,15 +363,10 @@ export default function App() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-      const payload = {
-        passage: passageLabel, // ex: "Jean 3:16 LSG"
-        version: version
-      };
-
       const response = await fetch(`${backendUrl}/api/generate-28`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ passage: passageForApi, version }),
         signal: controller.signal
       });
 
@@ -371,17 +378,13 @@ export default function App() {
         setProgress(100);
         setContent(data.content || "Étude générée avec succès.");
 
-        // autosave “dernière étude”
-        if (!isResetting) {
-          try {
-            localStorage.setItem("lastStudy", JSON.stringify({
-              book, chapter, verse, version, length, chatgpt
-            }));
-            updateLastStudyLabel();
-          } catch {}
-        } else {
-          setIsResetting(false);
-        }
+        // Sauvegarde “dernière étude”
+        try {
+          localStorage.setItem("lastStudy", JSON.stringify({
+            book, chapter, verse, version, length, chatgpt
+          }));
+          updateLastStudyLabel();
+        } catch {}
       } else {
         const errorText = await response.text();
         throw new Error(`Erreur ${response.status}: ${errorText}`);
@@ -389,9 +392,7 @@ export default function App() {
     } catch (error) {
       console.error("Erreur génération 28:", error);
       setProgress(100);
-      setContent(
-        "⚠️ Erreur: " + (error.name === "AbortError" ? "Délai d'attente dépassé." : error.message)
-      );
+      setContent("⚠️ Erreur: " + (error.name === "AbortError" ? "Délai d'attente dépassé." : error.message));
     }
   }
 
@@ -401,7 +402,6 @@ export default function App() {
     setProgress(25); await wait(250);
 
     try {
-      // Utilise la sélection si possible, sinon fallback Genèse 1 LSG
       const hasSelection = (book !== "vide" && chapter !== "vide");
       const passageForApi = hasSelection
         ? `${book} ${chapter}${(verse !== "vide") ? (":" + verse) : ""} ${version}`
@@ -425,7 +425,7 @@ export default function App() {
         setProgress(100);
         let formatted = data.content || "Étude verset par verset générée avec succès";
 
-        // Lisibilité : mettre en gras certaines balises textuelles
+        // Lisibilité
         formatted = formatted.replace(/VERSET (\d+)/g, '**VERSET $1**');
         formatted = formatted.replace(/TEXTE BIBLIQUE\s*:/g, '**TEXTE BIBLIQUE :**');
         formatted = formatted.replace(/EXPLICATION THÉOLOGIQUE\s*:/g, '**EXPLICATION THÉOLOGIQUE :**');
@@ -434,26 +434,21 @@ export default function App() {
         formatted = formatted.replace(/Principe Herméneutique/g, '**Principe Herméneutique**');
 
         setContent(formatted);
-
-        // LED verte sur la rubrique 0
-        setRubriquesStatus(prev => ({ ...prev, 0: "completed" }));
+        setRubriquesStatus(prev => ({ ...prev, 0: 'completed' }));
       } else {
         throw new Error(`Erreur ${response.status}: ${await response.text()}`);
       }
     } catch (error) {
-      console.error("Verse-by-verse error:", error);
+      console.error('Verse-by-verse error:', error);
       setProgress(100);
-      setContent(
-        `⚠️ Erreur: ${error.message || "échec de génération verset par verset."}`
-      );
-      setRubriquesStatus(prev => ({ ...prev, 0: "completed" }));
+      setContent(`⚠️ Erreur: ${error.message || "échec de génération verset par verset."}`);
+      setRubriquesStatus(prev => ({ ...prev, 0: 'completed' }));
     }
   };
 
   const handleVersetsClick = async () => {
     setActiveId(0);
 
-    // Si sélection invalide, on fixe un fallback (Genèse 1:1 LSG) ET on sauvegarde
     let nextBook = book, nextChapter = chapter, nextVerse = verse;
     if (book === "vide" || chapter === "vide") {
       nextBook = "Genèse"; nextChapter = 1; nextVerse = 1;
@@ -472,7 +467,7 @@ export default function App() {
       updateLastStudyLabel();
     } catch {}
 
-    await wait(300); // léger délai pour laisser React appliquer les states
+    await wait(300);
     await generateVerseByVerse();
   };
 
@@ -533,8 +528,8 @@ export default function App() {
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
-          <button className="pill-btn primary" onClick={handleValidate}>Valider</button>
-          <button className="pill-btn" onClick={handleReadBible}>Lire la Bible</button>
+        <button className="pill-btn primary" onClick={handleValidate}>Valider</button>
+        <button className="pill-btn" onClick={handleReadBible}>Lire la Bible</button>
         </div>
 
         <div className="pills-row">
