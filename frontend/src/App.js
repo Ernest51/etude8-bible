@@ -3,7 +3,37 @@ import "./App.css";
 import "./rubriques.css";
 import RubriquesInline from "./RubriquesInline";
 
-/* ================== DONNÉES ================== */
+/* =========================
+   Helpers robustes
+========================= */
+
+// Force toute valeur en string sûre (évite t.replace is not a function)
+function asString(x) {
+  if (x === undefined || x === null) return "";
+  if (typeof x === "string") return x;
+  try {
+    return JSON.stringify(x, null, 2);
+  } catch {
+    return String(x);
+  }
+}
+
+// Post-traitement markdown (boldifications simples)
+function postProcessMarkdown(t) {
+  const s = asString(t);
+  return s
+    .replace(/VERSET (\d+)/g, "**VERSET $1**")
+    .replace(/TEXTE BIBLIQUE\s*:/g, "**TEXTE BIBLIQUE :**")
+    .replace(/EXPLICATION THÉOLOGIQUE\s*:/g, "**EXPLICATION THÉOLOGIQUE :**")
+    .replace(/Introduction au Chapitre/g, "**Introduction au Chapitre**")
+    .replace(/Synthèse Spirituelle/g, "**Synthèse Spirituelle**")
+    .replace(/Principe Herméneutique/g, "**Principe Herméneutique**");
+}
+
+/* =========================
+   Données
+========================= */
+
 const BOOKS = [
   "vide","Genèse","Exode","Lévitique","Nombres","Deutéronome","Josué","Juges","Ruth",
   "1 Samuel","2 Samuel","1 Rois","2 Rois","1 Chroniques","2 Chroniques","Esdras",
@@ -47,50 +77,18 @@ const RUBRIQUES = [
 
 function wait(ms){ return new Promise(r => setTimeout(r, ms)); }
 
-/* === util: détecter si le texte contient (au moins) quelques rubriques === */
-function containsRubrics(text) {
-  if (!text) return false;
-  let hits = 0;
-  for (const r of RUBRIQUES) {
-    const re = new RegExp(r.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
-    if (re.test(text)) { hits++; if (hits >= 3) return true; } // seuil souple
-  }
-  // sinon, cherchez un bloc “## Rubriques” ou un motif **1. ...**
-  if (/^##\s*Rubriques/im.test(text)) return true;
-  if (/\*\*\s*1\.\s+/i.test(text)) return true;
-  return false;
-}
+/* =========================
+   Composant principal
+========================= */
 
-/* === util: construit un squelette “28 rubriques” si l’API ne les fournit pas === */
-function buildRubricScaffold(book, chapter, original = "") {
-  const header = `# Étude en 28 points — ${book} ${chapter} (Darby)`;
-  const intro  = "Cette étude propose un **squelette** prêt à remplir. Le texte biblique est celui de la **Bible Darby (FR)**. Complète chaque rubrique avec ton analyse.";
-  const parts = [header, intro];
-
-  // si l’API a renvoyé quelque chose, on le conserve dans une section “Notes de l’API”
-  if (original && original.trim()) {
-    const sanitized = original.replace(/\bDerby\b/gi, "Darby");
-    parts.push("## Notes de l’API\n" + sanitized.trim());
-  }
-
-  parts.push("## Rubriques");
-  RUBRIQUES.forEach((r, i) => {
-    parts.push(`**${i + 1}. ${r}**\n— à compléter —`);
-  });
-  return parts.join("\n\n");
-}
-
-/* =======================================================
-   APP
-   ======================================================= */
 export default function App() {
-  // Passage
+  // passage
   const [book, setBook] = React.useState("vide");
   const [chapter, setChapter] = React.useState("vide");
   const [verse, setVerse] = React.useState("vide");
-  const [version, setVersion] = React.useState("LSG"); // pour l’UI (non concaténé à 'passage')
+  const [version, setVersion] = React.useState("LSG"); // ignoré par le backend Darby
   const [length, setLength] = React.useState(500);
-  const [chatgpt, setChatgpt] = React.useState(true);  // laissé pour compat UI
+  const [chatgpt, setChatgpt] = React.useState(true);
 
   // UI
   const [progress, setProgress] = React.useState(0);
@@ -98,24 +96,16 @@ export default function App() {
   const [activeId, setActiveId] = React.useState(0);
   const [content, setContent] = React.useState("");
   const [knobPosition, setKnobPosition] = React.useState(0);
+  const [isResetting, setIsResetting] = React.useState(false);
   const [rubriquesStatus, setRubriquesStatus] = React.useState({});
   const [lastStudyLabel, setLastStudyLabel] = React.useState("Dernière étude");
-  const [loading, setLoading] = React.useState(false);
 
   // Init
-  React.useEffect(() => { updateBackgroundColor(knobPosition); updateLastStudyLabel(); }, []);
-  React.useEffect(() => { updateBackgroundColor(knobPosition); }, [knobPosition]);
-
-  // LEDs rubriques
   React.useEffect(() => {
-    if (book !== "vide" && chapter !== "vide") {
-      const newStatus = {};
-      for (let i = 0; i < RUBRIQUES.length; i++) newStatus[i] = 'ready';
-      setRubriquesStatus(newStatus);
-    } else {
-      setRubriquesStatus({});
-    }
-  }, [book, chapter]);
+    updateBackgroundColor(knobPosition);
+    updateLastStudyLabel();
+  }, []);
+  React.useEffect(() => { updateBackgroundColor(knobPosition); }, [knobPosition]);
 
   function updateLastStudyLabel() {
     try {
@@ -132,7 +122,18 @@ export default function App() {
     }
   }
 
-  // affichage
+  // LEDs rubriques
+  React.useEffect(() => {
+    if (book !== "vide" && chapter !== "vide") {
+      const newStatus = {};
+      for (let i = 0; i < RUBRIQUES.length; i++) newStatus[i] = 'ready';
+      setRubriquesStatus(newStatus);
+    } else {
+      setRubriquesStatus({});
+    }
+  }, [book, chapter]);
+
+  // Label passage
   const passageLabel =
     (book === "vide" || chapter === "vide")
       ? "Sélectionnez un passage"
@@ -140,7 +141,7 @@ export default function App() {
           ? `${book} ${chapter} ${version}`
           : `${book} ${chapter}:${verse} ${version}`);
 
-  /* ================== Palette / UI ================== */
+  // Palette
   function handleGradientClick(e) {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -196,11 +197,12 @@ export default function App() {
       setChapter("vide");
     } else {
       const maxChapters = BOOK_CHAPTERS[newBook] || 150;
-      if (chapter === "vide" || chapter > maxChapters) setChapter(1);
+      if (chapter === "vide" || chapter > maxChapters) {
+        setChapter(1);
+      }
     }
   }
 
-  // Recherche rapide (barre de recherche)
   function handleValidate() {
     if (!search.trim()) {
       setProgress(p => p < 15 ? 15 : p);
@@ -209,72 +211,72 @@ export default function App() {
     const searchText = search.trim().toLowerCase();
 
     const bookMapping = {
-      'genese': 'Genèse', 'genesis': 'Genèse',
-      'exode': 'Exode', 'exodus': 'Exode',
-      'levitique': 'Lévitique', 'leviticus': 'Lévitique',
-      'nombres': 'Nombres', 'numbers': 'Nombres',
-      'deuteronome': 'Deutéronome', 'deuteronomy': 'Deutéronome',
-      'josue': 'Josué', 'joshua': 'Josué',
-      'juges': 'Juges', 'judges': 'Juges',
+      'genese': 'Genèse','genesis': 'Genèse',
+      'exode': 'Exode','exodus': 'Exode',
+      'levitique': 'Lévitique','leviticus': 'Lévitique',
+      'nombres': 'Nombres','numbers': 'Nombres',
+      'deuteronome': 'Deutéronome','deuteronomy': 'Deutéronome',
+      'josue': 'Josué','joshua': 'Josué',
+      'juges': 'Juges','judges': 'Juges',
       'ruth': 'Ruth',
-      '1 samuel': '1 Samuel', '1samuel': '1 Samuel',
-      '2 samuel': '2 Samuel', '2samuel': '2 Samuel',
-      '1 rois': '1 Rois', '1rois': '1 Rois', '1 kings': '1 Rois',
-      '2 rois': '2 Rois', '2rois': '2 Rois', '2 kings': '2 Rois',
-      '1 chroniques': '1 Chroniques', '1chroniques': '1 Chroniques',
-      '2 chroniques': '2 Chroniques', '2chroniques': '2 Chroniques',
-      'esdras': 'Esdras', 'ezra': 'Esdras',
-      'nehemie': 'Néhémie', 'nehemiah': 'Néhémie',
-      'esther': 'Esther',
-      'job': 'Job',
-      'psaumes': 'Psaumes', 'psalms': 'Psaumes',
-      'proverbes': 'Proverbes', 'proverbs': 'Proverbes',
-      'ecclesiaste': 'Ecclésiaste', 'ecclesiastes': 'Ecclésiaste',
-      'cantique': 'Cantique', 'song': 'Cantique',
-      'esaie': 'Ésaïe', 'isaiah': 'Ésaïe',
-      'jeremie': 'Jérémie', 'jeremiah': 'Jérémie',
-      'lamentations': 'Lamentations',
-      'ezechiel': 'Ézéchiel', 'ezekiel': 'Ézéchiel',
-      'daniel': 'Daniel',
-      'osee': 'Osée', 'hosea': 'Osée',
-      'joel': 'Joël',
-      'amos': 'Amos',
-      'abdias': 'Abdias', 'obadiah': 'Abdias',
-      'jonas': 'Jonas', 'jonah': 'Jonas',
-      'michee': 'Michée', 'micah': 'Michée',
-      'nahum': 'Nahum',
-      'habacuc': 'Habacuc', 'habakkuk': 'Habacuc',
-      'sophonie': 'Sophonie', 'zephaniah': 'Sophonie',
-      'aggee': 'Aggée', 'haggai': 'Aggée',
-      'zacharie': 'Zacharie', 'zechariah': 'Zacharie',
-      'malachie': 'Malachie', 'malachi': 'Malachie',
-      'matthieu': 'Matthieu', 'matthew': 'Matthieu', 'matt': 'Matthieu',
-      'marc': 'Marc', 'mark': 'Marc',
-      'luc': 'Luc', 'luke': 'Luc',
-      'jean': 'Jean', 'john': 'Jean',
-      'actes': 'Actes', 'acts': 'Actes',
-      'romains': 'Romains', 'romans': 'Romains', 'rom': 'Romains',
-      '1 corinthiens': '1 Corinthiens', '1corinthiens': '1 Corinthiens', '1 cor': '1 Corinthiens',
-      '2 corinthiens': '2 Corinthiens', '2corinthiens': '2 Corinthiens', '2 cor': '2 Corinthiens',
-      'galates': 'Galates', 'galatians': 'Galates', 'gal': 'Galates',
-      'ephesiens': 'Éphésiens', 'ephesians': 'Éphésiens', 'eph': 'Éphésiens',
-      'philippiens': 'Philippiens', 'philippians': 'Philippiens', 'phil': 'Philippiens',
-      'colossiens': 'Colossiens', 'colossians': 'Colossiens', 'col': 'Colossiens',
-      '1 thessaloniciens': '1 Thessaloniciens', '1thessaloniciens': '1 Thessaloniciens', '1 thess': '1 Thessaloniciens',
-      '2 thessaloniciens': '2 Thessaloniciens', '2thessaloniciens': '2 Thessaloniciens', '2 thess': '2 Thessaloniciens',
-      '1 timothee': '1 Timothée', '1timothee': '1 Timothée', '1 tim': '1 Timothée',
-      '2 timothee': '2 Timothée', '2timothee': '2 Timothée', '2 tim': '2 Timothée',
-      'tite': 'Tite', 'titus': 'Tite',
-      'philemon': 'Philémon',
-      'hebreux': 'Hébreux', 'hebrews': 'Hébreux', 'heb': 'Hébreux',
-      'jacques': 'Jacques', 'james': 'Jacques',
-      '1 pierre': '1 Pierre', '1pierre': '1 Pierre', '1 peter': '1 Pierre',
-      '2 pierre': '2 Pierre', '2pierre': '2 Pierre', '2 peter': '2 Pierre',
-      '1 jean': '1 Jean', '1jean': '1 Jean', '1 john': '1 Jean',
-      '2 jean': '2 Jean', '2jean': '2 Jean', '2 john': '2 Jean',
-      '3 jean': '3 Jean', '3jean': '3 Jean', '3 john': '3 Jean',
-      'jude': 'Jude',
-      'apocalypse': 'Apocalypse', 'revelation': 'Apocalypse', 'rev': 'Apocalypse'
+      '1 samuel': '1 Samuel','1samuel':'1 Samuel',
+      '2 samuel': '2 Samuel','2samuel':'2 Samuel',
+      '1 rois': '1 Rois','1rois':'1 Rois','1 kings':'1 Rois',
+      '2 rois': '2 Rois','2rois':'2 Rois','2 kings':'2 Rois',
+      '1 chroniques':'1 Chroniques','1chroniques':'1 Chroniques',
+      '2 chroniques':'2 Chroniques','2chroniques':'2 Chroniques',
+      'esdras':'Esdras','ezra':'Esdras',
+      'nehemie':'Néhémie','nehemiah':'Néhémie',
+      'esther':'Esther',
+      'job':'Job',
+      'psaumes':'Psaumes','psalms':'Psaumes',
+      'proverbes':'Proverbes','proverbs':'Proverbes',
+      'ecclesiaste':'Ecclésiaste','ecclesiastes':'Ecclésiaste',
+      'cantique':'Cantique','song':'Cantique',
+      'esaie':'Ésaïe','isaiah':'Ésaïe',
+      'jeremie':'Jérémie','jeremiah':'Jérémie',
+      'lamentations':'Lamentations',
+      'ezechiel':'Ézéchiel','ezekiel':'Ézéchiel',
+      'daniel':'Daniel',
+      'osee':'Osée','hosea':'Osée',
+      'joel':'Joël',
+      'amos':'Amos',
+      'abdias':'Abdias','obadiah':'Abdias',
+      'jonas':'Jonas','jonah':'Jonas',
+      'michee':'Michée','micah':'Michée',
+      'nahum':'Nahum',
+      'habacuc':'Habacuc','habakkuk':'Habacuc',
+      'sophonie':'Sophonie','zephaniah':'Sophonie',
+      'aggee':'Aggée','haggai':'Aggée',
+      'zacharie':'Zacharie','zechariah':'Zacharie',
+      'malachie':'Malachie','malachi':'Malachie',
+      'matthieu':'Matthieu','matthew':'Matthieu','matt':'Matthieu',
+      'marc':'Marc','mark':'Marc',
+      'luc':'Luc','luke':'Luc',
+      'jean':'Jean','john':'Jean',
+      'actes':'Actes','acts':'Actes',
+      'romains':'Romains','romans':'Romains','rom':'Romains',
+      '1 corinthiens':'1 Corinthiens','1corinthiens':'1 Corinthiens','1 cor':'1 Corinthiens',
+      '2 corinthiens':'2 Corinthiens','2corinthiens':'2 Corinthiens','2 cor':'2 Corinthiens',
+      'galates':'Galates','galatians':'Galates','gal':'Galates',
+      'ephesiens':'Éphésiens','ephesians':'Éphésiens','eph':'Éphésiens',
+      'philippiens':'Philippiens','philippians':'Philippiens','phil':'Philippiens',
+      'colossiens':'Colossiens','colossians':'Colossiens','col':'Colossiens',
+      '1 thessaloniciens':'1 Thessaloniciens','1thessaloniciens':'1 Thessaloniciens','1 thess':'1 Thessaloniciens',
+      '2 thessaloniciens':'2 Thessaloniciens','2thessaloniciens':'2 Thessaloniciens','2 thess':'2 Thessaloniciens',
+      '1 timothee':'1 Timothée','1timothee':'1 Timothée','1 tim':'1 Timothée',
+      '2 timothee':'2 Timothée','2timothee':'2 Timothée','2 tim':'2 Timothée',
+      'tite':'Tite','titus':'Tite',
+      'philemon':'Philémon',
+      'hebreux':'Hébreux','hebrews':'Hébreux','heb':'Hébreux',
+      'jacques':'Jacques','james':'Jacques',
+      '1 pierre':'1 Pierre','1pierre':'1 Pierre','1 peter':'1 Pierre',
+      '2 pierre':'2 Pierre','2pierre':'2 Pierre','2 peter':'2 Pierre',
+      '1 jean':'1 Jean','1jean':'1 Jean','1 john':'1 Jean',
+      '2 jean':'2 Jean','2jean':'2 Jean','2 john':'2 Jean',
+      '3 jean':'3 Jean','3jean':'3 Jean','3 john':'3 Jean',
+      'jude':'Jude',
+      'apocalypse':'Apocalypse','revelation':'Apocalypse','rev':'Apocalypse'
     };
 
     let foundBook = null;
@@ -285,31 +287,20 @@ export default function App() {
     if (pattern1) {
       const bookName = pattern1[1].trim();
       foundBook = bookMapping[bookName];
-      if (foundBook) {
-        foundChapter = parseInt(pattern1[2], 10);
-        foundVerse = parseInt(pattern1[3], 10);
-      }
+      if (foundBook) { foundChapter = parseInt(pattern1[2]); foundVerse = parseInt(pattern1[3]); }
     }
-
     if (!foundBook) {
       const pattern2 = searchText.match(/^(.+?)\s+(\d+)$/);
       if (pattern2) {
         const bookName = pattern2[1].trim();
         foundBook = bookMapping[bookName];
-        if (foundBook) {
-          foundChapter = parseInt(pattern2[2], 10);
-          foundVerse = "vide";
-        }
+        if (foundBook) { foundChapter = parseInt(pattern2[2]); foundVerse = "vide"; }
       }
     }
-
     if (!foundBook) {
       const bookName = searchText.trim();
       foundBook = bookMapping[bookName];
-      if (foundBook) {
-        foundChapter = 1;
-        foundVerse = 1;
-      }
+      if (foundBook) { foundChapter = 1; foundVerse = 1; }
     }
 
     if (foundBook) {
@@ -318,13 +309,14 @@ export default function App() {
       setVerse(foundVerse);
       setSearch("");
       setProgress(50);
-      setTimeout(() => setProgress(0), 800);
+      setTimeout(() => setProgress(0), 1000);
     } else {
       setProgress(p => p < 15 ? 15 : p);
     }
   }
 
   function handleReset() {
+    setIsResetting(true);
     setBook("vide");
     setChapter("vide");
     setVerse("vide");
@@ -352,9 +344,7 @@ export default function App() {
         setLength(data.length || 500);
         setChatgpt(data.chatgpt !== undefined ? data.chatgpt : true);
       }
-    } catch (e) {
-      console.error("Erreur lors du chargement de la dernière étude:", e);
-    }
+    } catch (e) { console.error("Erreur lors du chargement de la dernière étude:", e); }
   }
 
   function handleReadBible() {
@@ -362,31 +352,13 @@ export default function App() {
     window.open("https://www.bible.com/fr/search/bible?query=" + q, "_blank");
   }
 
-  /* ================== BACKEND URL ================== */
-  const backendUrl =
-    (process.env.REACT_APP_BACKEND_URL && process.env.REACT_APP_BACKEND_URL.replace(/\/$/, "")) ||
-    "https://etude8-bible-api-production.up.railway.app";
+  // ---------- BACKEND URL ----------
+  const backendUrl = (process.env.REACT_APP_BACKEND_URL && process.env.REACT_APP_BACKEND_URL.replace(/\/$/, "")) 
+    || "https://etude8-bible-api-production.up.railway.app";
 
-  /* =============== Helper Fetch JSON (timeout) =============== */
-  async function fetchJson(url, options = {}, timeoutMs = 30000) {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeoutMs);
-    try {
-      const res = await fetch(url, { ...options, signal: controller.signal });
-      const text = await res.text();
-      clearTimeout(id);
-      if (!res.ok) throw new Error(`HTTP ${res.status}: ${text || res.statusText}`);
-      try {
-        return JSON.parse(text);
-      } catch {
-        return { content: text || "" };
-      }
-    } finally {
-      clearTimeout(id);
-    }
-  }
-
-  /* ================== ÉTUDE 28 POINTS ================== */
+  /* =========================
+     Étude complète (28 rubriques)
+  ========================= */
   async function handleGenerate() {
     if (book === "vide" || chapter === "vide") {
       setContent("⚠️ Veuillez d'abord sélectionner au moins un livre et un chapitre.");
@@ -394,87 +366,106 @@ export default function App() {
       return;
     }
 
-    // passage SANS version
-    const passageForApi = (verse === "vide") ? `${book} ${chapter}` : `${book} ${chapter}:${verse}`;
+    const passageForApi =
+      verse === "vide"
+        ? `${book} ${chapter} ${version}`           // ex: "Nombres 2 LSG"
+        : `${book} ${chapter}:${verse} ${version}`; // ex: "Jean 3:16 LSG"
 
-    setLoading(true);
-    setProgress(5); await wait(150);
-    setProgress(25); await wait(200);
+    setProgress(5); await wait(200);
+    setProgress(25); await wait(250);
 
     try {
-      const body = {
-        passage: passageForApi,
-        version: "",                      // requis par le schéma mais ignoré côté API
-        tokens: Number(length) || 500,    // compat schéma
-        model: "darby",
-        requestedRubriques: Array.from({ length: 28 }, (_, i) => i)
-      };
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-      // on cible /api/generate-study ; si ton back expose /api/generate-28, l’alias côté API couvrira
-      const data = await fetchJson(`${backendUrl}/api/generate-study`, {
+      // NB: alias /api/generate-28 doit exister sur le backend Darby corrigé
+      const response = await fetch(`${backendUrl}/api/generate-28`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
+        body: JSON.stringify({ passage: passageForApi, version }),
+        signal: controller.signal
       });
 
-      let txt = (data.content || "").replace(/\bDerby\b/gi, "Darby").trim();
+      clearTimeout(timeoutId);
+      setProgress(60); await wait(350);
 
-      // si les rubriques ne sont pas présentes → on injecte le squelette local
-      if (!containsRubrics(txt)) {
-        txt = buildRubricScaffold(book, chapter, txt);
+      if (response.ok) {
+        let data;
+        try { data = await response.json(); }
+        catch {
+          const txt = await response.text();
+          data = { content: txt };
+        }
+
+        setProgress(100);
+        const raw = data && data.content !== undefined ? data.content : data;
+        const safe = asString(raw); // <-- évite t.replace crash
+        setContent(safe);
+
+        try {
+          localStorage.setItem("lastStudy", JSON.stringify({ book, chapter, verse, version, length, chatgpt }));
+          updateLastStudyLabel();
+        } catch {}
+
+        // LED "étude verset par verset" non concernée ici.
+      } else {
+        const errorText = await response.text();
+        throw new Error(`Erreur ${response.status}: ${errorText}`);
       }
-
-      setProgress(100);
-      setContent(txt);
-
-      try {
-        localStorage.setItem("lastStudy", JSON.stringify({ book, chapter, verse, version, length, chatgpt }));
-        updateLastStudyLabel();
-      } catch {}
     } catch (error) {
       console.error("Erreur génération 28:", error);
       setProgress(100);
-      setContent(`⚠️ Erreur: ${error.message || "échec de génération (28 points)"}`);
-    } finally {
-      setLoading(false);
+      setContent("⚠️ Erreur: " + (error.name === "AbortError" ? "Délai d'attente dépassé." : asString(error.message || error)));
     }
   }
 
-  /* ================== VERSET PAR VERSET ================== */
+  /* =========================
+     Verset par verset
+  ========================= */
   const generateVerseByVerse = async () => {
-    setLoading(true);
-    setProgress(5); await wait(150);
-    setProgress(25); await wait(200);
+    setProgress(5); await wait(200);
+    setProgress(25); await wait(250);
 
     try {
       const hasSelection = (book !== "vide" && chapter !== "vide");
       const passageForApi = hasSelection
-        ? `${book} ${chapter}${(verse !== "vide") ? (":" + verse) : ""}`
-        : "Genèse 1";
+        ? `${book} ${chapter}${(verse !== "vide") ? (":" + verse) : ""} ${version}`
+        : "Genèse 1 LSG";
 
-      const data = await fetchJson(`${backendUrl}/api/generate-verse-by-verse`, {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+      const response = await fetch(`${backendUrl}/api/generate-verse-by-verse`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ passage: passageForApi, version: "" })
+        body: JSON.stringify({ passage: passageForApi, version }),
+        signal: controller.signal
       });
 
-      setProgress(100);
-      let formatted = (data.content || "Étude verset par verset générée avec succès")
-        .replace(/\bDerby\b/gi, "Darby")
-        .replace(/VERSET (\d+)/g, '**VERSET $1**')
-        .replace(/TEXTE BIBLIQUE\s*:/g, '**TEXTE BIBLIQUE :**')
-        .replace(/EXPLICATION THÉOLOGIQUE\s*:/g, '**EXPLICATION THÉOLOGIQUE :**')
-        .replace(/Introduction au Chapitre/g, '**Introduction au Chapitre**');
+      clearTimeout(timeoutId);
+      setProgress(60); await wait(350);
 
-      setContent(formatted);
-      setRubriquesStatus(prev => ({ ...prev, 0: 'completed' }));
+      if (response.ok) {
+        let data;
+        try { data = await response.json(); }
+        catch {
+          const txt = await response.text();
+          data = { content: txt };
+        }
+
+        setProgress(100);
+        const raw = data && data.content !== undefined ? data.content : data;
+        const safe = postProcessMarkdown(raw); // <-- toujours string ici
+        setContent(safe);
+        setRubriquesStatus(prev => ({ ...prev, 0: 'completed' }));
+      } else {
+        throw new Error(`Erreur ${response.status}: ${await response.text()}`);
+      }
     } catch (error) {
       console.error('Verse-by-verse error:', error);
       setProgress(100);
-      setContent(`⚠️ Erreur: ${error.message || "échec de génération verset par verset."}`);
+      setContent(`⚠️ Erreur: ${asString(error.message || error)}`);
       setRubriquesStatus(prev => ({ ...prev, 0: 'completed' }));
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -486,28 +477,30 @@ export default function App() {
       nextBook = "Genèse"; nextChapter = 1; nextVerse = 1;
       setBook(nextBook); setChapter(nextChapter); setVerse(nextVerse);
     }
+
     try {
       localStorage.setItem("lastStudy", JSON.stringify({
         book: nextBook,
         chapter: nextChapter,
         verse: (nextVerse === "vide" ? 1 : nextVerse),
-        version: version || "LSG",
-        length: length || 500,
+        version: "LSG",
+        length: 500,
         chatgpt: true
       }));
       updateLastStudyLabel();
     } catch {}
 
-    await wait(250);
+    await wait(300);
     await generateVerseByVerse();
   };
 
   function goPrev() { setActiveId(i => Math.max(0, i - 1)); }
   function goNext() { setActiveId(i => Math.min(RUBRIQUES.length - 1, i + 1)); }
 
+  // Rendu markdown minimal (titres en **..** sur une ligne)
   function formatContent(text) {
-    if (!text) return null;
-    const lines = text.split('\n');
+    const safe = asString(text);
+    const lines = safe.split('\n');
     return (
       <div className="content-formatted-inner">
         {lines.map((line, index) => {
@@ -524,7 +517,6 @@ export default function App() {
     );
   }
 
-  /* ================== RENDER ================== */
   return (
     <div className="page-wrap">
       {/* HEADER */}
@@ -534,7 +526,6 @@ export default function App() {
             ✨ MEDITATION BIBLIQUE ✨ ÉTUDE SPIRITUELLE ✨ SAGESSE DIVINE ✨ MÉDITATION THÉOLOGIQUE ✨ CONTEMPLATION SACRÉE ✨ RÉFLEXION INSPIRÉE ✨
           </div>
         </div>
-        {loading && <p className="header-subtitle">Génération en cours…</p>}
       </div>
 
       {/* TOPBAND */}
@@ -571,20 +562,18 @@ export default function App() {
           <NumberPill label="Verset" value={verse} onChange={setVerse} min={1} max={176} />
           <SelectPill label="Version" value={version} onChange={setVersion} options={["LSG","NEG79","BDS"]} />
           <SelectPill label="Longueur" value={length} onChange={setLength} options={[500,1500,2500]} />
-
           <button className="pill-btn" onClick={() => window.open('https://chatgpt.com/', '_blank')}>ChatGPT</button>
           <button className="pill-btn" onClick={handleLastStudy}>{lastStudyLabel}</button>
-          <button className="pill-btn reset" onClick={handleReset} disabled={loading}>🔄 Reset</button>
+          <button className="pill-btn reset" onClick={handleReset}>🔄 Reset</button>
 
           <button
             className={`pill-btn special ${activeId === 0 ? 'active' : ''}`}
             onClick={handleVersetsClick}
-            disabled={loading}
           >
             📖 Versets
           </button>
 
-          <button className="pill-btn accent" onClick={handleGenerate} disabled={loading}>Générer</button>
+          <button className="pill-btn accent" onClick={handleGenerate}>Générer</button>
         </div>
       </div>
 
@@ -604,8 +593,8 @@ export default function App() {
           <div className="right-head">
             <h3>{activeId}. {(RUBRIQUES[activeId] && RUBRIQUES[activeId].title) || "Rubrique"}</h3>
             <div className="right-nav">
-              <button className="mini-pill" onClick={goPrev} disabled={activeId === 0}>◂ Précédent</button>
-              <button className="mini-pill" onClick={goNext} disabled={activeId === RUBRIQUES.length - 1}>Suivant ▸</button>
+              <button className="mini-pill" onClick={goPrev}>◂ Précédent</button>
+              <button className="mini-pill" onClick={goNext}>Suivant ▸</button>
             </div>
           </div>
 
