@@ -50,7 +50,7 @@ const RUBRIQUES = [
 
 function wait(ms){ return new Promise(r => setTimeout(r, ms)); }
 
-// BASE API nettoyée (retire tout / final pour éviter //api)
+// BASE API nettoyée (retire les / finaux pour éviter //api)
 const API_BASE = (process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001').replace(/\/+$/,'');
 
 /* ---------- Composant principal ---------- */
@@ -346,16 +346,7 @@ export default function App() {
 
       if (response.ok) {
         const data = await response.json();
-        let txt = data.content || "Étude verset par verset générée avec succès";
-        // Mise en forme minimale lisible
-        txt = txt
-          .replace(/^VERSET (\d+)/gmi, '**VERSET $1**')
-          .replace(/^TEXTE BIBLIQUE\s*:/gmi, '**TEXTE BIBLIQUE :**')
-          .replace(/^EXPLICATION THÉOLOGIQUE\s*:/gmi, '**EXPLICATION THÉOLOGIQUE :**')
-          .replace(/^Introduction au Chapitre$/gmi, '**Introduction au Chapitre**')
-          .replace(/^Synthèse Spirituelle$/gmi, '**Synthèse Spirituelle**')
-          .replace(/^Principe Herméneutique$/gmi, '**Principe Herméneutique**');
-
+        const txt = data.content || "Étude verset par verset générée avec succès";
         setProgress(100); setContent(txt);
         setRubriquesStatus(prev => ({ ...prev, 0: 'completed' }));
       } else {
@@ -376,7 +367,6 @@ Cette étude examine chaque verset de ${book} ${chapter} selon les principes de 
 
   const handleVersetsClick = async () => {
     setActiveId(0);
-    // Sauvegarde “dernière étude” (Livre + Chapitre suffisent ici)
     try {
       localStorage.setItem("lastStudy", JSON.stringify({
         book, chapter, verse: verse, version, length, chatgpt
@@ -390,32 +380,88 @@ Cette étude examine chaque verset de ${book} ${chapter} selon les principes de 
   function goPrev() { setActiveId(i => Math.max(0, i - 1)); }
   function goNext() { setActiveId(i => Math.min(RUBRIQUES.length - 1, i + 1)); }
 
-  /* ---------- Rendu formaté ---------- */
+  /* ---------- Rendu formaté (lecture améliorée) ---------- */
 
+  // NOUVEL affichage riche : Intro + cartes Verset (Texte / Explication)
   function formatContent(text) {
     if (!text) return null;
 
-    // Renforce le style sans toucher à la donnée
-    const enhanced = text
-      .replace(/^VERSET (\d+)/gmi, '**VERSET $1**')
-      .replace(/^TEXTE BIBLIQUE\s*:/gmi, '**TEXTE BIBLIQUE :**')
-      .replace(/^EXPLICATION THÉOLOGIQUE\s*:/gmi, '**EXPLICATION THÉOLOGIQUE :**')
-      .replace(/^Introduction au Chapitre$/gmi, '**Introduction au Chapitre**')
-      .replace(/^Synthèse Spirituelle$/gmi, '**Synthèse Spirituelle**')
-      .replace(/^Principe Herméneutique$/gmi, '**Principe Herméneutique**');
+    // Découper par "VERSET n"
+    const parts = text.split(/\n?VERSET\s+(\d+)\s*\n/gi);
+    const prelude = parts.shift(); // avant le 1er verset
 
-    const lines = enhanced.split('\n');
+    const blocks = [];
+    if (prelude && prelude.trim()) {
+      blocks.push({ type: 'intro', text: prelude.trim() });
+    }
+
+    for (let i = 0; i < parts.length; i += 2) {
+      const number = parts[i];
+      const body = parts[i + 1] || '';
+
+      // Extraire sections
+      const mScript = body.match(/TEXTE BIBLIQUE\s*:\s*([\s\S]*?)(?:\nEXPLICATION THÉOLOGIQUE\s*:|$)/i);
+      const scripture = mScript ? mScript[1].trim() : '';
+
+      const mExpl = body.match(/EXPLICATION THÉOLOGIQUE\s*:\s*([\s\S]*)/i);
+      const explanation = mExpl ? mExpl[1].trim() : '';
+
+      blocks.push({ type: 'verse', number, scripture, explanation });
+    }
+
     return (
-      <div className="content-formatted-inner">
-        {lines.map((line, index) => {
-          if (line.startsWith('**') && line.endsWith('**')) {
-            return <div key={index} className="content-bold">{line.replace(/\*\*/g, '')}</div>;
-          } else if (line.trim()) {
-            return <div key={index} className="content-line">{line}</div>;
-          } else {
-            return <div key={index} className="content-space"></div>;
-          }
-        })}
+      <div className="vv-wrap">
+        {blocks.map((b, idx) =>
+          b.type === 'intro' ? (
+            <IntroBlock key="intro" text={b.text} />
+          ) : (
+            <VerseBlock
+              key={`v-${idx}`}
+              number={b.number}
+              scripture={b.scripture}
+              explanation={b.explanation}
+            />
+          )
+        )}
+      </div>
+    );
+  }
+
+  // Bloc d’introduction (titre + paragraphe)
+  function IntroBlock({ text }) {
+    const titleMatch = text.match(/Étude Verset par Verset[^\n]*/i);
+    const title = titleMatch ? titleMatch[0].trim() : "Étude verset par verset";
+    const body = titleMatch ? text.replace(titleMatch[0], "").trim() : text.trim();
+
+    return (
+      <div className="vv-intro">
+        <div className="vv-title">{title}</div>
+        {body && <div className="vv-intro-body">{body}</div>}
+      </div>
+    );
+  }
+
+  // Carte “Verset n” avec deux sections
+  function VerseBlock({ number, scripture, explanation }) {
+    return (
+      <div className="vv-verse">
+        <div className="vv-verse-header">
+          <span className="vv-pill">Verset {number}</span>
+        </div>
+
+        {scripture && (
+          <div className="vv-section vv-scripture">
+            <div className="vv-tag">Texte biblique</div>
+            <div className="vv-text">{scripture}</div>
+          </div>
+        )}
+
+        {explanation && (
+          <div className="vv-section vv-explanation">
+            <div className="vv-tag">Explication théologique</div>
+            <div className="vv-text">{explanation}</div>
+          </div>
+        )}
       </div>
     );
   }
