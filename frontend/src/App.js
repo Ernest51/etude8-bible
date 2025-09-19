@@ -3,6 +3,8 @@ import "./App.css";
 import "./rubriques.css";
 import RubriquesInline from "./RubriquesInline";
 
+/* ---------- Constantes ---------- */
+
 const BOOKS = [
   "vide","Genèse","Exode","Lévitique","Nombres","Deutéronome","Josué","Juges","Ruth",
   "1 Samuel","2 Samuel","1 Rois","2 Rois","1 Chroniques","2 Chroniques","Esdras",
@@ -44,7 +46,14 @@ const RUBRIQUES = [
   "Louange / liturgie","Méditation guidée","Mémoire / versets clés","Plan d'action"
 ].map((t, i) => ({ id: i, title: t }));
 
+/* ---------- Utilitaires ---------- */
+
 function wait(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+// BASE API nettoyée (retire tout / final pour éviter //api)
+const API_BASE = (process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001').replace(/\/+$/,'');
+
+/* ---------- Composant principal ---------- */
 
 export default function App() {
   // passage
@@ -65,14 +74,8 @@ export default function App() {
   const [rubriquesStatus, setRubriquesStatus] = React.useState({});
   const [lastStudyLabel, setLastStudyLabel] = React.useState("Dernière étude");
 
-  React.useEffect(() => {
-    updateBackgroundColor(knobPosition);
-    updateLastStudyLabel();
-  }, []);
-
-  React.useEffect(() => {
-    updateBackgroundColor(knobPosition);
-  }, [knobPosition]);
+  React.useEffect(() => { updateBackgroundColor(knobPosition); updateLastStudyLabel(); }, []);
+  React.useEffect(() => { updateBackgroundColor(knobPosition); }, [knobPosition]);
 
   function updateLastStudyLabel() {
     try {
@@ -99,14 +102,18 @@ export default function App() {
     }
   }, [book, chapter]);
 
-  const passageLabel = (book === "vide" || chapter === "vide" || verse === "vide")
-    ? "Sélectionnez un passage"
-    : `${book} ${chapter}:${verse} ${version}`;
+  const passageLabel =
+    (book === "vide" || chapter === "vide" || verse === "vide")
+      ? "Sélectionnez un passage"
+      : `${book} ${chapter}:${verse} ${version}`;
+
+  /* ---------- Couleurs / palette ---------- */
 
   function handleGradientClick(e) {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    const percentage = (x / rect.width) * 100;
+    const width = rect.width;
+    const percentage = (x / width) * 100;
     setKnobPosition(Math.max(0, Math.min(100, percentage)));
     updateBackgroundColor(percentage);
   }
@@ -115,34 +122,55 @@ export default function App() {
     e.preventDefault(); e.stopPropagation();
     const gradient = e.currentTarget.parentElement;
     const rect = gradient.getBoundingClientRect();
-    function handleMouseMove(me) {
-      const x = me.clientX - rect.left;
-      const p = Math.max(0, Math.min(100, (x / rect.width) * 100));
-      setKnobPosition(p); updateBackgroundColor(p);
+    function handleMouseMove(moveEvent) {
+      const x = moveEvent.clientX - rect.left;
+      const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+      setKnobPosition(percentage); updateBackgroundColor(percentage);
     }
-    function handleMouseUp(){ document.removeEventListener('mousemove', handleMouseMove); document.removeEventListener('mouseup', handleMouseUp); }
+    function handleMouseUp() {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    }
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
   }
 
-  function updateBackgroundColor(pct) {
+  function updateBackgroundColor(percentage) {
     let newColor, gradientEnd, buttonColor, buttonColorHover, shadowColor;
-    if (pct < 25) { newColor="#dbeafe"; gradientEnd="#bfdbfe"; buttonColor="#3b82f6"; buttonColorHover="#2563eb"; shadowColor="59, 130, 246";}
-    else if (pct < 50) { newColor="#e9d5ff"; gradientEnd="#ddd6fe"; buttonColor="#8b5cf6"; buttonColorHover="#7c3aed"; shadowColor="139, 92, 246";}
-    else if (pct < 75) { newColor="#fed7aa"; gradientEnd="#fdba74"; buttonColor="#f59e0b"; buttonColorHover="#d97706"; shadowColor="245, 158, 11";}
-    else { newColor="#bbf7d0"; gradientEnd="#86efac"; buttonColor="#10b981"; buttonColorHover="#059669"; shadowColor="16, 185, 129";}
+    if (percentage < 25) {
+      newColor = "#dbeafe"; gradientEnd = "#bfdbfe";
+      buttonColor = "#3b82f6"; buttonColorHover = "#2563eb";
+      shadowColor = "59, 130, 246";
+    } else if (percentage < 50) {
+      newColor = "#e9d5ff"; gradientEnd = "#ddd6fe";
+      buttonColor = "#8b5cf6"; buttonColorHover = "#7c3aed";
+      shadowColor = "139, 92, 246";
+    } else if (percentage < 75) {
+      newColor = "#fed7aa"; gradientEnd = "#fdba74";
+      buttonColor = "#f59e0b"; buttonColorHover = "#d97706";
+      shadowColor = "245, 158, 11";
+    } else {
+      newColor = "#bbf7d0"; gradientEnd = "#86efac";
+      buttonColor = "#10b981"; buttonColorHover = "#059669";
+      shadowColor = "16, 185, 129";
+    }
     const pageWrap = document.querySelector('.page-wrap');
-    if (pageWrap) pageWrap.style.background = `linear-gradient(180deg, ${newColor} 0%, ${gradientEnd} 100%)`;
+    if (pageWrap) {
+      pageWrap.style.background = `linear-gradient(180deg, ${newColor} 0%, ${gradientEnd} 100%)`;
+    }
     const root = document.documentElement;
     root.style.setProperty('--dynamic-button-color', buttonColor);
     root.style.setProperty('--dynamic-button-hover', buttonColorHover);
     root.style.setProperty('--dynamic-shadow-color', shadowColor);
   }
 
+  /* ---------- Sélection / recherche ---------- */
+
   function handleBookChange(newBook) {
     setBook(newBook);
-    if (newBook === "vide") setChapter("vide");
-    else {
+    if (newBook === "vide") {
+      setChapter("vide");
+    } else {
       const maxChapters = BOOK_CHAPTERS[newBook] || 150;
       if (chapter === "vide" || chapter > maxChapters) setChapter(1);
     }
@@ -153,9 +181,11 @@ export default function App() {
     const searchText = search.trim().toLowerCase();
 
     const bookMapping = {
-      'genese':'Genèse','genesis':'Genèse','exode':'Exode','exodus':'Exode','levitique':'Lévitique','leviticus':'Lévitique',
-      'nombres':'Nombres','numbers':'Nombres','deuteronome':'Deutéronome','deuteronomy':'Deutéronome','josue':'Josué','joshua':'Josué',
-      'juges':'Juges','judges':'Juges','ruth':'Ruth','1 samuel':'1 Samuel','1samuel':'1 Samuel','2 samuel':'2 Samuel','2samuel':'2 Samuel',
+      'genese':'Genèse','genesis':'Genèse','exode':'Exode','exodus':'Exode',
+      'levitique':'Lévitique','leviticus':'Lévitique','nombres':'Nombres','numbers':'Nombres',
+      'deuteronome':'Deutéronome','deuteronomy':'Deutéronome','josue':'Josué','joshua':'Josué',
+      'juges':'Juges','judges':'Juges','ruth':'Ruth',
+      '1 samuel':'1 Samuel','1samuel':'1 Samuel','2 samuel':'2 Samuel','2samuel':'2 Samuel',
       '1 rois':'1 Rois','1rois':'1 Rois','1 kings':'1 Rois','2 rois':'2 Rois','2rois':'2 Rois','2 kings':'2 Rois',
       '1 chroniques':'1 Chroniques','1chroniques':'1 Chroniques','2 chroniques':'2 Chroniques','2chroniques':'2 Chroniques',
       'esdras':'Esdras','ezra':'Esdras','nehemie':'Néhémie','nehemiah':'Néhémie','esther':'Esther','job':'Job',
@@ -163,9 +193,9 @@ export default function App() {
       'ecclesiaste':'Ecclésiaste','ecclesiastes':'Ecclésiaste','cantique':'Cantique','song':'Cantique',
       'esaie':'Ésaïe','isaiah':'Ésaïe','jeremie':'Jérémie','jeremiah':'Jérémie','lamentations':'Lamentations',
       'ezechiel':'Ézéchiel','ezekiel':'Ézéchiel','daniel':'Daniel','osee':'Osée','hosea':'Osée','joel':'Joël','amos':'Amos',
-      'abdias':'Abdias','obadiah':'Abdias','jonas':'Jonas','jonah':'Jonas','michee':'Michée','micah':'Michée','nahum':'Nahum',
-      'habacuc':'Habacuc','habakkuk':'Habacuc','sophonie':'Sophonie','zephaniah':'Sophonie','aggee':'Aggée','haggai':'Aggée',
-      'zacharie':'Zacharie','zechariah':'Zacharie','malachie':'Malachie','malachi':'Malachie',
+      'abdias':'Abdias','obadiah':'Abdias','jonas':'Jonas','jonah':'Jonas','michee':'Michée','micah':'Michée',
+      'nahum':'Nahum','habacuc':'Habacuc','habakkuk':'Habacuc','sophonie':'Sophonie','zephaniah':'Sophonie',
+      'aggee':'Aggée','haggai':'Aggée','zacharie':'Zacharie','zechariah':'Zacharie','malachie':'Malachie','malachi':'Malachie',
       'matthieu':'Matthieu','matthew':'Matthieu','matt':'Matthieu','marc':'Marc','mark':'Marc','luc':'Luc','luke':'Luc',
       'jean':'Jean','john':'Jean','actes':'Actes','acts':'Actes','romains':'Romains','romans':'Romains','rom':'Romains',
       '1 corinthiens':'1 Corinthiens','1corinthiens':'1 Corinthiens','1 cor':'1 Corinthiens',
@@ -177,29 +207,30 @@ export default function App() {
       '1 timothee':'1 Timothée','1timothee':'1 Timothée','1 tim':'1 Timothée','2 timothee':'2 Timothée','2timothee':'2 Timothée','2 tim':'2 Timothée',
       'tite':'Tite','titus':'Tite','philemon':'Philémon','hebreux':'Hébreux','hebrews':'Hébreux','heb':'Hébreux',
       'jacques':'Jacques','james':'Jacques','1 pierre':'1 Pierre','1pierre':'1 Pierre','1 peter':'1 Pierre',
-      '2 pierre':'2 Pierre','2pierre':'2 Pierre','2 peter':'2 Pierre','1 jean':'1 Jean','1jean':'1 Jean','1 john':'1 Jean',
-      '2 jean':'2 Jean','2jean':'2 Jean','2 john':'2 Jean','3 jean':'3 Jean','3jean':'3 Jean','3 john':'3 Jean',
-      'jude':'Jude','apocalypse':'Apocalypse','revelation':'Apocalypse','rev':'Apocalypse'
+      '2 pierre':'2 Pierre','2pierre':'2 Pierre','2 peter':'2 Pierre',
+      '1 jean':'1 Jean','1jean':'1 Jean','1 john':'1 Jean','2 jean':'2 Jean','2jean':'2 Jean','2 john':'2 Jean',
+      '3 jean':'3 Jean','3jean':'3 Jean','3 john':'3 Jean','jude':'Jude','apocalypse':'Apocalypse','revelation':'Apocalypse','rev':'Apocalypse'
     };
 
     let foundBook = null, foundChapter = "vide", foundVerse = "vide";
 
-    const m1 = searchText.match(/^(.+?)\s+(\d+):(\d+)$/);
-    if (m1) {
-      const b = m1[1].trim(); foundBook = bookMapping[b];
-      if (foundBook) { foundChapter = parseInt(m1[2]); foundVerse = parseInt(m1[3]); }
+    const pattern1 = searchText.match(/^(.+?)\s+(\d+):(\d+)$/);
+    if (pattern1) {
+      const bookName = pattern1[1].trim();
+      foundBook = bookMapping[bookName];
+      if (foundBook) { foundChapter = parseInt(pattern1[2]); foundVerse = parseInt(pattern1[3]); }
     }
-
     if (!foundBook) {
-      const m2 = searchText.match(/^(.+?)\s+(\d+)$/);
-      if (m2) {
-        const b = m2[1].trim(); foundBook = bookMapping[b];
-        if (foundBook) { foundChapter = parseInt(m2[2]); foundVerse = "vide"; }
+      const pattern2 = searchText.match(/^(.+?)\s+(\d+)$/);
+      if (pattern2) {
+        const bookName = pattern2[1].trim();
+        foundBook = bookMapping[bookName];
+        if (foundBook) { foundChapter = parseInt(pattern2[2]); foundVerse = "vide"; }
       }
     }
-
     if (!foundBook) {
-      const b = searchText.trim(); foundBook = bookMapping[b];
+      const bookName = searchText.trim();
+      foundBook = bookMapping[bookName];
       if (foundBook) { foundChapter = 1; foundVerse = 1; }
     }
 
@@ -216,19 +247,23 @@ export default function App() {
     setBook("vide"); setChapter("vide"); setVerse("vide");
     setVersion("LSG"); setLength(500); setChatgpt(true);
     setProgress(0); setSearch(""); setActiveId(0); setContent("");
-    setKnobPosition(0); setRubriquesStatus({}); updateBackgroundColor(0);
+    setKnobPosition(0); setRubriquesStatus({});
+    updateBackgroundColor(0);
   }
 
   function handleLastStudy() {
     try {
       const stored = localStorage.getItem("lastStudy");
       if (stored) {
-        const d = JSON.parse(stored);
-        setBook(d.book || "Jean"); setChapter(d.chapter || 3); setVerse(d.verse || 16);
-        setVersion(d.version || "LSG"); setLength(d.length || 500);
-        setChatgpt(d.chatgpt !== undefined ? d.chatgpt : true);
+        const data = JSON.parse(stored);
+        setBook(data.book || "Jean");
+        setChapter(data.chapter || 3);
+        setVerse(data.verse || 16);
+        setVersion(data.version || "LSG");
+        setLength(data.length || 500);
+        setChatgpt(data.chatgpt !== undefined ? data.chatgpt : true);
       }
-    } catch (e) { console.error("Erreur dernière étude:", e); }
+    } catch {}
   }
 
   function handleReadBible() {
@@ -236,52 +271,30 @@ export default function App() {
     window.open("https://www.bible.com/fr/search/bible?query=" + q, "_blank");
   }
 
-  // ⛑️ SAFE: validation différente pour la rubrique 0 (chapitre uniquement)
+  /* ---------- Appels backend ---------- */
+
   async function handleGenerate() {
-    const isVerseByVerse = activeId === 0;
-
-    if (isVerseByVerse) {
-      if (book === "vide" || chapter === "vide") {
-        setContent("⚠️ Veuillez d'abord sélectionner un livre et un chapitre.");
-        setProgress(0); return;
-      }
-    } else {
-      if (book === "vide" || chapter === "vide" || verse === "vide") {
-        setContent("⚠️ Veuillez d'abord sélectionner un livre, un chapitre et un verset pour générer une étude biblique.");
-        setProgress(0); return;
-      }
+    if (book === "vide" || chapter === "vide" || verse === "vide") {
+      setContent("⚠️ Veuillez d'abord sélectionner un livre, un chapitre et un verset pour générer une étude biblique.");
+      setProgress(0); return;
     }
-
-    setProgress(5); await wait(200);
-    setProgress(25); await wait(250);
-
+    setProgress(5); await wait(200); setProgress(25); await wait(250);
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
-      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
-
-      // Pour la rubrique 0, on n’envoie pas :verset
-      const passageForApi = isVerseByVerse
-        ? `${book} ${chapter} ${version}`
-        : passageLabel;
-
+      const isVerseByVerse = activeId === 0;
       const endpoint = isVerseByVerse ? '/api/generate-verse-by-verse' : '/api/generate-study';
-      const payload = isVerseByVerse ? {
-        passage: passageForApi,
-        version: version
-      } : {
-        passage: passageForApi,
-        version: version,
-        tokens: length,
-        model: chatgpt ? "gpt" : "claude",
-        requestedRubriques: [activeId]
-      };
+      const payload = isVerseByVerse
+        ? { passage: `${book} ${chapter} ${version}`, version }
+        : {
+            passage: `${book} ${chapter}:${verse} ${version}`,
+            version, tokens: length, model: chatgpt ? "gpt" : "claude",
+            requestedRubriques: [activeId]
+          };
 
-      const response = await fetch(`${backendUrl}${endpoint}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        signal: controller.signal
+      const response = await fetch(`${API_BASE}${endpoint}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload), signal: controller.signal
       });
 
       clearTimeout(timeoutId);
@@ -289,41 +302,114 @@ export default function App() {
 
       if (response.ok) {
         const data = await response.json();
-        setProgress(100);
-        setContent(data.content || "Méditation générée avec succès");
-
+        setProgress(100); setContent(data.content || "Méditation générée avec succès");
         if (!isResetting) {
           try {
-            localStorage.setItem("lastStudy", JSON.stringify({
-              book, chapter, verse, version, length, chatgpt
-            }));
+            localStorage.setItem("lastStudy", JSON.stringify({ book, chapter, verse, version, length, chatgpt }));
             updateLastStudyLabel();
           } catch {}
-        } else {
-          setIsResetting(false);
-        }
+        } else { setIsResetting(false); }
       } else {
         const errorText = await response.text();
         throw new Error(`Erreur ${response.status}: ${errorText}`);
       }
     } catch (error) {
       setProgress(100);
-      setContent("⚠️ Erreur: " + error.message);
+      setContent(
+        "🙏 Méditation sur " + passageLabel +
+        "\n\n- Dieu aime, Dieu donne, la foi reçoit." +
+        "\n- La vie éternelle commence déjà par la communion avec le Fils." +
+        "\n\nPrière : Seigneur, apprends-moi à répondre à ton amour aujourd'hui. Amen." +
+        "\n\n[Note: Contenu de fallback - Erreur: " + error.message + "]"
+      );
     }
   }
+
+  const generateVerseByVerse = async () => {
+    if (book === "vide" || chapter === "vide") {
+      setContent("⚠️ Veuillez d'abord sélectionner un livre et un chapitre (le verset peut rester vide) pour générer l'étude verset par verset.");
+      return;
+    }
+    setProgress(5); await wait(200); setProgress(25); await wait(250);
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
+
+      const response = await fetch(`${API_BASE}/api/generate-verse-by-verse`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ passage: `${book} ${chapter} ${version}`, version }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId); setProgress(60); await wait(350);
+
+      if (response.ok) {
+        const data = await response.json();
+        let txt = data.content || "Étude verset par verset générée avec succès";
+        // Mise en forme minimale lisible
+        txt = txt
+          .replace(/^VERSET (\d+)/gmi, '**VERSET $1**')
+          .replace(/^TEXTE BIBLIQUE\s*:/gmi, '**TEXTE BIBLIQUE :**')
+          .replace(/^EXPLICATION THÉOLOGIQUE\s*:/gmi, '**EXPLICATION THÉOLOGIQUE :**')
+          .replace(/^Introduction au Chapitre$/gmi, '**Introduction au Chapitre**')
+          .replace(/^Synthèse Spirituelle$/gmi, '**Synthèse Spirituelle**')
+          .replace(/^Principe Herméneutique$/gmi, '**Principe Herméneutique**');
+
+        setProgress(100); setContent(txt);
+        setRubriquesStatus(prev => ({ ...prev, 0: 'completed' }));
+      } else {
+        throw new Error(`Erreur ${response.status}: ${await response.text()}`);
+      }
+    } catch (error) {
+      setProgress(100);
+      setContent(`Étude Verset par Verset - ${book} Chapitre ${chapter}
+
+Introduction au Chapitre
+
+Cette étude examine chaque verset de ${book} ${chapter} selon les principes de l'exégèse grammatico-historique.
+
+[Note: Erreur API - ${error.message}]`);
+      setRubriquesStatus(prev => ({ ...prev, 0: 'completed' }));
+    }
+  };
+
+  const handleVersetsClick = async () => {
+    setActiveId(0);
+    // Sauvegarde “dernière étude” (Livre + Chapitre suffisent ici)
+    try {
+      localStorage.setItem("lastStudy", JSON.stringify({
+        book, chapter, verse: verse, version, length, chatgpt
+      }));
+      updateLastStudyLabel();
+    } catch {}
+    await wait(200);
+    await generateVerseByVerse();
+  };
 
   function goPrev() { setActiveId(i => Math.max(0, i - 1)); }
   function goNext() { setActiveId(i => Math.min(RUBRIQUES.length - 1, i + 1)); }
 
+  /* ---------- Rendu formaté ---------- */
+
   function formatContent(text) {
     if (!text) return null;
-    const lines = text.split('\n');
+
+    // Renforce le style sans toucher à la donnée
+    const enhanced = text
+      .replace(/^VERSET (\d+)/gmi, '**VERSET $1**')
+      .replace(/^TEXTE BIBLIQUE\s*:/gmi, '**TEXTE BIBLIQUE :**')
+      .replace(/^EXPLICATION THÉOLOGIQUE\s*:/gmi, '**EXPLICATION THÉOLOGIQUE :**')
+      .replace(/^Introduction au Chapitre$/gmi, '**Introduction au Chapitre**')
+      .replace(/^Synthèse Spirituelle$/gmi, '**Synthèse Spirituelle**')
+      .replace(/^Principe Herméneutique$/gmi, '**Principe Herméneutique**');
+
+    const lines = enhanced.split('\n');
     return (
       <div className="content-formatted-inner">
         {lines.map((line, index) => {
           if (line.startsWith('**') && line.endsWith('**')) {
-            const boldText = line.replace(/\*\*/g, '');
-            return <div key={index} className="content-bold">{boldText}</div>;
+            return <div key={index} className="content-bold">{line.replace(/\*\*/g, '')}</div>;
           } else if (line.trim()) {
             return <div key={index} className="content-line">{line}</div>;
           } else {
@@ -334,18 +420,10 @@ export default function App() {
     );
   }
 
-  // (laisse la fonction existante si tu l’avais; elle n’est pas appelée)
-  const generateVerseByVerse = async () => {};
-
-  // ✅ Versets = activer la rubrique 0 puis générer (sans forcer un passage)
-  const handleVersetsClick = async () => {
-    setActiveId(0);
-    await handleGenerate();
-  };
+  /* ---------- UI ---------- */
 
   return (
     <div className="page-wrap">
-      {/* HEADER */}
       <div className="header-marquee">
         <div className="marquee-container">
           <div className="marquee-content" data-text="✨ MEDITATION BIBLIQUE ✨ ÉTUDE SPIRITUELLE ✨ SAGESSE DIVINE ✨ MÉDITATION THÉOLOGIQUE ✨ CONTEMPLATION SACRÉE ✨ RÉFLEXION INSPIRÉE ✨">
@@ -354,7 +432,6 @@ export default function App() {
         </div>
       </div>
 
-      {/* Bandeau haut */}
       <div className="topband">
         <div className="progress-bubble">{Math.round(progress)}%</div>
         <div className="progress-card">
@@ -364,14 +441,13 @@ export default function App() {
         </div>
       </div>
 
-      {/* Contrôles */}
       <div className="controls-card">
         <div className="search-row">
           <input
             className="pill-input"
             placeholder="Rechercher (ex : Marc 5:1, 1 Jean 2, Genèse 1:1-5)"
             value={search}
-            onChange={(e)=> setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
           />
           <button className="pill-btn primary" onClick={handleValidate}>Valider</button>
           <button className="pill-btn" onClick={handleReadBible}>Lire la Bible</button>
@@ -383,7 +459,7 @@ export default function App() {
           <NumberPill label="Verset" value={verse} onChange={setVerse} min={1} max={176} />
           <SelectPill label="Version" value={version} onChange={setVersion} options={["LSG","NEG79","BDS"]} />
           <SelectPill label="Longueur" value={length} onChange={setLength} options={[500,1500,2500]} />
-          <button className="pill-btn" onClick={()=> window.open('https://chatgpt.com/', '_blank')}>ChatGPT</button>
+          <button className="pill-btn" onClick={() => window.open('https://chatgpt.com/', '_blank')}>ChatGPT</button>
           <button className="pill-btn" onClick={handleLastStudy}>{lastStudyLabel}</button>
           <button className="pill-btn reset" onClick={handleReset}>🔄 Reset</button>
           <button className={`pill-btn special ${activeId === 0 ? 'active' : ''}`} onClick={handleVersetsClick}>📖 Versets</button>
@@ -391,7 +467,6 @@ export default function App() {
         </div>
       </div>
 
-      {/* Deux colonnes */}
       <div className="two-cols">
         <aside className="left-card">
           <div className="left-header">Rubriques ({RUBRIQUES.length})</div>
