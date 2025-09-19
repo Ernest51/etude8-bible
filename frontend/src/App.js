@@ -1,3 +1,4 @@
+// App.js
 import React from "react";
 import "./App.css";
 import "./rubriques.css";
@@ -42,16 +43,16 @@ const RUBRIQUES = [
   "Prière de réponse","Questions d'étude","Points de vigilance",
   "Objections et réponses","Perspective missionnelle","Éthique chrétienne",
   "Louange / liturgie","Méditation guidée","Mémoire / versets clés","Plan d'action"
-].map(function (t, i) { return { id: i, title: t }; });
+].map((t, i) => ({ id: i, title: t }));
 
-function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+function wait(ms){ return new Promise(r => setTimeout(r, ms)); }
 
 export default function App() {
   // passage
   const [book, setBook] = React.useState("vide");
   const [chapter, setChapter] = React.useState("vide");
   const [verse, setVerse] = React.useState("vide");
-  const [version, setVersion] = React.useState("LSG");
+  const [version, setVersion] = React.useState("LSG"); // affichage UI seulement
   const [length, setLength] = React.useState(500);
   const [chatgpt, setChatgpt] = React.useState(true);
 
@@ -65,13 +66,12 @@ export default function App() {
   const [rubriquesStatus, setRubriquesStatus] = React.useState({});
   const [lastStudyLabel, setLastStudyLabel] = React.useState("Dernière étude");
 
-  // Initialiser couleurs + label
+  // Init couleurs + label
   React.useEffect(() => {
     updateBackgroundColor(knobPosition);
     updateLastStudyLabel();
   }, []);
 
-  // Mettre à jour couleurs quand le knob bouge
   React.useEffect(() => {
     updateBackgroundColor(knobPosition);
   }, [knobPosition]);
@@ -304,7 +304,7 @@ export default function App() {
     setBook("vide");
     setChapter("vide");
     setVerse("vide");
-    setVersion("LSG");
+    setVersion("LSG"); // n'est plus utilisé côté API
     setLength(500);
     setChatgpt(true);
     setProgress(0);
@@ -324,7 +324,7 @@ export default function App() {
         setBook(data.book || "Jean");
         setChapter(data.chapter || 3);
         setVerse(data.verse || 16);
-        setVersion(data.version || "LSG");
+        setVersion(data.version || "LSG"); // affichage seulement
         setLength(data.length || 500);
         setChatgpt(data.chatgpt !== undefined ? data.chatgpt : true);
       }
@@ -339,22 +339,23 @@ export default function App() {
   }
 
   // ---------- BACKEND URL ----------
-  const backendUrl = (process.env.REACT_APP_BACKEND_URL && process.env.REACT_APP_BACKEND_URL.replace(/\/$/, "")) 
-    || "https://etude8-bible-api-production.up.railway.app";
+  const backendUrl =
+    (process.env.REACT_APP_BACKEND_URL && process.env.REACT_APP_BACKEND_URL.replace(/\/$/, "")) ||
+    "https://etude8-bible-api-production.up.railway.app";
 
   // ---------- Étude complète (28 rubriques) ----------
   async function handleGenerate() {
-    // On autorise Livre + Chapitre (verset optionnel)
     if (book === "vide" || chapter === "vide") {
       setContent("⚠️ Veuillez d'abord sélectionner au moins un livre et un chapitre.");
       setProgress(0);
       return;
     }
 
+    // IMPORTANT : ne pas inclure la version dans 'passage'
     const passageForApi =
       verse === "vide"
-        ? `${book} ${chapter} ${version}`           // ex: "Nombres 2 LSG"
-        : `${book} ${chapter}:${verse} ${version}`; // ex: "Jean 3:16 LSG"
+        ? `${book} ${chapter}`            // ex: "Nombres 2"
+        : `${book} ${chapter}:${verse}`;  // ex: "Jean 3:16"
 
     setProgress(5); await wait(200);
     setProgress(25); await wait(250);
@@ -366,7 +367,8 @@ export default function App() {
       const response = await fetch(`${backendUrl}/api/generate-28`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ passage: passageForApi, version }),
+        // La version n'est pas utilisée par l'API (elle choisit Darby côté serveur)
+        body: JSON.stringify({ passage: passageForApi }),
         signal: controller.signal
       });
 
@@ -403,9 +405,10 @@ export default function App() {
 
     try {
       const hasSelection = (book !== "vide" && chapter !== "vide");
+      // IMPORTANT : ne pas inclure la version dans 'passage'
       const passageForApi = hasSelection
-        ? `${book} ${chapter}${(verse !== "vide") ? (":" + verse) : ""} ${version}`
-        : "Genèse 1 LSG";
+        ? `${book} ${chapter}${(verse !== "vide") ? (":" + verse) : ""}`
+        : "Genèse 1";
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
@@ -413,7 +416,7 @@ export default function App() {
       const response = await fetch(`${backendUrl}/api/generate-verse-by-verse`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ passage: passageForApi, version: "LSG" }),
+        body: JSON.stringify({ passage: passageForApi }),
         signal: controller.signal
       });
 
@@ -425,7 +428,7 @@ export default function App() {
         setProgress(100);
         let formatted = data.content || "Étude verset par verset générée avec succès";
 
-        // Lisibilité
+        // Lisibilité minimale
         formatted = formatted.replace(/VERSET (\d+)/g, '**VERSET $1**');
         formatted = formatted.replace(/TEXTE BIBLIQUE\s*:/g, '**TEXTE BIBLIQUE :**');
         formatted = formatted.replace(/EXPLICATION THÉOLOGIQUE\s*:/g, '**EXPLICATION THÉOLOGIQUE :**');
@@ -460,7 +463,7 @@ export default function App() {
         book: nextBook,
         chapter: nextChapter,
         verse: (nextVerse === "vide" ? 1 : nextVerse),
-        version: "LSG",
+        version: "LSG", // affichage seulement
         length: 500,
         chatgpt: true
       }));
@@ -480,9 +483,13 @@ export default function App() {
     return (
       <div className="content-formatted-inner">
         {lines.map((line, index) => {
-          if (line.startsWith('**') && line.endsWith('**')) {
+          if (/^\*\*.+\*\*$/.test(line.trim())) {
             const boldText = line.replace(/\*\*/g, '');
             return <div key={index} className="content-bold">{boldText}</div>;
+          } else if (line.startsWith('# ')) {
+            return <div key={index} className="content-bold">{line.replace(/^#\s+/, '')}</div>;
+          } else if (line.startsWith('## ')) {
+            return <div key={index} className="content-line" style={{fontWeight: 700}}>{line.replace(/^##\s+/, '')}</div>;
           } else if (line.trim()) {
             return <div key={index} className="content-line">{line}</div>;
           } else {
@@ -528,8 +535,8 @@ export default function App() {
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
-        <button className="pill-btn primary" onClick={handleValidate}>Valider</button>
-        <button className="pill-btn" onClick={handleReadBible}>Lire la Bible</button>
+          <button className="pill-btn primary" onClick={handleValidate}>Valider</button>
+          <button className="pill-btn" onClick={handleReadBible}>Lire la Bible</button>
         </div>
 
         <div className="pills-row">
