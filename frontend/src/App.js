@@ -1,9 +1,9 @@
-// App.js
 import React from "react";
 import "./App.css";
 import "./rubriques.css";
 import RubriquesInline from "./RubriquesInline";
 
+/* ================== DONNÉES ================== */
 const BOOKS = [
   "vide","Genèse","Exode","Lévitique","Nombres","Deutéronome","Josué","Juges","Ruth",
   "1 Samuel","2 Samuel","1 Rois","2 Rois","1 Chroniques","2 Chroniques","Esdras",
@@ -47,14 +47,17 @@ const RUBRIQUES = [
 
 function wait(ms){ return new Promise(r => setTimeout(r, ms)); }
 
+/* =======================================================
+   APP
+   ======================================================= */
 export default function App() {
-  // passage
+  // Passage
   const [book, setBook] = React.useState("vide");
   const [chapter, setChapter] = React.useState("vide");
   const [verse, setVerse] = React.useState("vide");
-  const [version, setVersion] = React.useState("LSG"); // affichage UI seulement
+  const [version, setVersion] = React.useState("LSG"); // affichage seulement (non concaténé à 'passage')
   const [length, setLength] = React.useState(500);
-  const [chatgpt, setChatgpt] = React.useState(true);
+  const [chatgpt, setChatgpt] = React.useState(true);  // laissé pour compat UI
 
   // UI
   const [progress, setProgress] = React.useState(0);
@@ -62,19 +65,24 @@ export default function App() {
   const [activeId, setActiveId] = React.useState(0);
   const [content, setContent] = React.useState("");
   const [knobPosition, setKnobPosition] = React.useState(0);
-  const [isResetting, setIsResetting] = React.useState(false);
   const [rubriquesStatus, setRubriquesStatus] = React.useState({});
   const [lastStudyLabel, setLastStudyLabel] = React.useState("Dernière étude");
+  const [loading, setLoading] = React.useState(false);
 
-  // Init couleurs + label
-  React.useEffect(() => {
-    updateBackgroundColor(knobPosition);
-    updateLastStudyLabel();
-  }, []);
+  // Init
+  React.useEffect(() => { updateBackgroundColor(knobPosition); updateLastStudyLabel(); }, []);
+  React.useEffect(() => { updateBackgroundColor(knobPosition); }, [knobPosition]);
 
+  // LEDs rubriques
   React.useEffect(() => {
-    updateBackgroundColor(knobPosition);
-  }, [knobPosition]);
+    if (book !== "vide" && chapter !== "vide") {
+      const newStatus = {};
+      for (let i = 0; i < RUBRIQUES.length; i++) newStatus[i] = 'ready';
+      setRubriquesStatus(newStatus);
+    } else {
+      setRubriquesStatus({});
+    }
+  }, [book, chapter]);
 
   function updateLastStudyLabel() {
     try {
@@ -91,18 +99,7 @@ export default function App() {
     }
   }
 
-  // LEDs rubriques
-  React.useEffect(() => {
-    if (book !== "vide" && chapter !== "vide") {
-      const newStatus = {};
-      for (let i = 0; i < RUBRIQUES.length; i++) newStatus[i] = 'ready';
-      setRubriquesStatus(newStatus);
-    } else {
-      setRubriquesStatus({});
-    }
-  }, [book, chapter]);
-
-  // -------- passageLabel (OK livre+chapitre, verset optionnel) --------
+  // -------- passageLabel (affichage) --------
   const passageLabel =
     (book === "vide" || chapter === "vide")
       ? "Sélectionnez un passage"
@@ -110,7 +107,7 @@ export default function App() {
           ? `${book} ${chapter} ${version}`
           : `${book} ${chapter}:${verse} ${version}`);
 
-  // Palette
+  /* ================== Palette / UI ================== */
   function handleGradientClick(e) {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
@@ -119,13 +116,11 @@ export default function App() {
     setKnobPosition(Math.max(0, Math.min(100, percentage)));
     updateBackgroundColor(percentage);
   }
-
   function handleKnobMouseDown(e) {
     e.preventDefault();
     e.stopPropagation();
     const gradient = e.currentTarget.parentElement;
     const rect = gradient.getBoundingClientRect();
-
     function handleMouseMove(moveEvent) {
       const x = moveEvent.clientX - rect.left;
       const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
@@ -139,7 +134,6 @@ export default function App() {
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
   }
-
   function updateBackgroundColor(percentage) {
     let newColor, gradientEnd, buttonColor, buttonColorHover, shadowColor;
     if (percentage < 25) {
@@ -169,13 +163,11 @@ export default function App() {
       setChapter("vide");
     } else {
       const maxChapters = BOOK_CHAPTERS[newBook] || 150;
-      if (chapter === "vide" || chapter > maxChapters) {
-        setChapter(1);
-      }
+      if (chapter === "vide" || chapter > maxChapters) setChapter(1);
     }
   }
 
-  // Recherche rapide
+  // Recherche rapide (barre de recherche)
   function handleValidate() {
     if (!search.trim()) {
       setProgress(p => p < 15 ? 15 : p);
@@ -261,8 +253,8 @@ export default function App() {
       const bookName = pattern1[1].trim();
       foundBook = bookMapping[bookName];
       if (foundBook) {
-        foundChapter = parseInt(pattern1[2]);
-        foundVerse = parseInt(pattern1[3]);
+        foundChapter = parseInt(pattern1[2], 10);
+        foundVerse = parseInt(pattern1[3], 10);
       }
     }
 
@@ -272,7 +264,7 @@ export default function App() {
         const bookName = pattern2[1].trim();
         foundBook = bookMapping[bookName];
         if (foundBook) {
-          foundChapter = parseInt(pattern2[2]);
+          foundChapter = parseInt(pattern2[2], 10);
           foundVerse = "vide";
         }
       }
@@ -293,18 +285,17 @@ export default function App() {
       setVerse(foundVerse);
       setSearch("");
       setProgress(50);
-      setTimeout(() => setProgress(0), 1000);
+      setTimeout(() => setProgress(0), 800);
     } else {
       setProgress(p => p < 15 ? 15 : p);
     }
   }
 
   function handleReset() {
-    setIsResetting(true);
     setBook("vide");
     setChapter("vide");
     setVerse("vide");
-    setVersion("LSG"); // n'est plus utilisé côté API
+    setVersion("LSG");
     setLength(500);
     setChatgpt(true);
     setProgress(0);
@@ -324,7 +315,7 @@ export default function App() {
         setBook(data.book || "Jean");
         setChapter(data.chapter || 3);
         setVerse(data.verse || 16);
-        setVersion(data.version || "LSG"); // affichage seulement
+        setVersion(data.version || "LSG");
         setLength(data.length || 500);
         setChatgpt(data.chatgpt !== undefined ? data.chatgpt : true);
       }
@@ -338,12 +329,31 @@ export default function App() {
     window.open("https://www.bible.com/fr/search/bible?query=" + q, "_blank");
   }
 
-  // ---------- BACKEND URL ----------
+  /* ================== BACKEND URL ================== */
   const backendUrl =
     (process.env.REACT_APP_BACKEND_URL && process.env.REACT_APP_BACKEND_URL.replace(/\/$/, "")) ||
     "https://etude8-bible-api-production.up.railway.app";
 
-  // ---------- Étude complète (28 rubriques) ----------
+  /* =============== Helper Fetch JSON (timeout) =============== */
+  async function fetchJson(url, options = {}, timeoutMs = 30000) {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const res = await fetch(url, { ...options, signal: controller.signal });
+      const text = await res.text();
+      clearTimeout(id);
+      if (!res.ok) throw new Error(`HTTP ${res.status}: ${text || res.statusText}`);
+      try {
+        return JSON.parse(text);
+      } catch {
+        return { content: text || "" };
+      }
+    } finally {
+      clearTimeout(id);
+    }
+  }
+
+  /* ================== ÉTUDE 28 POINTS ================== */
   async function handleGenerate() {
     if (book === "vide" || chapter === "vide") {
       setContent("⚠️ Veuillez d'abord sélectionner au moins un livre et un chapitre.");
@@ -351,101 +361,83 @@ export default function App() {
       return;
     }
 
-    // IMPORTANT : ne pas inclure la version dans 'passage'
-    const passageForApi =
-      verse === "vide"
-        ? `${book} ${chapter}`            // ex: "Nombres 2"
-        : `${book} ${chapter}:${verse}`;  // ex: "Jean 3:16"
+    // ❗ passage SANS version
+    const passageForApi = (verse === "vide") ? `${book} ${chapter}` : `${book} ${chapter}:${verse}`;
 
-    setProgress(5); await wait(200);
-    setProgress(25); await wait(250);
+    setLoading(true);
+    setProgress(5); await wait(150);
+    setProgress(25); await wait(200);
 
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      const body = {
+        passage: passageForApi,         // ex: "Nombres 2"
+        version: "",                    // champ requis (ignoré côté server.py)
+        tokens: Number(length) || 500,  // compat schéma
+        model: "darby",                 // étiquette simple
+        requestedRubriques: Array.from({ length: 28 }, (_, i) => i) // 0..27
+      };
 
-      const response = await fetch(`${backendUrl}/api/generate-28`, {
+      // ❗ Route existante sur Railway (alias de /api/generate-28 ajouté côté backend)
+      const data = await fetchJson(`${backendUrl}/api/generate-study`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        // La version n'est pas utilisée par l'API (elle choisit Darby côté serveur)
-        body: JSON.stringify({ passage: passageForApi }),
-        signal: controller.signal
+        body: JSON.stringify(body)
       });
 
-      clearTimeout(timeoutId);
-      setProgress(60); await wait(350);
+      setProgress(100);
+      setContent(data.content || "Étude générée avec succès.");
 
-      if (response.ok) {
-        const data = await response.json();
-        setProgress(100);
-        setContent(data.content || "Étude générée avec succès.");
-
-        // Sauvegarde “dernière étude”
-        try {
-          localStorage.setItem("lastStudy", JSON.stringify({
-            book, chapter, verse, version, length, chatgpt
-          }));
-          updateLastStudyLabel();
-        } catch {}
-      } else {
-        const errorText = await response.text();
-        throw new Error(`Erreur ${response.status}: ${errorText}`);
-      }
+      try {
+        localStorage.setItem("lastStudy", JSON.stringify({ book, chapter, verse, version, length, chatgpt }));
+        updateLastStudyLabel();
+      } catch {}
     } catch (error) {
       console.error("Erreur génération 28:", error);
       setProgress(100);
-      setContent("⚠️ Erreur: " + (error.name === "AbortError" ? "Délai d'attente dépassé." : error.message));
+      setContent(`⚠️ Erreur: ${error.message || "échec de génération (28 points)"}`);
+    } finally {
+      setLoading(false);
     }
   }
 
-  // ---------- Verset par verset ----------
+  /* ================== VERSET PAR VERSET ================== */
   const generateVerseByVerse = async () => {
-    setProgress(5); await wait(200);
-    setProgress(25); await wait(250);
+    setLoading(true);
+    setProgress(5); await wait(150);
+    setProgress(25); await wait(200);
 
     try {
       const hasSelection = (book !== "vide" && chapter !== "vide");
-      // IMPORTANT : ne pas inclure la version dans 'passage'
+      // ❗ passage SANS version
       const passageForApi = hasSelection
         ? `${book} ${chapter}${(verse !== "vide") ? (":" + verse) : ""}`
         : "Genèse 1";
 
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000);
-
-      const response = await fetch(`${backendUrl}/api/generate-verse-by-verse`, {
+      const data = await fetchJson(`${backendUrl}/api/generate-verse-by-verse`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ passage: passageForApi }),
-        signal: controller.signal
+        body: JSON.stringify({ passage: passageForApi, version: "" })
       });
 
-      clearTimeout(timeoutId);
-      setProgress(60); await wait(350);
+      setProgress(100);
+      let formatted = data.content || "Étude verset par verset générée avec succès";
 
-      if (response.ok) {
-        const data = await response.json();
-        setProgress(100);
-        let formatted = data.content || "Étude verset par verset générée avec succès";
+      // Lisibilité (gras)
+      formatted = formatted
+        .replace(/VERSET (\d+)/g, '**VERSET $1**')
+        .replace(/TEXTE BIBLIQUE\s*:/g, '**TEXTE BIBLIQUE :**')
+        .replace(/EXPLICATION THÉOLOGIQUE\s*:/g, '**EXPLICATION THÉOLOGIQUE :**')
+        .replace(/Introduction au Chapitre/g, '**Introduction au Chapitre**');
 
-        // Lisibilité minimale
-        formatted = formatted.replace(/VERSET (\d+)/g, '**VERSET $1**');
-        formatted = formatted.replace(/TEXTE BIBLIQUE\s*:/g, '**TEXTE BIBLIQUE :**');
-        formatted = formatted.replace(/EXPLICATION THÉOLOGIQUE\s*:/g, '**EXPLICATION THÉOLOGIQUE :**');
-        formatted = formatted.replace(/Introduction au Chapitre/g, '**Introduction au Chapitre**');
-        formatted = formatted.replace(/Synthèse Spirituelle/g, '**Synthèse Spirituelle**');
-        formatted = formatted.replace(/Principe Herméneutique/g, '**Principe Herméneutique**');
-
-        setContent(formatted);
-        setRubriquesStatus(prev => ({ ...prev, 0: 'completed' }));
-      } else {
-        throw new Error(`Erreur ${response.status}: ${await response.text()}`);
-      }
+      setContent(formatted);
+      setRubriquesStatus(prev => ({ ...prev, 0: 'completed' }));
     } catch (error) {
       console.error('Verse-by-verse error:', error);
       setProgress(100);
       setContent(`⚠️ Erreur: ${error.message || "échec de génération verset par verset."}`);
       setRubriquesStatus(prev => ({ ...prev, 0: 'completed' }));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -457,20 +449,19 @@ export default function App() {
       nextBook = "Genèse"; nextChapter = 1; nextVerse = 1;
       setBook(nextBook); setChapter(nextChapter); setVerse(nextVerse);
     }
-
     try {
       localStorage.setItem("lastStudy", JSON.stringify({
         book: nextBook,
         chapter: nextChapter,
         verse: (nextVerse === "vide" ? 1 : nextVerse),
-        version: "LSG", // affichage seulement
-        length: 500,
+        version: version || "LSG",
+        length: length || 500,
         chatgpt: true
       }));
       updateLastStudyLabel();
     } catch {}
 
-    await wait(300);
+    await wait(250);
     await generateVerseByVerse();
   };
 
@@ -483,13 +474,9 @@ export default function App() {
     return (
       <div className="content-formatted-inner">
         {lines.map((line, index) => {
-          if (/^\*\*.+\*\*$/.test(line.trim())) {
+          if (line.startsWith('**') && line.endsWith('**')) {
             const boldText = line.replace(/\*\*/g, '');
             return <div key={index} className="content-bold">{boldText}</div>;
-          } else if (line.startsWith('# ')) {
-            return <div key={index} className="content-bold">{line.replace(/^#\s+/, '')}</div>;
-          } else if (line.startsWith('## ')) {
-            return <div key={index} className="content-line" style={{fontWeight: 700}}>{line.replace(/^##\s+/, '')}</div>;
           } else if (line.trim()) {
             return <div key={index} className="content-line">{line}</div>;
           } else {
@@ -500,6 +487,7 @@ export default function App() {
     );
   }
 
+  /* ================== RENDER ================== */
   return (
     <div className="page-wrap">
       {/* HEADER */}
@@ -509,6 +497,7 @@ export default function App() {
             ✨ MEDITATION BIBLIQUE ✨ ÉTUDE SPIRITUELLE ✨ SAGESSE DIVINE ✨ MÉDITATION THÉOLOGIQUE ✨ CONTEMPLATION SACRÉE ✨ RÉFLEXION INSPIRÉE ✨
           </div>
         </div>
+        {loading && <p className="header-subtitle">Génération en cours…</p>}
       </div>
 
       {/* TOPBAND */}
@@ -545,18 +534,20 @@ export default function App() {
           <NumberPill label="Verset" value={verse} onChange={setVerse} min={1} max={176} />
           <SelectPill label="Version" value={version} onChange={setVersion} options={["LSG","NEG79","BDS"]} />
           <SelectPill label="Longueur" value={length} onChange={setLength} options={[500,1500,2500]} />
+
           <button className="pill-btn" onClick={() => window.open('https://chatgpt.com/', '_blank')}>ChatGPT</button>
           <button className="pill-btn" onClick={handleLastStudy}>{lastStudyLabel}</button>
-          <button className="pill-btn reset" onClick={handleReset}>🔄 Reset</button>
+          <button className="pill-btn reset" onClick={handleReset} disabled={loading}>🔄 Reset</button>
 
           <button
             className={`pill-btn special ${activeId === 0 ? 'active' : ''}`}
             onClick={handleVersetsClick}
+            disabled={loading}
           >
             📖 Versets
           </button>
 
-          <button className="pill-btn accent" onClick={handleGenerate}>Générer</button>
+          <button className="pill-btn accent" onClick={handleGenerate} disabled={loading}>Générer</button>
         </div>
       </div>
 
@@ -576,8 +567,8 @@ export default function App() {
           <div className="right-head">
             <h3>{activeId}. {(RUBRIQUES[activeId] && RUBRIQUES[activeId].title) || "Rubrique"}</h3>
             <div className="right-nav">
-              <button className="mini-pill" onClick={goPrev}>◂ Précédent</button>
-              <button className="mini-pill" onClick={goNext}>Suivant ▸</button>
+              <button className="mini-pill" onClick={goPrev} disabled={activeId === 0}>◂ Précédent</button>
+              <button className="mini-pill" onClick={goNext} disabled={activeId === RUBRIQUES.length - 1}>Suivant ▸</button>
             </div>
           </div>
 
