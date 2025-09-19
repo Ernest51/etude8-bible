@@ -3,8 +3,6 @@ import "./App.css";
 import "./rubriques.css";
 import RubriquesInline from "./RubriquesInline";
 
-/* ---------- Constantes ---------- */
-
 const BOOKS = [
   "vide","Genèse","Exode","Lévitique","Nombres","Deutéronome","Josué","Juges","Ruth",
   "1 Samuel","2 Samuel","1 Rois","2 Rois","1 Chroniques","2 Chroniques","Esdras",
@@ -44,16 +42,9 @@ const RUBRIQUES = [
   "Prière de réponse","Questions d'étude","Points de vigilance",
   "Objections et réponses","Perspective missionnelle","Éthique chrétienne",
   "Louange / liturgie","Méditation guidée","Mémoire / versets clés","Plan d'action"
-].map((t, i) => ({ id: i, title: t }));
+].map(function (t, i) { return { id: i, title: t }; });
 
-/* ---------- Utilitaires ---------- */
-
-function wait(ms){ return new Promise(r => setTimeout(r, ms)); }
-
-// BASE API nettoyée (retire les / finaux pour éviter //api)
-const API_BASE = (process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001').replace(/\/+$/,'');
-
-/* ---------- Composant principal ---------- */
+function wait(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
 
 export default function App() {
   // passage
@@ -74,8 +65,15 @@ export default function App() {
   const [rubriquesStatus, setRubriquesStatus] = React.useState({});
   const [lastStudyLabel, setLastStudyLabel] = React.useState("Dernière étude");
 
-  React.useEffect(() => { updateBackgroundColor(knobPosition); updateLastStudyLabel(); }, []);
-  React.useEffect(() => { updateBackgroundColor(knobPosition); }, [knobPosition]);
+  // Init couleurs + label “Dernière étude”
+  React.useEffect(() => {
+    updateBackgroundColor(knobPosition);
+    updateLastStudyLabel();
+  }, []);
+
+  React.useEffect(() => {
+    updateBackgroundColor(knobPosition);
+  }, [knobPosition]);
 
   function updateLastStudyLabel() {
     try {
@@ -92,22 +90,20 @@ export default function App() {
     }
   }
 
+  // LEDs rubriques
   React.useEffect(() => {
     if (book !== "vide" && chapter !== "vide") {
       const newStatus = {};
-      for (let i = 0; i < RUBRIQUES.length; i++) newStatus[i] = 'ready';
+      for (let i = 0; i < RUBRIQUES.length; i++) newStatus[i] = "ready";
       setRubriquesStatus(newStatus);
     } else {
       setRubriquesStatus({});
     }
   }, [book, chapter]);
 
-  const passageLabel =
-    (book === "vide" || chapter === "vide" || verse === "vide")
-      ? "Sélectionnez un passage"
-      : `${book} ${chapter}:${verse} ${version}`;
-
-  /* ---------- Couleurs / palette ---------- */
+  const passageLabel = (book === "vide" || chapter === "vide" || verse === "vide")
+    ? "Sélectionnez un passage"
+    : `${book} ${chapter}:${verse} ${version}`;
 
   function handleGradientClick(e) {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -119,13 +115,16 @@ export default function App() {
   }
 
   function handleKnobMouseDown(e) {
-    e.preventDefault(); e.stopPropagation();
+    e.preventDefault();
+    e.stopPropagation();
     const gradient = e.currentTarget.parentElement;
     const rect = gradient.getBoundingClientRect();
+
     function handleMouseMove(moveEvent) {
       const x = moveEvent.clientX - rect.left;
       const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
-      setKnobPosition(percentage); updateBackgroundColor(percentage);
+      setKnobPosition(percentage);
+      updateBackgroundColor(percentage);
     }
     function handleMouseUp() {
       document.removeEventListener('mousemove', handleMouseMove);
@@ -139,32 +138,24 @@ export default function App() {
     let newColor, gradientEnd, buttonColor, buttonColorHover, shadowColor;
     if (percentage < 25) {
       newColor = "#dbeafe"; gradientEnd = "#bfdbfe";
-      buttonColor = "#3b82f6"; buttonColorHover = "#2563eb";
-      shadowColor = "59, 130, 246";
+      buttonColor = "#3b82f6"; buttonColorHover = "#2563eb"; shadowColor = "59, 130, 246";
     } else if (percentage < 50) {
       newColor = "#e9d5ff"; gradientEnd = "#ddd6fe";
-      buttonColor = "#8b5cf6"; buttonColorHover = "#7c3aed";
-      shadowColor = "139, 92, 246";
+      buttonColor = "#8b5cf6"; buttonColorHover = "#7c3aed"; shadowColor = "139, 92, 246";
     } else if (percentage < 75) {
       newColor = "#fed7aa"; gradientEnd = "#fdba74";
-      buttonColor = "#f59e0b"; buttonColorHover = "#d97706";
-      shadowColor = "245, 158, 11";
+      buttonColor = "#f59e0b"; buttonColorHover = "#d97706"; shadowColor = "245, 158, 11";
     } else {
       newColor = "#bbf7d0"; gradientEnd = "#86efac";
-      buttonColor = "#10b981"; buttonColorHover = "#059669";
-      shadowColor = "16, 185, 129";
+      buttonColor = "#10b981"; buttonColorHover = "#059669"; shadowColor = "16, 185, 129";
     }
     const pageWrap = document.querySelector('.page-wrap');
-    if (pageWrap) {
-      pageWrap.style.background = `linear-gradient(180deg, ${newColor} 0%, ${gradientEnd} 100%)`;
-    }
+    if (pageWrap) pageWrap.style.background = `linear-gradient(180deg, ${newColor} 0%, ${gradientEnd} 100%)`;
     const root = document.documentElement;
     root.style.setProperty('--dynamic-button-color', buttonColor);
     root.style.setProperty('--dynamic-button-hover', buttonColorHover);
     root.style.setProperty('--dynamic-shadow-color', shadowColor);
   }
-
-  /* ---------- Sélection / recherche ---------- */
 
   function handleBookChange(newBook) {
     setBook(newBook);
@@ -172,82 +163,149 @@ export default function App() {
       setChapter("vide");
     } else {
       const maxChapters = BOOK_CHAPTERS[newBook] || 150;
-      if (chapter === "vide" || chapter > maxChapters) setChapter(1);
+      if (chapter === "vide" || chapter > maxChapters) {
+        setChapter(1);
+      }
     }
   }
 
   function handleValidate() {
-    if (!search.trim()) { setProgress(p => (p < 15 ? 15 : p)); return; }
+    if (!search.trim()) {
+      setProgress(p => p < 15 ? 15 : p);
+      return;
+    }
     const searchText = search.trim().toLowerCase();
 
     const bookMapping = {
-      'genese':'Genèse','genesis':'Genèse','exode':'Exode','exodus':'Exode',
-      'levitique':'Lévitique','leviticus':'Lévitique','nombres':'Nombres','numbers':'Nombres',
-      'deuteronome':'Deutéronome','deuteronomy':'Deutéronome','josue':'Josué','joshua':'Josué',
-      'juges':'Juges','judges':'Juges','ruth':'Ruth',
-      '1 samuel':'1 Samuel','1samuel':'1 Samuel','2 samuel':'2 Samuel','2samuel':'2 Samuel',
-      '1 rois':'1 Rois','1rois':'1 Rois','1 kings':'1 Rois','2 rois':'2 Rois','2rois':'2 Rois','2 kings':'2 Rois',
-      '1 chroniques':'1 Chroniques','1chroniques':'1 Chroniques','2 chroniques':'2 Chroniques','2chroniques':'2 Chroniques',
-      'esdras':'Esdras','ezra':'Esdras','nehemie':'Néhémie','nehemiah':'Néhémie','esther':'Esther','job':'Job',
-      'psaumes':'Psaumes','psalms':'Psaumes','proverbes':'Proverbes','proverbs':'Proverbes',
-      'ecclesiaste':'Ecclésiaste','ecclesiastes':'Ecclésiaste','cantique':'Cantique','song':'Cantique',
-      'esaie':'Ésaïe','isaiah':'Ésaïe','jeremie':'Jérémie','jeremiah':'Jérémie','lamentations':'Lamentations',
-      'ezechiel':'Ézéchiel','ezekiel':'Ézéchiel','daniel':'Daniel','osee':'Osée','hosea':'Osée','joel':'Joël','amos':'Amos',
-      'abdias':'Abdias','obadiah':'Abdias','jonas':'Jonas','jonah':'Jonas','michee':'Michée','micah':'Michée',
-      'nahum':'Nahum','habacuc':'Habacuc','habakkuk':'Habacuc','sophonie':'Sophonie','zephaniah':'Sophonie',
-      'aggee':'Aggée','haggai':'Aggée','zacharie':'Zacharie','zechariah':'Zacharie','malachie':'Malachie','malachi':'Malachie',
-      'matthieu':'Matthieu','matthew':'Matthieu','matt':'Matthieu','marc':'Marc','mark':'Marc','luc':'Luc','luke':'Luc',
-      'jean':'Jean','john':'Jean','actes':'Actes','acts':'Actes','romains':'Romains','romans':'Romains','rom':'Romains',
-      '1 corinthiens':'1 Corinthiens','1corinthiens':'1 Corinthiens','1 cor':'1 Corinthiens',
-      '2 corinthiens':'2 Corinthiens','2corinthiens':'2 Corinthiens','2 cor':'2 Corinthiens',
-      'galates':'Galates','galatians':'Galates','gal':'Galates','ephesiens':'Éphésiens','ephesians':'Éphésiens','eph':'Éphésiens',
-      'philippiens':'Philippiens','philippians':'Philippiens','phil':'Philippiens','colossiens':'Colossiens','colossians':'Colossiens','col':'Colossiens',
-      '1 thessaloniciens':'1 Thessaloniciens','1thessaloniciens':'1 Thessaloniciens','1 thess':'1 Thessaloniciens',
-      '2 thessaloniciens':'2 Thessaloniciens','2thessaloniciens':'2 Thessaloniciens','2 thess':'2 Thessaloniciens',
-      '1 timothee':'1 Timothée','1timothee':'1 Timothée','1 tim':'1 Timothée','2 timothee':'2 Timothée','2timothee':'2 Timothée','2 tim':'2 Timothée',
-      'tite':'Tite','titus':'Tite','philemon':'Philémon','hebreux':'Hébreux','hebrews':'Hébreux','heb':'Hébreux',
-      'jacques':'Jacques','james':'Jacques','1 pierre':'1 Pierre','1pierre':'1 Pierre','1 peter':'1 Pierre',
-      '2 pierre':'2 Pierre','2pierre':'2 Pierre','2 peter':'2 Pierre',
-      '1 jean':'1 Jean','1jean':'1 Jean','1 john':'1 Jean','2 jean':'2 Jean','2jean':'2 Jean','2 john':'2 Jean',
-      '3 jean':'3 Jean','3jean':'3 Jean','3 john':'3 Jean','jude':'Jude','apocalypse':'Apocalypse','revelation':'Apocalypse','rev':'Apocalypse'
+      'genese': 'Genèse', 'genesis': 'Genèse',
+      'exode': 'Exode', 'exodus': 'Exode',
+      'levitique': 'Lévitique', 'leviticus': 'Lévitique',
+      'nombres': 'Nombres', 'numbers': 'Nombres',
+      'deuteronome': 'Deutéronome', 'deuteronomy': 'Deutéronome',
+      'josue': 'Josué', 'joshua': 'Josué',
+      'juges': 'Juges', 'judges': 'Juges',
+      'ruth': 'Ruth',
+      '1 samuel': '1 Samuel', '1samuel': '1 Samuel',
+      '2 samuel': '2 Samuel', '2samuel': '2 Samuel',
+      '1 rois': '1 Rois', '1rois': '1 Rois', '1 kings': '1 Rois',
+      '2 rois': '2 Rois', '2rois': '2 Rois', '2 kings': '2 Rois',
+      '1 chroniques': '1 Chroniques', '1chroniques': '1 Chroniques',
+      '2 chroniques': '2 Chroniques', '2chroniques': '2 Chroniques',
+      'esdras': 'Esdras', 'ezra': 'Esdras',
+      'nehemie': 'Néhémie', 'nehemiah': 'Néhémie',
+      'esther': 'Esther',
+      'job': 'Job',
+      'psaumes': 'Psaumes', 'psalms': 'Psaumes',
+      'proverbes': 'Proverbes', 'proverbs': 'Proverbes',
+      'ecclesiaste': 'Ecclésiaste', 'ecclesiastes': 'Ecclésiaste',
+      'cantique': 'Cantique', 'song': 'Cantique',
+      'esaie': 'Ésaïe', 'isaiah': 'Ésaïe',
+      'jeremie': 'Jérémie', 'jeremiah': 'Jérémie',
+      'lamentations': 'Lamentations',
+      'ezechiel': 'Ézéchiel', 'ezekiel': 'Ézéchiel',
+      'daniel': 'Daniel',
+      'osee': 'Osée', 'hosea': 'Osée',
+      'joel': 'Joël',
+      'amos': 'Amos',
+      'abdias': 'Abdias', 'obadiah': 'Abdias',
+      'jonas': 'Jonas', 'jonah': 'Jonas',
+      'michee': 'Michée', 'micah': 'Michée',
+      'nahum': 'Nahum',
+      'habacuc': 'Habacuc', 'habakkuk': 'Habacuc',
+      'sophonie': 'Sophonie', 'zephaniah': 'Sophonie',
+      'aggee': 'Aggée', 'haggai': 'Aggée',
+      'zacharie': 'Zacharie', 'zechariah': 'Zacharie',
+      'malachie': 'Malachie', 'malachi': 'Malachie',
+      'matthieu': 'Matthieu', 'matthew': 'Matthieu', 'matt': 'Matthieu',
+      'marc': 'Marc', 'mark': 'Marc',
+      'luc': 'Luc', 'luke': 'Luc',
+      'jean': 'Jean', 'john': 'Jean',
+      'actes': 'Actes', 'acts': 'Actes',
+      'romains': 'Romains', 'romans': 'Romains', 'rom': 'Romains',
+      '1 corinthiens': '1 Corinthiens', '1corinthiens': '1 Corinthiens', '1 cor': '1 Corinthiens',
+      '2 corinthiens': '2 Corinthiens', '2corinthiens': '2 Corinthiens', '2 cor': '2 Corinthiens',
+      'galates': 'Galates', 'galatians': 'Galates', 'gal': 'Galates',
+      'ephesiens': 'Éphésiens', 'ephesians': 'Éphésiens', 'eph': 'Éphésiens',
+      'philippiens': 'Philippiens', 'philippians': 'Philippiens', 'phil': 'Philippiens',
+      'colossiens': 'Colossiens', 'colossians': 'Colossiens', 'col': 'Colossiens',
+      '1 thessaloniciens': '1 Thessaloniciens', '1thessaloniciens': '1 Thessaloniciens', '1 thess': '1 Thessaloniciens',
+      '2 thessaloniciens': '2 Thessaloniciens', '2thessaloniciens': '2 Thessaloniciens', '2 thess': '2 Thessaloniciens',
+      '1 timothee': '1 Timothée', '1timothee': '1 Timothée', '1 tim': '1 Timothée',
+      '2 timothee': '2 Timothée', '2timothee': '2 Timothée', '2 tim': '2 Timothée',
+      'tite': 'Tite', 'titus': 'Tite',
+      'philemon': 'Philémon',
+      'hebreux': 'Hébreux', 'hebrews': 'Hébreux', 'heb': 'Hébreux',
+      'jacques': 'Jacques', 'james': 'Jacques',
+      '1 pierre': '1 Pierre', '1pierre': '1 Pierre', '1 peter': '1 Pierre',
+      '2 pierre': '2 Pierre', '2pierre': '2 Pierre', '2 peter': '2 Pierre',
+      '1 jean': '1 Jean', '1jean': '1 Jean', '1 john': '1 Jean',
+      '2 jean': '2 Jean', '2jean': '2 Jean', '2 john': '2 Jean',
+      '3 jean': '3 Jean', '3jean': '3 Jean', '3 john': '3 Jean',
+      'jude': 'Jude',
+      'apocalypse': 'Apocalypse', 'revelation': 'Apocalypse', 'rev': 'Apocalypse'
     };
 
-    let foundBook = null, foundChapter = "vide", foundVerse = "vide";
+    let foundBook = null;
+    let foundChapter = "vide";
+    let foundVerse = "vide";
 
     const pattern1 = searchText.match(/^(.+?)\s+(\d+):(\d+)$/);
     if (pattern1) {
       const bookName = pattern1[1].trim();
       foundBook = bookMapping[bookName];
-      if (foundBook) { foundChapter = parseInt(pattern1[2]); foundVerse = parseInt(pattern1[3]); }
+      if (foundBook) {
+        foundChapter = parseInt(pattern1[2]);
+        foundVerse = parseInt(pattern1[3]);
+      }
     }
+
     if (!foundBook) {
       const pattern2 = searchText.match(/^(.+?)\s+(\d+)$/);
       if (pattern2) {
         const bookName = pattern2[1].trim();
         foundBook = bookMapping[bookName];
-        if (foundBook) { foundChapter = parseInt(pattern2[2]); foundVerse = "vide"; }
+        if (foundBook) {
+          foundChapter = parseInt(pattern2[2]);
+          foundVerse = "vide";
+        }
       }
     }
+
     if (!foundBook) {
       const bookName = searchText.trim();
       foundBook = bookMapping[bookName];
-      if (foundBook) { foundChapter = 1; foundVerse = 1; }
+      if (foundBook) {
+        foundChapter = 1;
+        foundVerse = 1;
+      }
     }
 
     if (foundBook) {
-      setBook(foundBook); setChapter(foundChapter); setVerse(foundVerse);
-      setSearch(""); setProgress(50); setTimeout(() => setProgress(0), 1000);
+      setBook(foundBook);
+      setChapter(foundChapter);
+      setVerse(foundVerse);
+      setSearch("");
+      setProgress(50);
+      setTimeout(() => setProgress(0), 1000);
     } else {
-      setProgress(p => (p < 15 ? 15 : p));
+      setProgress(p => p < 15 ? 15 : p);
     }
   }
 
   function handleReset() {
     setIsResetting(true);
-    setBook("vide"); setChapter("vide"); setVerse("vide");
-    setVersion("LSG"); setLength(500); setChatgpt(true);
-    setProgress(0); setSearch(""); setActiveId(0); setContent("");
-    setKnobPosition(0); setRubriquesStatus({});
+    setBook("vide");
+    setChapter("vide");
+    setVerse("vide");
+    setVersion("LSG");
+    setLength(500);
+    setChatgpt(true);
+    setProgress(0);
+    setSearch("");
+    setActiveId(0);
+    setContent("");
+    setKnobPosition(0);
+    setRubriquesStatus({});
     updateBackgroundColor(0);
   }
 
@@ -263,7 +321,9 @@ export default function App() {
         setLength(data.length || 500);
         setChatgpt(data.chatgpt !== undefined ? data.chatgpt : true);
       }
-    } catch {}
+    } catch (e) {
+      console.error("Erreur lors du chargement de la dernière étude:", e);
+    }
   }
 
   function handleReadBible() {
@@ -271,30 +331,36 @@ export default function App() {
     window.open("https://www.bible.com/fr/search/bible?query=" + q, "_blank");
   }
 
-  /* ---------- Appels backend ---------- */
+  // ---------- BACKEND URL (safe pour Vercel + Railway) ----------
+  const backendUrl = (process.env.REACT_APP_BACKEND_URL && process.env.REACT_APP_BACKEND_URL.replace(/\/$/, "")) 
+    || "https://etude8-bible-api-production.up.railway.app";
 
+  // ---------- Étude complète (28 rubriques) ----------
   async function handleGenerate() {
+    // On garde ta règle actuelle : il faut livre+chapitre+verset sélectionnés
     if (book === "vide" || chapter === "vide" || verse === "vide") {
       setContent("⚠️ Veuillez d'abord sélectionner un livre, un chapitre et un verset pour générer une étude biblique.");
-      setProgress(0); return;
+      setProgress(0);
+      return;
     }
-    setProgress(5); await wait(200); setProgress(25); await wait(250);
+
+    setProgress(5); await wait(200);
+    setProgress(25); await wait(250);
+
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
-      const isVerseByVerse = activeId === 0;
-      const endpoint = isVerseByVerse ? '/api/generate-verse-by-verse' : '/api/generate-study';
-      const payload = isVerseByVerse
-        ? { passage: `${book} ${chapter} ${version}`, version }
-        : {
-            passage: `${book} ${chapter}:${verse} ${version}`,
-            version, tokens: length, model: chatgpt ? "gpt" : "claude",
-            requestedRubriques: [activeId]
-          };
 
-      const response = await fetch(`${API_BASE}${endpoint}`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload), signal: controller.signal
+      const payload = {
+        passage: passageLabel, // ex: "Jean 3:16 LSG"
+        version: version
+      };
+
+      const response = await fetch(`${backendUrl}/api/generate-28`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        signal: controller.signal
       });
 
       clearTimeout(timeoutId);
@@ -302,174 +368,139 @@ export default function App() {
 
       if (response.ok) {
         const data = await response.json();
-        setProgress(100); setContent(data.content || "Méditation générée avec succès");
+        setProgress(100);
+        setContent(data.content || "Étude générée avec succès.");
+
+        // autosave “dernière étude”
         if (!isResetting) {
           try {
-            localStorage.setItem("lastStudy", JSON.stringify({ book, chapter, verse, version, length, chatgpt }));
+            localStorage.setItem("lastStudy", JSON.stringify({
+              book, chapter, verse, version, length, chatgpt
+            }));
             updateLastStudyLabel();
           } catch {}
-        } else { setIsResetting(false); }
+        } else {
+          setIsResetting(false);
+        }
       } else {
         const errorText = await response.text();
         throw new Error(`Erreur ${response.status}: ${errorText}`);
       }
     } catch (error) {
+      console.error("Erreur génération 28:", error);
       setProgress(100);
       setContent(
-        "🙏 Méditation sur " + passageLabel +
-        "\n\n- Dieu aime, Dieu donne, la foi reçoit." +
-        "\n- La vie éternelle commence déjà par la communion avec le Fils." +
-        "\n\nPrière : Seigneur, apprends-moi à répondre à ton amour aujourd'hui. Amen." +
-        "\n\n[Note: Contenu de fallback - Erreur: " + error.message + "]"
+        "⚠️ Erreur: " + (error.name === "AbortError" ? "Délai d'attente dépassé." : error.message)
       );
     }
   }
 
+  // ---------- Verset par verset ----------
   const generateVerseByVerse = async () => {
-    if (book === "vide" || chapter === "vide") {
-      setContent("⚠️ Veuillez d'abord sélectionner un livre et un chapitre (le verset peut rester vide) pour générer l'étude verset par verset.");
-      return;
-    }
-    setProgress(5); await wait(200); setProgress(25); await wait(250);
+    setProgress(5); await wait(200);
+    setProgress(25); await wait(250);
+
     try {
+      // Utilise la sélection si possible, sinon fallback Genèse 1 LSG
+      const hasSelection = (book !== "vide" && chapter !== "vide");
+      const passageForApi = hasSelection
+        ? `${book} ${chapter}${(verse !== "vide") ? (":" + verse) : ""} ${version}`
+        : "Genèse 1 LSG";
+
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-      const response = await fetch(`${API_BASE}/api/generate-verse-by-verse`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ passage: `${book} ${chapter} ${version}`, version }),
+      const response = await fetch(`${backendUrl}/api/generate-verse-by-verse`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ passage: passageForApi, version: "LSG" }),
         signal: controller.signal
       });
 
-      clearTimeout(timeoutId); setProgress(60); await wait(350);
+      clearTimeout(timeoutId);
+      setProgress(60); await wait(350);
 
       if (response.ok) {
         const data = await response.json();
-        const txt = data.content || "Étude verset par verset générée avec succès";
-        setProgress(100); setContent(txt);
-        setRubriquesStatus(prev => ({ ...prev, 0: 'completed' }));
+        setProgress(100);
+        let formatted = data.content || "Étude verset par verset générée avec succès";
+
+        // Lisibilité : mettre en gras certaines balises textuelles
+        formatted = formatted.replace(/VERSET (\d+)/g, '**VERSET $1**');
+        formatted = formatted.replace(/TEXTE BIBLIQUE\s*:/g, '**TEXTE BIBLIQUE :**');
+        formatted = formatted.replace(/EXPLICATION THÉOLOGIQUE\s*:/g, '**EXPLICATION THÉOLOGIQUE :**');
+        formatted = formatted.replace(/Introduction au Chapitre/g, '**Introduction au Chapitre**');
+        formatted = formatted.replace(/Synthèse Spirituelle/g, '**Synthèse Spirituelle**');
+        formatted = formatted.replace(/Principe Herméneutique/g, '**Principe Herméneutique**');
+
+        setContent(formatted);
+
+        // LED verte sur la rubrique 0
+        setRubriquesStatus(prev => ({ ...prev, 0: "completed" }));
       } else {
         throw new Error(`Erreur ${response.status}: ${await response.text()}`);
       }
     } catch (error) {
+      console.error("Verse-by-verse error:", error);
       setProgress(100);
-      setContent(`Étude Verset par Verset - ${book} Chapitre ${chapter}
-
-Introduction au Chapitre
-
-Cette étude examine chaque verset de ${book} ${chapter} selon les principes de l'exégèse grammatico-historique.
-
-[Note: Erreur API - ${error.message}]`);
-      setRubriquesStatus(prev => ({ ...prev, 0: 'completed' }));
+      setContent(
+        `⚠️ Erreur: ${error.message || "échec de génération verset par verset."}`
+      );
+      setRubriquesStatus(prev => ({ ...prev, 0: "completed" }));
     }
   };
 
   const handleVersetsClick = async () => {
     setActiveId(0);
+
+    // Si sélection invalide, on fixe un fallback (Genèse 1:1 LSG) ET on sauvegarde
+    let nextBook = book, nextChapter = chapter, nextVerse = verse;
+    if (book === "vide" || chapter === "vide") {
+      nextBook = "Genèse"; nextChapter = 1; nextVerse = 1;
+      setBook(nextBook); setChapter(nextChapter); setVerse(nextVerse);
+    }
+
     try {
       localStorage.setItem("lastStudy", JSON.stringify({
-        book, chapter, verse: verse, version, length, chatgpt
+        book: nextBook,
+        chapter: nextChapter,
+        verse: (nextVerse === "vide" ? 1 : nextVerse),
+        version: "LSG",
+        length: 500,
+        chatgpt: true
       }));
       updateLastStudyLabel();
     } catch {}
-    await wait(200);
+
+    await wait(300); // léger délai pour laisser React appliquer les states
     await generateVerseByVerse();
   };
 
   function goPrev() { setActiveId(i => Math.max(0, i - 1)); }
   function goNext() { setActiveId(i => Math.min(RUBRIQUES.length - 1, i + 1)); }
 
-  /* ---------- Rendu formaté (lecture améliorée) ---------- */
-
-  // NOUVEL affichage riche : Intro + cartes Verset (Texte / Explication)
   function formatContent(text) {
     if (!text) return null;
-
-    // Découper par "VERSET n"
-    const parts = text.split(/\n?VERSET\s+(\d+)\s*\n/gi);
-    const prelude = parts.shift(); // avant le 1er verset
-
-    const blocks = [];
-    if (prelude && prelude.trim()) {
-      blocks.push({ type: 'intro', text: prelude.trim() });
-    }
-
-    for (let i = 0; i < parts.length; i += 2) {
-      const number = parts[i];
-      const body = parts[i + 1] || '';
-
-      // Extraire sections
-      const mScript = body.match(/TEXTE BIBLIQUE\s*:\s*([\s\S]*?)(?:\nEXPLICATION THÉOLOGIQUE\s*:|$)/i);
-      const scripture = mScript ? mScript[1].trim() : '';
-
-      const mExpl = body.match(/EXPLICATION THÉOLOGIQUE\s*:\s*([\s\S]*)/i);
-      const explanation = mExpl ? mExpl[1].trim() : '';
-
-      blocks.push({ type: 'verse', number, scripture, explanation });
-    }
-
+    const lines = text.split('\n');
     return (
-      <div className="vv-wrap">
-        {blocks.map((b, idx) =>
-          b.type === 'intro' ? (
-            <IntroBlock key="intro" text={b.text} />
-          ) : (
-            <VerseBlock
-              key={`v-${idx}`}
-              number={b.number}
-              scripture={b.scripture}
-              explanation={b.explanation}
-            />
-          )
-        )}
+      <div className="content-formatted-inner">
+        {lines.map((line, index) => {
+          if (line.startsWith('**') && line.endsWith('**')) {
+            const boldText = line.replace(/\*\*/g, '');
+            return <div key={index} className="content-bold">{boldText}</div>;
+          } else if (line.trim()) {
+            return <div key={index} className="content-line">{line}</div>;
+          } else {
+            return <div key={index} className="content-space"></div>;
+          }
+        })}
       </div>
     );
   }
-
-  // Bloc d’introduction (titre + paragraphe)
-  function IntroBlock({ text }) {
-    const titleMatch = text.match(/Étude Verset par Verset[^\n]*/i);
-    const title = titleMatch ? titleMatch[0].trim() : "Étude verset par verset";
-    const body = titleMatch ? text.replace(titleMatch[0], "").trim() : text.trim();
-
-    return (
-      <div className="vv-intro">
-        <div className="vv-title">{title}</div>
-        {body && <div className="vv-intro-body">{body}</div>}
-      </div>
-    );
-  }
-
-  // Carte “Verset n” avec deux sections
-  function VerseBlock({ number, scripture, explanation }) {
-    return (
-      <div className="vv-verse">
-        <div className="vv-verse-header">
-          <span className="vv-pill">Verset {number}</span>
-        </div>
-
-        {scripture && (
-          <div className="vv-section vv-scripture">
-            <div className="vv-tag">Texte biblique</div>
-            <div className="vv-text">{scripture}</div>
-          </div>
-        )}
-
-        {explanation && (
-          <div className="vv-section vv-explanation">
-            <div className="vv-tag">Explication théologique</div>
-            <div className="vv-text">{explanation}</div>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  /* ---------- UI ---------- */
 
   return (
     <div className="page-wrap">
+      {/* HEADER */}
       <div className="header-marquee">
         <div className="marquee-container">
           <div className="marquee-content" data-text="✨ MEDITATION BIBLIQUE ✨ ÉTUDE SPIRITUELLE ✨ SAGESSE DIVINE ✨ MÉDITATION THÉOLOGIQUE ✨ CONTEMPLATION SACRÉE ✨ RÉFLEXION INSPIRÉE ✨">
@@ -478,22 +509,29 @@ Cette étude examine chaque verset de ${book} ${chapter} selon les principes de 
         </div>
       </div>
 
+      {/* TOPBAND */}
       <div className="topband">
         <div className="progress-bubble">{Math.round(progress)}%</div>
         <div className="progress-card">
           <div className="progress-gradient" onClick={handleGradientClick}>
-            <div className="color-knob" style={{left: `${knobPosition}%`}} onMouseDown={handleKnobMouseDown}/>
+            <div
+              className="color-knob"
+              style={{left: `${knobPosition}%`}}
+              onMouseDown={handleKnobMouseDown}
+              tabIndex={0}
+            />
           </div>
         </div>
       </div>
 
+      {/* CONTROLS */}
       <div className="controls-card">
         <div className="search-row">
           <input
             className="pill-input"
             placeholder="Rechercher (ex : Marc 5:1, 1 Jean 2, Genèse 1:1-5)"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={e => setSearch(e.target.value)}
           />
           <button className="pill-btn primary" onClick={handleValidate}>Valider</button>
           <button className="pill-btn" onClick={handleReadBible}>Lire la Bible</button>
@@ -508,18 +546,26 @@ Cette étude examine chaque verset de ${book} ${chapter} selon les principes de 
           <button className="pill-btn" onClick={() => window.open('https://chatgpt.com/', '_blank')}>ChatGPT</button>
           <button className="pill-btn" onClick={handleLastStudy}>{lastStudyLabel}</button>
           <button className="pill-btn reset" onClick={handleReset}>🔄 Reset</button>
-          <button className={`pill-btn special ${activeId === 0 ? 'active' : ''}`} onClick={handleVersetsClick}>📖 Versets</button>
+
+          <button
+            className={`pill-btn special ${activeId === 0 ? 'active' : ''}`}
+            onClick={handleVersetsClick}
+          >
+            📖 Versets
+          </button>
+
           <button className="pill-btn accent" onClick={handleGenerate}>Générer</button>
         </div>
       </div>
 
+      {/* 2 colonnes */}
       <div className="two-cols">
         <aside className="left-card">
           <div className="left-header">Rubriques ({RUBRIQUES.length})</div>
           <RubriquesInline
             items={RUBRIQUES}
             activeId={activeId}
-            onSelect={(id)=> setActiveId(id)}
+            onSelect={id => setActiveId(id)}
             rubriquesStatus={rubriquesStatus}
           />
         </aside>
@@ -540,7 +586,9 @@ Cette étude examine chaque verset de ${book} ${chapter} selon les principes de 
 
           <div className="section">
             {content ? (
-              <div className="content-formatted">{formatContent(content)}</div>
+              <div className="content-formatted">
+                {formatContent(content)}
+              </div>
             ) : (
               <p className="muted">
                 Sélectionnez une rubrique puis cliquez sur <b>Générer</b> pour afficher du contenu
@@ -556,11 +604,16 @@ Cette étude examine chaque verset de ${book} ${chapter} selon les principes de 
 
 /* ---------- UI sub-components ---------- */
 
-function SelectPill({ label, value, onChange, options }) {
+function SelectPill(props) {
+  const { label, value, onChange, options } = props;
   return (
     <div className="pill">
       <span className="pill-label">{label}</span>
-      <select className="pill-select" value={value} onChange={(e)=> onChange(e.target.value)}>
+      <select
+        className="pill-select"
+        value={value}
+        onChange={e => onChange(e.target.value)}
+      >
         {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
       </select>
       <span className="chev">▾</span>
@@ -568,15 +621,20 @@ function SelectPill({ label, value, onChange, options }) {
   );
 }
 
-function NumberPill({ label, value, onChange, min=1, max=100, step=1 }) {
-  const list = ["vide"]; for (let i=min; i<=max; i+=step) list.push(i);
+function NumberPill(props) {
+  const { label, value, onChange, min = 1, max = 100, step = 1 } = props;
+  const list = ["vide"];
+  for (let i = min; i <= max; i += step) list.push(i);
   return (
     <div className="pill">
       <span className="pill-label">{label}</span>
       <select
         className="pill-select"
         value={value}
-        onChange={(e)=> onChange(e.target.value === "vide" ? "vide" : Number(e.target.value))}
+        onChange={e => {
+          const val = e.target.value;
+          onChange(val === "vide" ? "vide" : Number(val));
+        }}
       >
         {list.map(n => <option key={n} value={n}>{n}</option>)}
       </select>
