@@ -1,11 +1,8 @@
 # server.py
-#
-# API Bible Study (Darby) SANS OpenAI.
-# - Fetch texte biblique depuis api.scripture.api.bible
-# - Génère un "squelette" d'étude : 28 rubriques + verset/verset
-#   (les explications sont marquées "à compléter" côté rédaction).
-#
-# NB: Le front attend {"content": "..."} - on respecte ce format.
+# API Bible Study (Darby) — SANS OpenAI.
+# - Texte biblique via https://api.scripture.api.bible/v1
+# - Étude "28 rubriques" (squelette) + Verset/verset (texte Darby + zones "à compléter")
+# - Renvoie toujours {"content": "..."} pour coller au front.
 
 import os
 import re
@@ -21,7 +18,7 @@ from pydantic import BaseModel, Field
 API_BASE = "https://api.scripture.api.bible/v1"
 APP_NAME = "Bible Study API - Darby"
 BIBLE_API_KEY = os.getenv("BIBLE_API_KEY")
-PREFERRED_BIBLE_ID = os.getenv("BIBLE_ID")  # conseillé: ID de la Darby FR
+PREFERRED_BIBLE_ID = os.getenv("BIBLE_ID")  # Id Darby FR si dispo (recommandé)
 
 # --- CORS ---
 _default_origins = [
@@ -35,7 +32,7 @@ ALLOW_ORIGINS = _default_origins + _extra
 app = FastAPI(title="FastAPI", version="0.1.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOW_ORIGINS if _extra else ["*"],  # large pendant les tests
+    allow_origins=ALLOW_ORIGINS if _extra else ["*"],  # large en phase de test
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -50,7 +47,7 @@ class StudyRequest(BaseModel):
     tokens: int = Field(0, description="Ignoré (hérité du front).")
     model: str = Field("", description="Ignoré (hérité du front).")
     requestedRubriques: Optional[List[int]] = Field(
-        None, description="Index de rubriques à produire (0..27). None = toutes."
+        None, description="Index des rubriques à produire (0..27). None = toutes."
     )
 
 
@@ -60,7 +57,7 @@ class VerseByVerseRequest(BaseModel):
 
 
 # =========================
-#    OUTILS livres → OSIS
+#  OUTILS livres → OSIS
 # =========================
 def _norm(s: str) -> str:
     s = unicodedata.normalize("NFKD", s)
@@ -69,7 +66,6 @@ def _norm(s: str) -> str:
     s = re.sub(r"\s+", " ", s).strip()
     return s
 
-# Mapping FR (principal) → OSIS
 BOOKS_FR_OSIS: Dict[str, str] = {
     # Pentateuque
     "genese": "GEN", "gen": "GEN",
@@ -110,7 +106,6 @@ BOOKS_FR_OSIS: Dict[str, str] = {
 
 def resolve_osis(book_raw: str) -> Optional[str]:
     key = _norm(book_raw)
-    # gère formes "1 Samuel" = "1 samuel"
     key = key.replace("er ", "1 ").replace("ere ", "1 ").replace("eme ", " ")
     return BOOKS_FR_OSIS.get(key)
 
@@ -136,14 +131,13 @@ async def get_bible_id() -> str:
         _cached_bible_name = "Darby (config)"
         return _cached_bible_id
 
-    # auto-discovery Darby FR
     async with httpx.AsyncClient(timeout=20.0) as client:
         r = await client.get(f"{API_BASE}/bibles", headers=headers())
         if r.status_code != 200:
             raise HTTPException(status_code=502, detail=f"api.bible bibles: {r.text}")
         data = r.json()
         lst = data.get("data", [])
-        # cherche un nom contenant "darby" lang=fra
+        # cherche Darby FR
         for b in lst:
             name = (b.get("name") or "") + " " + (b.get("abbreviationLocal") or "")
             lang = (b.get("language") or {}).get("name", "")
@@ -151,19 +145,15 @@ async def get_bible_id() -> str:
                 _cached_bible_id = b.get("id")
                 _cached_bible_name = b.get("name")
                 break
-
         if not _cached_bible_id:
-            # si pas trouvé, prend la première FR dispo
             for b in lst:
                 lang = (b.get("language") or {}).get("name", "")
                 if "fr" in lang.lower() or "fra" in lang.lower():
                     _cached_bible_id = b.get("id")
                     _cached_bible_name = b.get("name")
                     break
-
         if not _cached_bible_id:
             raise HTTPException(status_code=500, detail="Aucune Bible FR trouvée via api.bible.")
-
     return _cached_bible_id
 
 
@@ -180,15 +170,13 @@ async def list_verses_ids(bible_id: str, osis_book: str, chapter: int) -> List[s
 
 async def fetch_verse_text(bible_id: str, verse_id: str) -> str:
     url = f"{API_BASE}/bibles/{bible_id}/verses/{verse_id}"
-    params = {"contentType": "text"}  # texte brut
+    params = {"contentType": "text"}
     async with httpx.AsyncClient(timeout=30.0) as client:
         r = await client.get(url, headers=headers(), params=params)
         if r.status_code != 200:
             raise HTTPException(status_code=502, detail=f"api.bible verse: {r.text}")
         data = r.json()
-        # structure standard: data.content (texte) ou data.reference
         content = (data.get("data") or {}).get("content") or ""
-        # Nettoyage léger: retirer balises résiduelles éventuelles
         content = re.sub(r"\s+", " ", content).strip()
         return content
 
@@ -197,7 +185,6 @@ async def fetch_passage_text(bible_id: str, osis_book: str, chapter: int, verse:
     if verse:
         verse_id = f"{osis_book}.{chapter}.{verse}"
         return await fetch_verse_text(bible_id, verse_id)
-    # chapitre complet → concatène les versets
     ids = await list_verses_ids(bible_id, osis_book, chapter)
     parts: List[str] = []
     for idx, vid in enumerate(ids, start=1):
@@ -207,46 +194,48 @@ async def fetch_passage_text(bible_id: str, osis_book: str, chapter: int, verse:
 
 
 # =========================
-#   CONTENU FORMATTÉ
+#   CONTENU / RUBRIQUES
 # =========================
 RUBRIQUES_28 = [
+    "Prière d'ouverture",
+    "Structure littéraire",
+    "Questions du chapitre précédent",
+    "Thème doctrinal",
+    "Fondements théologiques",
     "Contexte historique",
-    "Contexte littéraire",
-    "Structure du passage",
-    "Idée centrale",
-    "Thème théologique",
-    "Attributs de Dieu révélés",
-    "Christologie (types/ombres)",
-    "Anthropologie biblique",
-    "Péché et grâce",
-    "Alliance (traits / progression)",
-    "Rédemption (fil conducteur)",
-    "Royaume de Dieu",
-    "Saint-Esprit et œuvre sanctifiante",
-    "Commandements / impératifs",
-    "Promesses / consolations",
-    "Sagesse pratique",
-    "Conséquences / avertissements",
-    "Lien avec l’Ancien Testament",
-    "Lien avec le Nouveau Testament",
-    "Parallèles canoniques",
-    "Usage liturgique / ecclésial",
-    "Applications personnelles",
-    "Applications familiales",
-    "Applications communautaires",
-    "Applications missionnelles",
-    "Prière proposée",
-    "Méditation / questions",
-    "Synthèse finale",
+    "Contexte culturel",
+    "Contexte géographique",
+    "Analyse lexicale",
+    "Parallèles bibliques",
+    "Prophétie et accomplissement",
+    "Personnages",
+    "Structure rhétorique",
+    "Théologie trinitaire",
+    "Christ au centre",
+    "Évangile et grâce",
+    "Application personnelle",
+    "Application communautaire",
+    "Prière de réponse",
+    "Questions d'étude",
+    "Points de vigilance",
+    "Objections et réponses",
+    "Perspective missionnelle",
+    "Éthique chrétienne",
+    "Louange / liturgie",
+    "Méditation guidée",
+    "Mémoire / versets clés",
+    "Plan d'action",
 ]
 
 def parse_passage_input(p: str):
     """
-    'Genèse 1' -> ('Genèse', 1, None)
-    'Genèse 1:3' -> ('Genèse', 1, 3)
+    'Genèse 1'    -> ('Genèse', 1, None)
+    'Genèse 1:3'  -> ('Genèse', 1, 3)
+    'Genèse 1 LSG' / 'Genèse 1:3 LSG' -> idem (version ignorée)
     """
     p = p.strip()
-    m = re.match(r"^(.*?)[\s,]+(\d+)(?::(\d+))?\s*$", p)
+    # tolère un éventuel "version" en fin (un mot ou deux)
+    m = re.match(r"^(.*?)[\s,]+(\d+)(?::(\d+))?(?:\s+\S+.*)?$", p)
     if not m:
         raise HTTPException(status_code=400, detail="Format passage invalide. Ex: 'Genèse 1' ou 'Genèse 1:1'.")
     book = m.group(1).strip()
@@ -270,21 +259,16 @@ async def health():
     bid = None
     try:
         bid = await get_bible_id()
-    except Exception as _:
+    except Exception:
         pass
     return {"status": "ok", "bibleId": bid or "unknown"}
 
-
 @app.post("/api/generate-verse-by-verse")
 async def generate_verse_by_verse(req: VerseByVerseRequest):
-    # Parse
     book_label, osis, chap, verse = parse_passage_input(req.passage)
     bible_id = await get_bible_id()
-
-    # Texte
     text = await fetch_passage_text(bible_id, osis, chap, verse)
 
-    # Mise en forme: titre + intro brève + versets
     title = f"**Étude Verset par Verset - {book_label} Chapitre {chap}**"
     intro = (
         "Introduction au Chapitre\n\n"
@@ -292,7 +276,6 @@ async def generate_verse_by_verse(req: VerseByVerseRequest):
         "Les sections *EXPLICATION THÉOLOGIQUE* sont à compléter."
     )
 
-    # Si un seul verset → un bloc
     if verse:
         content = (
             f"{title}\n\n{intro}\n\n"
@@ -302,7 +285,6 @@ async def generate_verse_by_verse(req: VerseByVerseRequest):
         )
         return {"content": content}
 
-    # Chapitre complet → scinder lignes "n. texte"
     lines = [l for l in text.splitlines() if l.strip()]
     blocks: List[str] = [f"{title}\n\n{intro}"]
     for line in lines:
@@ -318,24 +300,21 @@ async def generate_verse_by_verse(req: VerseByVerseRequest):
         )
     return {"content": "\n\n".join(blocks).strip()}
 
-
 @app.post("/api/generate-study")
 async def generate_study(req: StudyRequest):
     """
-    Étude '28 points' SANS LLM.
-    - Récupère le texte du chapitre demandé (Darby)
-    - Produit un squelette (titres & zones à compléter)
+    Étude '28 rubriques' sans LLM.
+    - Récupère le texte (Darby) pour *le chapitre* demandé.
+    - Produit un SQUELETTE comportant explicitement les 28 rubriques.
     """
     book_label, osis, chap, verse = parse_passage_input(req.passage)
-    if verse:
-        # L'étude 28 pts est pensée chapitre/passage (pas un seul verset)
-        # On enlève le verset pour rester sur le chapitre.
-        verse = None
+    # On force "passage = chapitre" pour la 28 pts
+    verse = None
 
     bible_id = await get_bible_id()
     text = await fetch_passage_text(bible_id, osis, chap, verse)
 
-    # Rubriques à produire
+    # Filtre des rubriques
     rubs = RUBRIQUES_28
     if req.requestedRubriques:
         rubs = [RUBRIQUES_28[i] for i in req.requestedRubriques if 0 <= i < len(RUBRIQUES_28)]
@@ -345,18 +324,19 @@ async def generate_study(req: StudyRequest):
     header = f"# Étude en 28 points — {book_label} {chap} (Darby)\n"
     intro = (
         "Cette étude propose un **squelette** prêt à remplir. "
-        "Le texte biblique affiché est celui de la **Bible Darby (FR)**. "
+        "Le texte biblique est celui de la **Bible Darby (FR)**. "
         "Complète chaque rubrique avec ton analyse."
     )
-    excerpt = "\n".join([l for l in text.splitlines()[:8]])  # petit extrait
-    body: List[str] = [header, intro, "## Extrait du texte (Darby)\n" + excerpt, "## Rubriques"]
+    # Petit extrait du chapitre (lisible dans le front)
+    excerpt = "\n".join([l for l in text.splitlines()[:8]])
+    body: List[str] = [header, "## 📖 Extrait du texte (Darby)\n" + excerpt, intro, "## Rubriques"]
 
     for i, r in enumerate(rubs, start=1):
         body.append(f"**{i}. {r}**\n— à compléter —")
 
     return {"content": "\n\n".join(body).strip()}
 
-# Alias pour corriger les 404 du front
+# Alias attendu par certains fronts
 @app.post("/api/generate-28")
 async def generate_28(req: StudyRequest):
     return await generate_study(req)
