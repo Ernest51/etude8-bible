@@ -47,6 +47,39 @@ const RUBRIQUES = [
 
 function wait(ms){ return new Promise(r => setTimeout(r, ms)); }
 
+/* === util: détecter si le texte contient (au moins) quelques rubriques === */
+function containsRubrics(text) {
+  if (!text) return false;
+  let hits = 0;
+  for (const r of RUBRIQUES) {
+    const re = new RegExp(r.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+    if (re.test(text)) { hits++; if (hits >= 3) return true; } // seuil souple
+  }
+  // sinon, cherchez un bloc “## Rubriques” ou un motif **1. ...**
+  if (/^##\s*Rubriques/im.test(text)) return true;
+  if (/\*\*\s*1\.\s+/i.test(text)) return true;
+  return false;
+}
+
+/* === util: construit un squelette “28 rubriques” si l’API ne les fournit pas === */
+function buildRubricScaffold(book, chapter, original = "") {
+  const header = `# Étude en 28 points — ${book} ${chapter} (Darby)`;
+  const intro  = "Cette étude propose un **squelette** prêt à remplir. Le texte biblique est celui de la **Bible Darby (FR)**. Complète chaque rubrique avec ton analyse.";
+  const parts = [header, intro];
+
+  // si l’API a renvoyé quelque chose, on le conserve dans une section “Notes de l’API”
+  if (original && original.trim()) {
+    const sanitized = original.replace(/\bDerby\b/gi, "Darby");
+    parts.push("## Notes de l’API\n" + sanitized.trim());
+  }
+
+  parts.push("## Rubriques");
+  RUBRIQUES.forEach((r, i) => {
+    parts.push(`**${i + 1}. ${r}**\n— à compléter —`);
+  });
+  return parts.join("\n\n");
+}
+
 /* =======================================================
    APP
    ======================================================= */
@@ -55,7 +88,7 @@ export default function App() {
   const [book, setBook] = React.useState("vide");
   const [chapter, setChapter] = React.useState("vide");
   const [verse, setVerse] = React.useState("vide");
-  const [version, setVersion] = React.useState("LSG"); // affichage seulement (non concaténé à 'passage')
+  const [version, setVersion] = React.useState("LSG"); // pour l’UI (non concaténé à 'passage')
   const [length, setLength] = React.useState(500);
   const [chatgpt, setChatgpt] = React.useState(true);  // laissé pour compat UI
 
@@ -99,7 +132,7 @@ export default function App() {
     }
   }
 
-  // -------- passageLabel (affichage) --------
+  // affichage
   const passageLabel =
     (book === "vide" || chapter === "vide")
       ? "Sélectionnez un passage"
@@ -361,7 +394,7 @@ export default function App() {
       return;
     }
 
-    // ❗ passage SANS version
+    // passage SANS version
     const passageForApi = (verse === "vide") ? `${book} ${chapter}` : `${book} ${chapter}:${verse}`;
 
     setLoading(true);
@@ -370,22 +403,29 @@ export default function App() {
 
     try {
       const body = {
-        passage: passageForApi,         // ex: "Nombres 2"
-        version: "",                    // champ requis (ignoré côté server.py)
-        tokens: Number(length) || 500,  // compat schéma
-        model: "darby",                 // étiquette simple
-        requestedRubriques: Array.from({ length: 28 }, (_, i) => i) // 0..27
+        passage: passageForApi,
+        version: "",                      // requis par le schéma mais ignoré côté API
+        tokens: Number(length) || 500,    // compat schéma
+        model: "darby",
+        requestedRubriques: Array.from({ length: 28 }, (_, i) => i)
       };
 
-      // ❗ Route existante sur Railway (alias de /api/generate-28 ajouté côté backend)
+      // on cible /api/generate-study ; si ton back expose /api/generate-28, l’alias côté API couvrira
       const data = await fetchJson(`${backendUrl}/api/generate-study`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
       });
 
+      let txt = (data.content || "").replace(/\bDerby\b/gi, "Darby").trim();
+
+      // si les rubriques ne sont pas présentes → on injecte le squelette local
+      if (!containsRubrics(txt)) {
+        txt = buildRubricScaffold(book, chapter, txt);
+      }
+
       setProgress(100);
-      setContent(data.content || "Étude générée avec succès.");
+      setContent(txt);
 
       try {
         localStorage.setItem("lastStudy", JSON.stringify({ book, chapter, verse, version, length, chatgpt }));
@@ -408,7 +448,6 @@ export default function App() {
 
     try {
       const hasSelection = (book !== "vide" && chapter !== "vide");
-      // ❗ passage SANS version
       const passageForApi = hasSelection
         ? `${book} ${chapter}${(verse !== "vide") ? (":" + verse) : ""}`
         : "Genèse 1";
@@ -420,10 +459,8 @@ export default function App() {
       });
 
       setProgress(100);
-      let formatted = data.content || "Étude verset par verset générée avec succès";
-
-      // Lisibilité (gras)
-      formatted = formatted
+      let formatted = (data.content || "Étude verset par verset générée avec succès")
+        .replace(/\bDerby\b/gi, "Darby")
         .replace(/VERSET (\d+)/g, '**VERSET $1**')
         .replace(/TEXTE BIBLIQUE\s*:/g, '**TEXTE BIBLIQUE :**')
         .replace(/EXPLICATION THÉOLOGIQUE\s*:/g, '**EXPLICATION THÉOLOGIQUE :**')
