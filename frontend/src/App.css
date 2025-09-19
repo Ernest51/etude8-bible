@@ -993,3 +993,104 @@ body {
     --border-gray: #666666;
   }
 }
+
+/* ===== Lecture verset par verset (styles isolés .vv-*) ===== */
+
+.vv-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.vv-intro {
+  background: linear-gradient(180deg, #eef2ff 0%, #f5f3ff 100%);
+  border: 1px solid #e9e7ff;
+  border-radius: 16px;
+  padding: 16px 18px;
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.12);
+}
+
+.vv-title {
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 0.2px;
+  margin-bottom: 6px;
+  color: #111827;
+}
+
+.vv-intro-body {
+  color: #334155;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.vv-verse {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid #eef2ff;
+  box-shadow: 0 1px 8px rgba(24, 39, 75, 0.06);
+}
+
+.vv-verse-header {
+  margin-bottom: 10px;
+}
+
+.vv-pill {
+  display: inline-block;
+  background: var(--dynamic-button-color, #6366f1);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  box-shadow: 0 6px 16px rgba(var(--dynamic-shadow-color, 99,102,241), .35);
+}
+
+.vv-section {
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-top: 8px;
+}
+
+.vv-scripture {
+  background: #f8fafc;
+  border-left: 4px solid var(--dynamic-button-color, #6366f1);
+}
+
+.vv-explanation {
+  background: #fff7ed;
+  border-left: 4px solid #f59e0b;
+}
+
+.vv-tag {
+  font-size: 11px;
+  font-weight: 800;
+  opacity: .75;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  color: #0f172a;
+}
+
+.vv-text {
+  white-space: pre-wrap;
+  color: #0f172a;
+  line-height: 1.7;
+}
+
+/* Optionnel : léger ajustement en dark mode */
+@media (prefers-color-scheme: dark) {
+  .vv-intro {
+    background: linear-gradient(180deg, #1f2937 0%, #0f172a 100%);
+    border-color: #334155;
+  }
+  .vv-verse {
+    background: #0b1220;
+    border-color: #1e293b;
+  }
+  .vv-text, .vv-title, .vv-tag { color: #e5e7eb; }
+  .vv-scripture { background: #0f172a; }
+  .vv-explanation { background: #1f1420; }
+}
