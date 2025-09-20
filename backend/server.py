@@ -569,10 +569,6 @@ async def generate_verse_by_verse(req: VerseByVerseRequest):
     lines = [l for l in text.splitlines() if l.strip()]
     blocks: List[str] = [f"**{title}**\n\n{intro}"]
     
-    # Limitation : maximum 10 versets avec explications détaillées pour éviter les timeouts
-    max_verses_with_detailed_explanations = 10
-    verse_count = 0
-    
     for line in lines:
         m = re.match(r"^(\d+)\.\s*(.*)$", line)
         if not m:
@@ -580,13 +576,8 @@ async def generate_verse_by_verse(req: VerseByVerseRequest):
         vnum = int(m.group(1))
         vtxt = m.group(2).strip()
         
-        # Générer l'explication théologique seulement pour les premiers versets
-        if verse_count < max_verses_with_detailed_explanations:
-            theological_explanation = generate_simple_theological_explanation(vtxt, book_label, chap, vnum)
-            verse_count += 1
-        else:
-            # Pour les versets suivants, utiliser un placeholder amélioré
-            theological_explanation = f"**Analyse théologique à développer pour le verset {vnum}**\n\nCe verset mériterait une étude approfondie du contexte historique, littéraire et théologique. Les thèmes principaux à explorer incluent les implications doctrinales et les applications pratiques pour le croyant contemporain."
+        # Générer l'explication théologique pour CHAQUE verset
+        theological_explanation = generate_simple_theological_explanation(vtxt, book_label, chap, vnum)
         
         blocks.append(
             f"**VERSET {vnum}**\n\n"
