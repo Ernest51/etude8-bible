@@ -453,7 +453,7 @@ async def generate_verse_by_verse(req: VerseByVerseRequest):
 
     # Pour un chapitre entier, parser les versets et générer les explications
     lines = [l for l in text.splitlines() if l.strip()]
-    blocks: List[str] = [f"{title}\n\n{intro}"]
+    blocks: List[str] = [f"<strong>{title}</strong><br><br>{intro}"]
     
     # Limitation : maximum 10 versets avec explications détaillées pour éviter les timeouts
     max_verses_with_detailed_explanations = 10
