@@ -337,30 +337,37 @@ async def generate_verse_by_verse(req: VerseByVerseRequest):
     intro = (
         "Introduction au Chapitre\n\n"
         "Cette étude parcourt le texte de la **Bible Darby (FR)**. "
-        "Les sections *EXPLICATION THÉOLOGIQUE* sont à compléter."
+        "Les sections *EXPLICATION THÉOLOGIQUE* sont générées automatiquement par IA théologique."
     )
 
     if verse:
+        # Générer l'explication théologique pour le verset unique
+        theological_explanation = await generate_theological_explanation(text, book_label, chap, verse)
         content = (
             f"{title}\n\n{intro}\n\n"
             f"**VERSET {verse}**\n\n"
             f"**TEXTE BIBLIQUE :**\n{text}\n\n"
-            f"**EXPLICATION THÉOLOGIQUE :**\n— à compléter —"
+            f"**EXPLICATION THÉOLOGIQUE :**\n{theological_explanation}"
         )
         return {"content": content}
 
+    # Pour un chapitre entier, parser les versets et générer les explications
     lines = [l for l in text.splitlines() if l.strip()]
     blocks: List[str] = [f"{title}\n\n{intro}"]
     for line in lines:
         m = re.match(r"^(\d+)\.\s*(.*)$", line)
         if not m:
             continue
-        vnum = m.group(1)
+        vnum = int(m.group(1))
         vtxt = m.group(2).strip()
+        
+        # Générer l'explication théologique pour chaque verset
+        theological_explanation = await generate_theological_explanation(vtxt, book_label, chap, vnum)
+        
         blocks.append(
             f"**VERSET {vnum}**\n\n"
-            f"**TEXTE BIBLIQUE :**\n{vtxt}\n\n"
-            f"**EXPLICATION THÉOLOGIQUE :**\n— à compléter —"
+            f"**TEXTE BIBLIQUE :**\n[{vnum}] {vtxt}\n\n"
+            f"**EXPLICATION THÉOLOGIQUE :**\n{theological_explanation}"
         )
     return {"content": "\n\n".join(blocks).strip()}
 
