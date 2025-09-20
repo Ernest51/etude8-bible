@@ -376,7 +376,7 @@ export default function App() {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutes au lieu de 30 secondes
 
       // NB: alias /api/generate-28 doit exister sur le backend Darby corrigé
       const response = await fetch(`${backendUrl}/api/generate-28`, {
