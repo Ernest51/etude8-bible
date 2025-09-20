@@ -309,8 +309,26 @@ def generate_simple_theological_explanation(verse_text: str, book_name: str, cha
     if book_name in templates and chapter in templates[book_name] and verse_num in templates[book_name][chapter]:
         return templates[book_name][chapter][verse_num]
     
-    # Explication générique basée sur le contenu du verset
-    explanation = f"**Contexte littéraire :** Ce verset s'inscrit dans le développement théologique du chapitre {chapter} de {book_name}.\n\n"
+    # Explication spécialisée selon le livre
+    explanation = ""
+    
+    # Contexte spécifique selon le livre
+    book_contexts = {
+        "Jérémie": f"**Contexte prophétique :** Jérémie prophétise pendant les dernières décennies du royaume de Juda (626-586 av. J.-C.), période marquée par les crises politiques et spirituelles menant à l'exil babylonien.",
+        "Ésaïe": f"**Contexte prophétique :** Ésaïe ministère au 8ème siècle av. J.-C., prophétisant la venue du Messie et annonçant à la fois le jugement et la restauration d'Israël.",
+        "Psaumes": f"**Contexte liturgique :** Ce psaume fait partie de la collection des chants et prières d'Israël, exprimant les expériences spirituelles du peuple de Dieu.",
+        "Proverbes": f"**Contexte sapientiel :** Ce verset transmet la sagesse pratique pour une vie pieuse, dans la tradition de la littérature de sagesse d'Israël.",
+        "Apocalypse": f"**Contexte eschatologique :** Cette révélation de Jean sur l'île de Patmos dévoile les événements futurs et la victoire finale du Christ.",
+        "Romains": f"**Contexte doctrinal :** Paul développe la doctrine du salut par la foi, fondement théologique de l'Évangile chrétien.",
+        "1 Corinthiens": f"**Contexte pastoral :** Paul répond aux problèmes pratiques de l'église de Corinthe, alliant théologie et application concrète.",
+        "Hébreux": f"**Contexte christologique :** Cette épître démontre la supériorité du Christ sur l'ancienne alliance, s'adressant aux Juifs convertis."
+    }
+    
+    # Utiliser le contexte spécifique si disponible, sinon générique
+    if book_name in book_contexts:
+        explanation = book_contexts[book_name] + "\n\n"
+    else:
+        explanation = f"**Contexte littéraire :** Ce verset s'inscrit dans le développement théologique du chapitre {chapter} de {book_name}.\n\n"
     
     # Ajout d'éléments basés sur des mots-clés
     verse_lower = verse_text.lower()
