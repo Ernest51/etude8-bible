@@ -477,7 +477,7 @@ async def generate_verse_by_verse(req: VerseByVerseRequest):
         
         blocks.append(
             f"<strong>VERSET {vnum}</strong><br><br>"
-            f"<strong>TEXTE BIBLIQUE :</strong><br>[{vnum}] {vtxt}<br><br>"
+            f"<strong>TEXTE BIBLIQUE :</strong><br>{vtxt}<br><br>"
             f"<strong>EXPLICATION THÉOLOGIQUE :</strong><br>{theological_explanation}"
         )
     return {"content": "<br><br>".join(blocks).strip()}
