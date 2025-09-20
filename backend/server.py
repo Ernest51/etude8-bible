@@ -389,32 +389,21 @@ def generate_simple_theological_explanation(verse_text: str, book_name: str, cha
 
 def format_theological_content(content: str) -> str:
     """
-    Formate le contenu théologique en Markdown propre (pas HTML)
+    Formate le contenu théologique de manière simple et lisible
     """
     import re
     
-    # Supprimer toutes les balises HTML strong
-    content = re.sub(r'<strong>(.*?)</strong>', r'**\1**', content)
-    content = re.sub(r'</?strong>', '', content)
+    # Corriger les quadruples étoiles qui cassent le formatage
+    content = re.sub(r'\*\*\*\*', '**', content)
     
-    # Corriger les balises cassées comme <>texte</>
-    content = re.sub(r'<>(.*?)</>', r'**\1**', content) 
-    
-    # Supprimer toutes les balises HTML br
-    content = content.replace('<br><br>', '\n\n')
-    content = content.replace('<br>', '\n')
-    
-    # Nettoyer les doubles étoiles
-    content = re.sub(r'\*\*\*\*(.*?)\*\*\*\*', r'**\1**', content)
-    
-    # Supprimer le mot "strong" qui apparaît
+    # Supprimer le mot "strong" isolé
     content = re.sub(r'\bstrong\b', '', content, flags=re.IGNORECASE)
     
-    # Nettoyer les espaces multiples
-    content = re.sub(r'\s+', ' ', content)
-    content = re.sub(r'\n\s+', '\n', content)
+    # Nettoyer les espaces multiples mais GARDER les retours à la ligne
+    content = re.sub(r'[ ]+', ' ', content)  # Espaces multiples seulement
+    content = content.strip()
     
-    return content.strip()
+    return content
 
 
 # =========================
