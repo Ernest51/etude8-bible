@@ -367,6 +367,20 @@ def generate_simple_theological_explanation(verse_text: str, book_name: str, cha
     
     return full_explanation
 
+def format_theological_content(content: str) -> str:
+    """
+    Formate le contenu théologique pour l'affichage (convertit ** en gras HTML)
+    """
+    # Convertir les étoiles en gras HTML
+    import re
+    content = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', content)
+    
+    # Supprimer toute référence à "strong" en tant que mot
+    content = re.sub(r'\bstrong\b', '', content, flags=re.IGNORECASE)
+    content = re.sub(r'\s+', ' ', content)  # Nettoyer les espaces multiples
+    
+    return content.strip()
+
 
 # =========================
 #        ROUTES
