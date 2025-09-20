@@ -389,12 +389,14 @@ def generate_simple_theological_explanation(verse_text: str, book_name: str, cha
 
 def format_theological_content(content: str) -> str:
     """
-    Formate le contenu théologique de manière simple et lisible
+    Formate le contenu théologique de manière simple et lisible SANS étoiles
     """
     import re
     
-    # Corriger les quadruples étoiles qui cassent le formatage
-    content = re.sub(r'\*\*\*\*', '**', content)
+    # SUPPRIMER TOUTES LES ÉTOILES pour éviter l'affichage des **
+    content = re.sub(r'\*\*(.*?)\*\*', r'\1', content)  # **texte** → texte
+    content = content.replace('**', '')  # Supprimer toutes les étoiles restantes
+    content = content.replace('*', '')   # Supprimer les étoiles simples aussi
     
     # Supprimer le mot "strong" isolé
     content = re.sub(r'\bstrong\b', '', content, flags=re.IGNORECASE)
