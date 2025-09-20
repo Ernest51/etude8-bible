@@ -500,14 +500,15 @@ export default function App() {
   // Rendu markdown minimal (titres en **..** sur une ligne)
   function formatContent(text) {
     const safe = asString(text);
-    const lines = safe.split('\n');
+    // Solution plus robuste pour gérer tous les types de retours à la ligne
+    const lines = safe.split(/\r?\n/);  // Gérer \n et \r\n
     return (
       <div className="content-formatted-inner">
         {lines.map((line, index) => {
           if (line.startsWith('**') && line.endsWith('**')) {
             const boldText = line.replace(/\*\*/g, '');
             return <div key={index} className="content-bold">{boldText}</div>;
-          } else if (line.trim()) {
+          } else if (line.length > 0) {  // Changer line.trim() en line.length > 0
             return <div key={index} className="content-line">{line}</div>;
           } else {
             return <div key={index} className="content-space"></div>;
