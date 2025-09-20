@@ -441,17 +441,18 @@ async def generate_verse_by_verse(req: VerseByVerseRequest):
         # Générer l'explication théologique seulement pour les premiers versets
         if verse_count < max_verses_with_detailed_explanations:
             theological_explanation = generate_simple_theological_explanation(vtxt, book_label, chap, vnum)
+            theological_explanation = format_theological_content(theological_explanation)
             verse_count += 1
         else:
             # Pour les versets suivants, utiliser un placeholder amélioré
-            theological_explanation = f"**Analyse théologique à développer pour le verset {vnum}**\n\nCe verset mériterait une étude approfondie du contexte historique, littéraire et théologique. Les thèmes principaux à explorer incluent les implications doctrinales et les applications pratiques pour le croyant contemporain."
+            theological_explanation = f"<strong>Analyse théologique à développer pour le verset {vnum}</strong><br><br>Ce verset mériterait une étude approfondie du contexte historique, littéraire et théologique. Les thèmes principaux à explorer incluent les implications doctrinales et les applications pratiques pour le croyant contemporain."
         
         blocks.append(
-            f"**VERSET {vnum}**\n\n"
-            f"**TEXTE BIBLIQUE :**\n[{vnum}] {vtxt}\n\n"
-            f"**EXPLICATION THÉOLOGIQUE :**\n{theological_explanation}"
+            f"<strong>VERSET {vnum}</strong><br><br>"
+            f"<strong>TEXTE BIBLIQUE :</strong><br>[{vnum}] {vtxt}<br><br>"
+            f"<strong>EXPLICATION THÉOLOGIQUE :</strong><br>{theological_explanation}"
         )
-    return {"content": "\n\n".join(blocks).strip()}
+    return {"content": "<br><br>".join(blocks).strip()}
 
 @app.post("/api/generate-study")
 async def generate_study(req: StudyRequest):
