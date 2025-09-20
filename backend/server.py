@@ -312,6 +312,54 @@ Réponds directement avec l'explication, sans préambule."""
 
 
 # =========================
+#   GÉNÉRATION THÉOLOGIQUE SIMPLE (SANS LLM)
+# =========================
+def generate_simple_theological_explanation(verse_text: str, book_name: str, chapter: int, verse_num: int) -> str:
+    """
+    Génère une explication théologique simple basée sur des templates SANS LLM
+    """
+    # Templates d'explications simples selon le livre
+    templates = {
+        "Genèse": {
+            1: {
+                1: "Ce verset inaugure toute la révélation biblique en établissant Dieu comme Créateur souverain. Le terme 'commencement' (בְּרֵאשִׁית) suggère un point de départ temporel de la création matérielle, tandis que 'créa' (בָּרָא) indique une action divine créatrice ex nihilo.",
+                2: "L'état initial de la terre, 'informe et vide' (תֹהוּ וָבֹהוּ), représente un chaos primitif sur lequel l'Esprit de Dieu planait, préparant l'œuvre d'organisation et de formation qui va suivre.",
+                3: "La première parole créatrice de Dieu manifeste sa toute-puissance. La lumière précède les luminaires (créés au 4e jour), suggérant une lumière primordiale distincte des sources lumineuses physiques."
+            }
+        },
+        "Jude": {
+            1: {
+                1: "Jude se présente humblement comme 'esclave' (δοῦλος) de Jésus-Christ, soulignant sa soumission totale au Seigneur. Sa relation fraternelle avec Jacques, dirigeant de l'église de Jérusalem, lui confère une autorité apostolique.",
+                2: "Cette salutation trinitaire évoque la miséricorde du Père, la paix du Fils, et l'amour de l'Esprit qui se multiplient dans la vie du croyant. C'est une bénédiction complète pour l'âme."
+            }
+        }
+    }
+    
+    # Chercher une explication spécifique
+    if book_name in templates and chapter in templates[book_name] and verse_num in templates[book_name][chapter]:
+        return templates[book_name][chapter][verse_num]
+    
+    # Explication générique basée sur le contenu du verset
+    explanation = f"**Contexte littéraire :** Ce verset s'inscrit dans le développement théologique du chapitre {chapter} de {book_name}.\n\n"
+    
+    # Ajout d'éléments basés sur des mots-clés
+    verse_lower = verse_text.lower()
+    
+    if "dieu" in verse_lower or "éternel" in verse_lower or "seigneur" in verse_lower:
+        explanation += "**Théologie :** Ce passage révèle des aspects importants de la nature divine et de la relation de Dieu avec sa création.\n\n"
+    
+    if "christ" in verse_lower or "jésus" in verse_lower:
+        explanation += "**Christologie :** Ce verset contribue à notre compréhension de la personne et de l'œuvre du Christ.\n\n"
+    
+    if "esprit" in verse_lower:
+        explanation += "**Pneumatologie :** L'action de l'Esprit Saint est mise en évidence dans ce contexte.\n\n"
+    
+    explanation += "**Application pratique :** Ce verset nous enseigne des vérités importantes pour notre marche chrétienne et notre compréhension de la volonté divine."
+    
+    return explanation
+
+
+# =========================
 #        ROUTES
 # =========================
 @app.get("/api/")
