@@ -330,17 +330,30 @@ def generate_simple_theological_explanation(verse_text: str, book_name: str, cha
     else:
         explanation = f"**Contexte littéraire :** Ce verset s'inscrit dans le développement théologique du chapitre {chapter} de {book_name}.\n\n"
     
-    # Ajout d'éléments basés sur des mots-clés
+    # Ajout d'éléments basés sur des mots-clés et phrases spécifiques
     verse_lower = verse_text.lower()
     
+    # Analyse théologique spécifique
+    if "paroles de" in verse_lower and "prophète" in verse_lower.replace("é", "e"):
+        explanation += "**Autorité prophétique :** L'expression 'paroles de' établit l'autorité divine du message prophétique, distincte de la sagesse humaine.\n\n"
+    
+    if "fils de" in verse_lower and ("sacrificateur" in verse_lower or "prêtre" in verse_lower):
+        explanation += "**Lignée sacerdotale :** L'origine sacerdotale du prophète souligne la continuité entre le ministère cultuel et la révélation prophétique.\n\n"
+    
     if "dieu" in verse_lower or "éternel" in verse_lower or "seigneur" in verse_lower:
-        explanation += "**Théologie :** Ce passage révèle des aspects importants de la nature divine et de la relation de Dieu avec sa création.\n\n"
+        explanation += "**Théologie :** Ce passage révèle des aspects importants de la nature divine et de ses attributs dans l'histoire du salut.\n\n"
     
-    if "christ" in verse_lower or "jésus" in verse_lower:
-        explanation += "**Christologie :** Ce verset contribue à notre compréhension de la personne et de l'œuvre du Christ.\n\n"
+    if "christ" in verse_lower or "jésus" in verse_lower or "messie" in verse_lower:
+        explanation += "**Christologie :** Ce verset contribue à notre compréhension de la personne et de l'œuvre rédemptrice du Christ.\n\n"
     
-    if "esprit" in verse_lower:
-        explanation += "**Pneumatologie :** L'action de l'Esprit Saint est mise en évidence dans ce contexte.\n\n"
+    if "esprit" in verse_lower and ("saint" in verse_lower or "dieu" in verse_lower):
+        explanation += "**Pneumatologie :** L'action de l'Esprit Saint est mise en évidence dans ce contexte de révélation divine.\n\n"
+    
+    if "temple" in verse_lower or "autel" in verse_lower or "sacrifice" in verse_lower:
+        explanation += "**Culte et liturgie :** Les éléments cultuels préfigurent l'œuvre parfaite du Christ comme grand prêtre.\n\n"
+    
+    if "alliance" in verse_lower or "promesse" in verse_lower:
+        explanation += "**Théologie de l'alliance :** Ce verset s'inscrit dans le déploiement progressif des alliances divines avec l'humanité.\n\n"
     
     explanation += "**Application pratique :** Ce verset nous enseigne des vérités importantes pour notre marche chrétienne et notre compréhension de la volonté divine."
     
