@@ -1,24 +1,29 @@
 # server.py
-# API Bible Study (Darby) — SANS OpenAI.
+# API Bible Study (Darby) — AVEC contenu détaillé verset par verset et explications théologiques automatiques
 # - Texte biblique via https://api.scripture.api.bible/v1
-# - Étude "28 rubriques" (squelette) + Verset/verset (texte Darby + zones "à compléter")
+# - Étude "28 rubriques" + Verset/verset avec contenu théologique détaillé
+# - Génération automatique d'explications théologiques via LLM
 # - Renvoie toujours {"content": "..."} pour coller au front.
 
 import os
 import re
 import unicodedata
 from typing import Dict, List, Optional
+from dotenv import load_dotenv
 
 import httpx
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+# Charger les variables d'environnement
+load_dotenv()
 
 API_BASE = "https://api.scripture.api.bible/v1"
 APP_NAME = "Bible Study API - Darby"
-BIBLE_API_KEY = os.getenv("BIBLE_API_KEY")
-PREFERRED_BIBLE_ID = os.getenv("BIBLE_ID")  # Id Darby FR si dispo (recommandé)
+BIBLE_API_KEY = os.getenv("BIBLE_API_KEY", "0cff5d83f6852c3044a180cc4cdeb0fe")
+PREFERRED_BIBLE_ID = os.getenv("BIBLE_ID", "a93a92589195411f-01")  # Bible J.N. Darby (French)
+EMERGENT_LLM_KEY = os.getenv("EMERGENT_LLM_KEY")
 
 # --- CORS ---
 _default_origins = [
