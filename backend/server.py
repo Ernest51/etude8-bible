@@ -389,23 +389,30 @@ def generate_simple_theological_explanation(verse_text: str, book_name: str, cha
 
 def format_theological_content(content: str) -> str:
     """
-    Formate le contenu théologique pour l'affichage (convertit ** en gras HTML)
+    Formate le contenu théologique en Markdown propre (pas HTML)
     """
-    # Convertir les étoiles en gras HTML (mais éviter les doubles)
     import re
     
-    # D'abord nettoyer les doubles étoiles déjà dans des balises strong
-    content = re.sub(r'<strong>\*\*(.*?)\*\*</strong>', r'<strong>\1</strong>', content)
-    
-    # Ensuite convertir les étoiles restantes
-    content = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', content)
+    # Supprimer toutes les balises HTML strong
+    content = re.sub(r'<strong>(.*?)</strong>', r'**\1**', content)
+    content = re.sub(r'</?strong>', '', content)
     
     # Corriger les balises cassées comme <>texte</>
-    content = re.sub(r'<>(.*?)</>', r'<strong>\1</strong>', content)
+    content = re.sub(r'<>(.*?)</>', r'**\1**', content) 
     
-    # Supprimer toute référence au mot "strong" en tant que mot isolé
+    # Supprimer toutes les balises HTML br
+    content = content.replace('<br><br>', '\n\n')
+    content = content.replace('<br>', '\n')
+    
+    # Nettoyer les doubles étoiles
+    content = re.sub(r'\*\*\*\*(.*?)\*\*\*\*', r'**\1**', content)
+    
+    # Supprimer le mot "strong" qui apparaît
     content = re.sub(r'\bstrong\b', '', content, flags=re.IGNORECASE)
-    content = re.sub(r'\s+', ' ', content)  # Nettoyer les espaces multiples
+    
+    # Nettoyer les espaces multiples
+    content = re.sub(r'\s+', ' ', content)
+    content = re.sub(r'\n\s+', '\n', content)
     
     return content.strip()
 
