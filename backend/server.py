@@ -416,7 +416,7 @@ async def generate_verse_by_verse(req: VerseByVerseRequest):
         
         # Générer l'explication théologique seulement pour les premiers versets
         if verse_count < max_verses_with_llm:
-            theological_explanation = await generate_theological_explanation(vtxt, book_label, chap, vnum)
+            theological_explanation = generate_simple_theological_explanation(vtxt, book_label, chap, vnum)
             verse_count += 1
         else:
             # Pour les versets suivants, utiliser un placeholder amélioré
