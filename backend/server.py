@@ -281,6 +281,35 @@ def generate_simple_theological_explanation(verse_text: str, book_name: str, cha
         else:
             explanation_parts.append("Ce passage illustre les défis de la conquête de la Terre Promise, révélant l'importance de l'obéissance complète aux commandements divins.")
     
+    # 2 Chroniques - Contexte du règne de Salomon et du temple
+    elif book_name == "2 Chroniques":
+        if "salomon" in verse_lower and ("s'affermit" in verse_lower or "royaume" in verse_lower):
+            explanation_parts.append("L'affermissement du règne de Salomon révèle que la stabilité royale dépend de la bénédiction divine, illustrant l'importance de la soumission à Dieu pour tout leadership légitime.")
+        elif "parla à tout israël" in verse_lower or "chefs" in verse_lower:
+            explanation_parts.append("Cette consultation des leaders révèle la sagesse de Salomon dans l'exercice du pouvoir, démontrant qu'un gouvernement juste requiert la participation et le conseil des représentants du peuple.")
+        elif "haut lieu" in verse_lower or "gabaon" in verse_lower or "tente d'assignation" in verse_lower:
+            explanation_parts.append("Le pèlerinage vers le lieu de culte établi révèle l'importance primordiale de l'adoration collective dans la vie nationale, plaçant Dieu au centre des préoccupations royales.")
+        elif "arche" in verse_lower or "david" in verse_lower or "jérusalem" in verse_lower:
+            explanation_parts.append("Cette référence à l'œuvre de David souligne la continuité dynastique et spirituelle, révélant comment chaque génération doit s'appuyer sur l'héritage de foi des prédécesseurs.")
+        elif "autel" in verse_lower or "holocaustes" in verse_lower or "offrit" in verse_lower:
+            explanation_parts.append("Ces sacrifices massifs révèlent la générosité royale dans l'adoration et l'importance de donner le meilleur à Dieu, préfigurant le sacrifice parfait du Christ.")
+        elif "dieu apparut" in verse_lower or "demande ce que tu veux" in verse_lower:
+            explanation_parts.append("Cette apparition divine révèle la grâce extraordinaire de Dieu qui s'approche de l'homme et offre ses bénédictions, illustrant l'initiative divine dans la relation avec ses serviteurs fidèles.")
+        elif "sagesse" in verse_lower or "connaissance" in verse_lower:
+            explanation_parts.append("Cette demande de sagesse révèle les priorités spirituelles authentiques, démontrant que la vraie grandeur consiste à chercher d'abord la capacité de bien gouverner selon les principes divins.")
+        elif "richesses" in verse_lower or "gloire" in verse_lower or "biens" in verse_lower:
+            explanation_parts.append("Cette promesse de prospérité matérielle révèle le principe divin selon lequel ceux qui cherchent d'abord le royaume de Dieu reçoivent aussi les bénédictions temporelles.")
+        elif "chars" in verse_lower or "cavaliers" in verse_lower or "armée" in verse_lower:
+            explanation_parts.append("Cette description de la puissance militaire révèle que la force d'une nation dépend ultimement de la bénédiction divine plutôt que de ses capacités militaires.")
+        elif "argent" in verse_lower or "or" in verse_lower or "comme les pierres" in verse_lower:
+            explanation_parts.append("Cette abondance extraordinaire illustre l'accomplissement des promesses divines de prospérité, révélant que Dieu peut transformer l'économie d'une nation fidèle.")
+        elif "égypte" in verse_lower or "commerce" in verse_lower:
+            explanation_parts.append("Ces relations commerciales révèlent la sagesse diplomatique et économique de Salomon, illustrant comment la bénédiction divine ouvre des opportunités dans toutes les sphères de la vie.")
+        elif "maison pour l'éternel" in verse_lower or "temple" in verse_lower or "bâtir" in verse_lower:
+            explanation_parts.append("Ce projet de construction du temple révèle la priorité absolue de l'adoration dans un royaume prospère, démontrant que la gloire divine doit être le but ultime de toute réussite humaine.")
+        else:
+            explanation_parts.append("Ce récit révèle la sagesse et la prospérité du règne de Salomon comme modèle du gouvernement selon les principes divins.")
+    
     # Genèse - Contexte de création et origines
     elif book_name == "Genèse":
         if "commencement" in verse_lower or "créa" in verse_lower:
