@@ -253,6 +253,65 @@ def parse_passage_input(p: str):
 
 
 # =========================
+#   GÉNÉRATION THÉOLOGIQUE
+# =========================
+async def generate_theological_explanation(verse_text: str, book_name: str, chapter: int, verse_num: int) -> str:
+    """
+    Génère une explication théologique pour un verset biblique en utilisant l'intégration LLM Emergent.
+    """
+    if not EMERGENT_LLM_KEY:
+        return "— à méditer et compléter —"
+    
+    try:
+        from emergentintegrations.llm.chat import LlmChat, UserMessage
+        
+        # Initialiser le chat LLM
+        chat = LlmChat(
+            api_key=EMERGENT_LLM_KEY,
+            session_id=f"theological-{book_name}-{chapter}-{verse_num}",
+            system_message="""Tu es un théologien érudit spécialisé dans l'exégèse biblique. Ta mission est de fournir des explications théologiques approfondies et fidèles aux Écritures. Tes réponses doivent être :
+
+1. Basées sur une herméneutique biblique solide
+2. Respectueuses de l'orthodoxie chrétienne
+3. Accessibles mais riches en contenu
+4. D'environ 150-200 mots
+5. En français correct
+
+Tu dois analyser le contexte historique, littéraire et théologique de chaque verset."""
+        ).with_model("openai", "gpt-4o-mini")
+        
+        # Créer le message utilisateur
+        user_message = UserMessage(
+            text=f"""Fournit une explication théologique approfondie pour ce verset biblique :
+
+**Livre :** {book_name}
+**Chapitre :** {chapter}
+**Verset :** {verse_num}
+**Texte :** {verse_text}
+
+Analyse ce verset en couvrant :
+- Le contexte historique et culturel
+- Le sens littéral du texte
+- Les implications théologiques
+- Les applications pratiques pour le croyant d'aujourd'hui
+
+Réponds directement avec l'explication, sans préambule."""
+        )
+        
+        # Envoyer le message et obtenir la réponse
+        response = await chat.send_message(user_message)
+        
+        if response and len(response.strip()) > 20:
+            return response.strip()
+        else:
+            return "— à méditer et compléter —"
+            
+    except Exception as e:
+        print(f"Erreur lors de la génération théologique: {e}")
+        return "— à méditer et compléter —"
+
+
+# =========================
 #        ROUTES
 # =========================
 @app.get("/api/")
