@@ -268,10 +268,39 @@ def generate_simple_theological_explanation(verse_text: str, book_name: str, cha
                 3: "La première parole créatrice de Dieu manifeste sa toute-puissance. La lumière précède les luminaires (créés au 4e jour), suggérant une lumière primordiale distincte des sources lumineuses physiques."
             }
         },
+        "Jérémie": {
+            1: {
+                1: "Jérémie se présente comme 'fils de Hilkija', indiquant sa lignée sacerdotale à Anathoth, ville lévitique près de Jérusalem. Cette origine sacerdotale confère une légitimité particulière à son ministère prophétique, combinant l'autorité rituelle et la révélation divine. Le contexte géographique benjaminite situe sa mission dans le royaume de Juda.",
+                2: "La chronologie précise du ministère de Jérémie s'étend sur quarante ans, de Josias à la chute de Jérusalem. Cette période cruciale de l'histoire d'Israël voit les dernières tentatives de réforme religieuse et l'inexorable marche vers l'exil babylonien.",
+                3: "La phrase répétée 'la parole de l'Éternel fut adressée' souligne l'origine divine du message prophétique. Jérémie ne parle pas de sa propre initiative, mais transmet fidèlement la révélation reçue, établissant ainsi l'autorité scripturaire de ses oracles."
+            }
+        },
         "Jude": {
             1: {
                 1: "Jude se présente humblement comme 'esclave' (δοῦλος) de Jésus-Christ, soulignant sa soumission totale au Seigneur. Sa relation fraternelle avec Jacques, dirigeant de l'église de Jérusalem, lui confère une autorité apostolique.",
                 2: "Cette salutation trinitaire évoque la miséricorde du Père, la paix du Fils, et l'amour de l'Esprit qui se multiplient dans la vie du croyant. C'est une bénédiction complète pour l'âme."
+            }
+        },
+        "Jean": {
+            1: {
+                1: "Le prologue johannique établit la divinité éternelle du Logos. 'Au commencement' (ἐν ἀρχῇ) fait écho à Genèse 1:1, mais révèle une éternité ante-temporelle. Le Verbe (λόγος) désigne la révélation parfaite de Dieu, distinct mais non séparé du Père.",
+                3: "La participation créatrice du Fils manifeste l'unité trinitaire dans l'œuvre de création. Le terme 'par lui' (δι' αὐτοῦ) indique l'instrumentalité divine, confirmant que toute existence procède de la Trinité."
+            },
+            3: {
+                16: "Ce verset résume l'Évangile entier : l'amour divin (ἠγάπησεν) comme motif, le don du Fils unique (μονογενῆ) comme moyen, et la vie éternelle (ζωὴν αἰώνιον) comme but. La foi (πιστεύων) constitue le seul moyen d'appropriation de ce salut gratuit."
+            }
+        },
+        "Matthieu": {
+            1: {
+                1: "Cette généalogie établit la légitimité messianique de Jésus par sa descendance davidique et abrahamique. 'Fils de David' confirme l'accomplissement des promesses dynastiques, tandis que 'fils d'Abraham' évoque l'alliance universelle de bénédiction pour toutes les nations."
+            }
+        },
+        "Psaumes": {
+            1: {
+                1: "Ce psaume contraste deux voies existentielles. L'homme 'heureux' (אַשְׁרֵי) trouve sa béatitude non dans les plaisirs temporels, mais dans la séparation du mal. Les trois termes (méchants, pécheurs, moqueurs) décrivent une progression dans le mal."
+            },
+            23: {
+                1: "David confesse sa relation personnelle avec l'Éternel en tant que berger. Cette métaphore pastorale évoque la protection, la guidance et la provision divine. 'Je ne manquerai de rien' exprime une confiance absolue en la suffisance de Dieu."
             }
         }
     }
