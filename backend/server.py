@@ -257,107 +257,115 @@ def parse_passage_input(p: str):
 # =========================
 def generate_simple_theological_explanation(verse_text: str, book_name: str, chapter: int, verse_num: int) -> str:
     """
-    Génère une explication théologique simple basée sur des templates SANS LLM
+    Génère une explication théologique spécifique basée sur l'analyse du contenu du verset
     """
-    # Templates d'explications simples selon le livre
-    templates = {
-        "Genèse": {
-            1: {
-                1: "Ce verset inaugure toute la révélation biblique en établissant Dieu comme Créateur souverain. Le terme 'commencement' (בְּרֵאשִׁית) suggère un point de départ temporel de la création matérielle, tandis que 'créa' (בָּרָא) indique une action divine créatrice ex nihilo.",
-                2: "L'état initial de la terre, 'informe et vide' (תֹהוּ וָבֹהוּ), représente un chaos primitif sur lequel l'Esprit de Dieu planait, préparant l'œuvre d'organisation et de formation qui va suivre.",
-                3: "La première parole créatrice de Dieu manifeste sa toute-puissance. La lumière précède les luminaires (créés au 4e jour), suggérant une lumière primordiale distincte des sources lumineuses physiques."
-            }
-        },
-        "Jérémie": {
-            1: {
-                1: "Jérémie se présente comme 'fils de Hilkija', indiquant sa lignée sacerdotale à Anathoth, ville lévitique près de Jérusalem. Cette origine sacerdotale confère une légitimité particulière à son ministère prophétique, combinant l'autorité rituelle et la révélation divine. Le contexte géographique benjaminite situe sa mission dans le royaume de Juda.",
-                2: "La chronologie précise du ministère de Jérémie s'étend sur quarante ans, de Josias à la chute de Jérusalem. Cette période cruciale de l'histoire d'Israël voit les dernières tentatives de réforme religieuse et l'inexorable marche vers l'exil babylonien.",
-                3: "La phrase répétée 'la parole de l'Éternel fut adressée' souligne l'origine divine du message prophétique. Jérémie ne parle pas de sa propre initiative, mais transmet fidèlement la révélation reçue, établissant ainsi l'autorité scripturaire de ses oracles."
-            }
-        },
-        "Jude": {
-            1: {
-                1: "Jude se présente humblement comme 'esclave' (δοῦλος) de Jésus-Christ, soulignant sa soumission totale au Seigneur. Sa relation fraternelle avec Jacques, dirigeant de l'église de Jérusalem, lui confère une autorité apostolique.",
-                2: "Cette salutation trinitaire évoque la miséricorde du Père, la paix du Fils, et l'amour de l'Esprit qui se multiplient dans la vie du croyant. C'est une bénédiction complète pour l'âme."
-            }
-        },
-        "Jean": {
-            1: {
-                1: "Le prologue johannique établit la divinité éternelle du Logos. 'Au commencement' (ἐν ἀρχῇ) fait écho à Genèse 1:1, mais révèle une éternité ante-temporelle. Le Verbe (λόγος) désigne la révélation parfaite de Dieu, distinct mais non séparé du Père.",
-                3: "La participation créatrice du Fils manifeste l'unité trinitaire dans l'œuvre de création. Le terme 'par lui' (δι' αὐτοῦ) indique l'instrumentalité divine, confirmant que toute existence procède de la Trinité."
-            },
-            3: {
-                16: "Ce verset résume l'Évangile entier : l'amour divin (ἠγάπησεν) comme motif, le don du Fils unique (μονογενῆ) comme moyen, et la vie éternelle (ζωὴν αἰώνιον) comme but. La foi (πιστεύων) constitue le seul moyen d'appropriation de ce salut gratuit."
-            }
-        },
-        "Matthieu": {
-            1: {
-                1: "Cette généalogie établit la légitimité messianique de Jésus par sa descendance davidique et abrahamique. 'Fils de David' confirme l'accomplissement des promesses dynastiques, tandis que 'fils d'Abraham' évoque l'alliance universelle de bénédiction pour toutes les nations."
-            }
-        },
-        "Psaumes": {
-            1: {
-                1: "Ce psaume contraste deux voies existentielles. L'homme 'heureux' (אַשְׁרֵי) trouve sa béatitude non dans les plaisirs temporels, mais dans la séparation du mal. Les trois termes (méchants, pécheurs, moqueurs) décrivent une progression dans le mal."
-            },
-            23: {
-                1: "David confesse sa relation personnelle avec l'Éternel en tant que berger. Cette métaphore pastorale évoque la protection, la guidance et la provision divine. 'Je ne manquerai de rien' exprime une confiance absolue en la suffisance de Dieu."
-            }
-        }
-    }
-    
-    # Chercher une explication spécifique
-    if book_name in templates and chapter in templates[book_name] and verse_num in templates[book_name][chapter]:
-        return templates[book_name][chapter][verse_num]
-    
-    # Explication spécialisée selon le livre
-    explanation = ""
-    
-    # Contexte spécifique selon le livre
-    book_contexts = {
-        "Jérémie": f"**Contexte prophétique :** Jérémie prophétise pendant les dernières décennies du royaume de Juda (626-586 av. J.-C.), période marquée par les crises politiques et spirituelles menant à l'exil babylonien.",
-        "Ésaïe": f"**Contexte prophétique :** Ésaïe ministère au 8ème siècle av. J.-C., prophétisant la venue du Messie et annonçant à la fois le jugement et la restauration d'Israël.",
-        "Psaumes": f"**Contexte liturgique :** Ce psaume fait partie de la collection des chants et prières d'Israël, exprimant les expériences spirituelles du peuple de Dieu.",
-        "Proverbes": f"**Contexte sapientiel :** Ce verset transmet la sagesse pratique pour une vie pieuse, dans la tradition de la littérature de sagesse d'Israël.",
-        "Apocalypse": f"**Contexte eschatologique :** Cette révélation de Jean sur l'île de Patmos dévoile les événements futurs et la victoire finale du Christ.",
-        "Romains": f"**Contexte doctrinal :** Paul développe la doctrine du salut par la foi, fondement théologique de l'Évangile chrétien.",
-        "1 Corinthiens": f"**Contexte pastoral :** Paul répond aux problèmes pratiques de l'église de Corinthe, alliant théologie et application concrète.",
-        "Hébreux": f"**Contexte christologique :** Cette épître démontre la supériorité du Christ sur l'ancienne alliance, s'adressant aux Juifs convertis."
-    }
-    
-    # Utiliser le contexte spécifique si disponible, sinon générique
-    if book_name in book_contexts:
-        explanation = book_contexts[book_name] + "\n\n"
-    else:
-        explanation = f"**Contexte littéraire :** Ce verset s'inscrit dans le développement théologique du chapitre {chapter} de {book_name}.\n\n"
-    
-    # Ajout d'éléments basés sur des mots-clés et phrases spécifiques
     verse_lower = verse_text.lower()
+    explanation_parts = []
     
-    # Analyse théologique spécifique
-    if "paroles de" in verse_lower and "prophète" in verse_lower.replace("é", "e"):
-        explanation += "**Autorité prophétique :** L'expression 'paroles de' établit l'autorité divine du message prophétique, distincte de la sagesse humaine.\n\n"
+    # === ANALYSE SPÉCIFIQUE DU CONTENU ===
     
-    if "fils de" in verse_lower and ("sacrificateur" in verse_lower or "prêtre" in verse_lower):
-        explanation += "**Lignée sacerdotale :** L'origine sacerdotale du prophète souligne la continuité entre le ministère cultuel et la révélation prophétique.\n\n"
+    # Apocalypse - Révélation et eschatologie
+    if book_name == "Apocalypse":
+        if "révélation" in verse_lower:
+            explanation_parts.append("La **révélation** (ἀποκάλυψις) désigne un dévoilement divin des mystères cachés. Cette révélation de Jésus-Christ constitue le testament final de la révélation canonique, dévoilant l'accomplissement ultime du plan de Dieu.")
+        if "ange" in verse_lower:
+            explanation_parts.append("L'intervention angélique souligne la médiation céleste dans la transmission de la révélation prophétique. L'ange sert d'intermédiaire entre la gloire divine et la réception humaine.")
+        if "bientôt" in verse_lower:
+            explanation_parts.append("L'imminence prophétique (\"bientôt\") ne se mesure pas selon le temps humain mais selon la perspective divine où \"un jour est comme mille ans\". Cette urgence eschatologique appelle à la vigilance spirituelle.")
     
-    if "dieu" in verse_lower or "éternel" in verse_lower or "seigneur" in verse_lower:
-        explanation += "**Théologie :** Ce passage révèle des aspects importants de la nature divine et de ses attributs dans l'histoire du salut.\n\n"
+    # Jérémie - Contexte prophétique
+    elif book_name == "Jérémie":
+        if "paroles de" in verse_lower:
+            explanation_parts.append("L'expression **\"paroles de Jérémie\"** établit l'autorité prophétique distincte de la sagesse humaine. Ces paroles ne sont pas les opinions personnelles du prophète mais la révélation divine transmise fidèlement.")
+        if "hilkija" in verse_lower or "sacrificateur" in verse_lower:
+            explanation_parts.append("L'origine **sacerdotale** de Jérémie (fils de Hilkija) unit le ministère cultuel et prophétique. Cette double fonction souligne que la vraie adoration et la révélation divine sont indissociables.")
+        if "anathoth" in verse_lower:
+            explanation_parts.append("**Anathoth**, ville lévitique près de Jérusalem, symbolise la proximité géographique et spirituelle avec le temple. Cette localisation confère une légitimité particulière au ministère de Jérémie.")
+        if "benjamin" in verse_lower:
+            explanation_parts.append("La tribu de **Benjamin**, bien que petite, joue un rôle crucial dans l'histoire d'Israël. Cette appartenance tribale place Jérémie au cœur des enjeux politiques et spirituels du royaume de Juda.")
     
-    if "christ" in verse_lower or "jésus" in verse_lower or "messie" in verse_lower:
-        explanation += "**Christologie :** Ce verset contribue à notre compréhension de la personne et de l'œuvre rédemptrice du Christ.\n\n"
+    # Genèse - Création et origines
+    elif book_name == "Genèse":
+        if "commencement" in verse_lower:
+            explanation_parts.append("**\"Au commencement\"** (בְּרֵאשִׁית) inaugure toute la révélation biblique. Ce terme hébreu évoque non seulement un début temporel mais le principe même de toute existence créée.")
+        if "créa" in verse_lower:
+            explanation_parts.append("Le verbe **\"créa\"** (בָּרָא) est exclusivement utilisé pour l'action divine, indiquant une création ex nihilo. Seul Dieu possède le pouvoir de faire exister ce qui n'était pas.")
+        if "esprit de dieu" in verse_lower:
+            explanation_parts.append("L'**Esprit de Dieu** planant sur les eaux révèle la présence trinitaire dès la création. Cette image évoque la fécondité divine préparant l'œuvre d'organisation cosmique.")
     
-    if "esprit" in verse_lower and ("saint" in verse_lower or "dieu" in verse_lower):
-        explanation += "**Pneumatologie :** L'action de l'Esprit Saint est mise en évidence dans ce contexte de révélation divine.\n\n"
+    # Jean - Théologie johannique
+    elif book_name == "Jean":
+        if "verbe" in verse_lower or "parole" in verse_lower:
+            explanation_parts.append("Le **Logos** (Verbe/Parole) révèle l'identité divine du Christ préexistant. Cette désignation philosophique et théologique établit Jésus comme la révélation parfaite et éternelle du Père.")
+        if "lumière" in verse_lower:
+            explanation_parts.append("La **lumière** symbolise la révélation divine et la vie spirituelle. Dans la théologie johannique, le Christ est la vraie lumière qui éclaire tout homme venant au monde.")
+        if "monde" in verse_lower and "aimé" in verse_lower:
+            explanation_parts.append("L'**amour divin pour le monde** (κόσμος) exprime la portée universelle du salut. Bien que le monde soit déchu, Dieu maintient son dessein rédempteur pour toute l'humanité.")
     
-    if "temple" in verse_lower or "autel" in verse_lower or "sacrifice" in verse_lower:
-        explanation += "**Culte et liturgie :** Les éléments cultuels préfigurent l'œuvre parfaite du Christ comme grand prêtre.\n\n"
+    # Psaumes - Liturgie et spiritualité
+    elif book_name == "Psaumes":
+        if "heureux" in verse_lower or "bienheureux" in verse_lower:
+            explanation_parts.append("La **béatitude** (אַשְׁרֵי) ouvre la voie de la sagesse biblique. Cette félicité ne dépend pas des circonstances extérieures mais de la conformité à la volonté divine.")
+        if "berger" in verse_lower:
+            explanation_parts.append("La métaphore du **berger** évoque la sollicitude divine, la protection et la guidance. Cette image pastorale révèle l'intimité de la relation entre Dieu et son peuple.")
+        if "vallée de l'ombre" in verse_lower:
+            explanation_parts.append("La **vallée de l'ombre de la mort** symbolise les épreuves existentielles les plus profondes. Même dans ces moments, la présence divine demeure source de réconfort et d'espérance.")
     
-    if "alliance" in verse_lower or "promesse" in verse_lower:
-        explanation += "**Théologie de l'alliance :** Ce verset s'inscrit dans le déploiement progressif des alliances divines avec l'humanité.\n\n"
+    # Romains - Doctrine paulinienne
+    elif book_name == "Romains":
+        if "évangile" in verse_lower:
+            explanation_parts.append("L'**Évangile** (εὐαγγέλιον) constitue la bonne nouvelle du salut gratuit en Christ. Paul développe cette doctrine fondamentale qui transforme la condition humaine.")
+        if "justice" in verse_lower and "dieu" in verse_lower:
+            explanation_parts.append("La **justice de Dieu** révélée dans l'Évangile ne condamne pas mais justifie le pécheur par la foi. Cette justice divine s'accomplit pleinement dans l'œuvre rédemptrice du Christ.")
     
-    explanation += "**Application pratique :** Ce verset nous enseigne des vérités importantes pour notre marche chrétienne et notre compréhension de la volonté divine."
+    # === ANALYSE GÉNÉRALE SELON LES MOTS-CLÉS ===
     
-    return explanation
+    # Noms divins et christologie
+    if "jésus" in verse_lower and "christ" in verse_lower:
+        explanation_parts.append("L'association **\"Jésus-Christ\"** unit l'humanité historique (Jésus) et la dignité messianique (Christ/Oint). Cette double nature révèle le mystère de l'Incarnation.")
+    elif "christ" in verse_lower:
+        explanation_parts.append("Le titre **\"Christ\"** (Χριστός/Messie) identifie Jésus comme l'Oint promis, accomplissant les espérances prophétiques d'Israël et du monde entier.")
+    elif "seigneur" in verse_lower:
+        explanation_parts.append("Le titre **\"Seigneur\"** (Κύριος) confesse la souveraineté divine du Christ ressuscité, égal au Père dans la divinité et l'autorité.")
+    
+    # Révélation et prophétie
+    if "prophète" in verse_lower or "prophétie" in verse_lower:
+        explanation_parts.append("Le ministère **prophétique** établit un pont entre la révélation divine et la compréhension humaine, appelant à la repentance et annonçant l'espérance messianique.")
+    
+    # Eschatologie
+    if "royaume" in verse_lower and ("cieux" in verse_lower or "dieu" in verse_lower):
+        explanation_parts.append("Le **Royaume des cieux** représente la souveraineté divine manifestée dans l'histoire et culminant dans la consommation eschatologique.")
+    
+    # Sotériologie
+    if "salut" in verse_lower or "sauveur" in verse_lower:
+        explanation_parts.append("Le **salut** divin dépasse la simple délivrance temporelle pour offrir la réconciliation éternelle avec Dieu par la grâce seule.")
+    
+    # Pneumatologie
+    if "esprit saint" in verse_lower:
+        explanation_parts.append("L'**Esprit Saint** accomplit l'œuvre de sanctification, d'illumination et de consolation dans la vie du croyant et de l'Église.")
+    
+    # Si aucune analyse spécifique, créer une explication contextuelle
+    if not explanation_parts:
+        context_mapping = {
+            "Genèse": "Ce verset contribue aux fondements de la révélation divine concernant les origines, la nature humaine et le plan de Dieu pour la création.",
+            "Exode": "Ce passage s'inscrit dans le récit de la délivrance d'Israël, révélant la fidélité divine et l'établissement de l'alliance mosaïque.",
+            "Psaumes": "Ce verset exprime la spiritualité d'Israël dans sa relation avec Dieu, mêlant louange, supplication et méditation sur les voies divines.",
+            "Proverbes": "Cette maxime transmet la sagesse pratique pour une vie alignée sur la crainte de l'Éternel, fondement de toute vraie connaissance.",
+            "Matthieu": "Cet enseignement de Jésus révèle les principes du Royaume des cieux et leur application dans la vie du disciple.",
+            "Jean": "Ce verset développe la théologie johannique de la révélation, mettant l'accent sur la vie éternelle et la connaissance du Père par le Fils.",
+            "Romains": "Paul expose ici un aspect crucial de la doctrine du salut par la foi, fondement de la justification chrétienne.",
+            "Apocalypse": "Cette vision prophétique dévoile les réalités célestes et l'accomplissement ultime du dessein divin dans l'histoire."
+        }
+        explanation_parts.append(context_mapping.get(book_name, f"Ce verset du livre de {book_name} apporte un éclairage particulier sur la révélation divine et ses implications pour la foi chrétienne."))
+    
+    # Joindre toutes les parties d'explication
+    full_explanation = " ".join(explanation_parts)
+    
+    # Supprimer les références Strong et nettoyer le texte
+    full_explanation = full_explanation.replace("strong", "").replace("Strong", "")
+    full_explanation = ' '.join(full_explanation.split())  # Nettoyer les espaces multiples
+    
+    return full_explanation
 
 
 # =========================
