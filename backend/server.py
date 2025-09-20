@@ -390,7 +390,7 @@ async def generate_verse_by_verse(req: VerseByVerseRequest):
 
     if verse:
         # Générer l'explication théologique pour le verset unique
-        theological_explanation = await generate_theological_explanation(text, book_label, chap, verse)
+        theological_explanation = generate_simple_theological_explanation(text, book_label, chap, verse)
         content = (
             f"{title}\n\n{intro}\n\n"
             f"**VERSET {verse}**\n\n"
