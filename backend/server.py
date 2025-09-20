@@ -414,13 +414,14 @@ async def generate_verse_by_verse(req: VerseByVerseRequest):
     if verse:
         # Générer l'explication théologique pour le verset unique
         theological_explanation = generate_simple_theological_explanation(text, book_label, chap, verse)
+        theological_explanation = format_theological_content(theological_explanation)
         content = (
             f"{title}\n\n{intro}\n\n"
             f"**VERSET {verse}**\n\n"
             f"**TEXTE BIBLIQUE :**\n{text}\n\n"
             f"**EXPLICATION THÉOLOGIQUE :**\n{theological_explanation}"
         )
-        return {"content": content}
+        return {"content": format_theological_content(content)}
 
     # Pour un chapitre entier, parser les versets et générer les explications
     lines = [l for l in text.splitlines() if l.strip()]
