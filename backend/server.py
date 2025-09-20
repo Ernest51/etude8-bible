@@ -306,10 +306,30 @@ def generate_simple_theological_explanation(verse_text: str, book_name: str, cha
     elif book_name == "Psaumes":
         if "heureux" in verse_lower or "bienheureux" in verse_lower:
             explanation_parts.append("La **béatitude** (אַשְׁרֵי) ouvre la voie de la sagesse biblique. Cette félicité ne dépend pas des circonstances extérieures mais de la conformité à la volonté divine.")
-        if "berger" in verse_lower:
+        elif "loi de l'éternel" in verse_lower or "médite" in verse_lower:
+            explanation_parts.append("La **méditation de la Loi** (תּוֹרָה) constitue la nourriture spirituelle du juste. Cette méditation jour et nuit transforme progressivement l'âme selon les pensées divines.")
+        elif "arbre" in verse_lower and "ruisseau" in verse_lower:
+            explanation_parts.append("La métaphore de l'**arbre planté** évoque l'enracinement spirituel profond. Les 'ruisseaux d'eaux' symbolisent les ressources infinies de la grâce divine qui nourrissent constamment l'âme fidèle.")
+        elif "méchants" in verse_lower and "balle" in verse_lower:
+            explanation_parts.append("Le contraste avec la **balle que le vent chasse** souligne l'instabilité des impies. Sans racines spirituelles, leur existence manque de substance et de permanence devant Dieu.")
+        elif "jugement" in verse_lower and "assemblée des justes" in verse_lower:
+            explanation_parts.append("L'**assemblée des justes** préfigure la communion éternelle des élus. Les méchants ne pourront subsister dans ce rassemblement saint car ils n'ont pas la justice requise.")
+        elif "éternel connaît" in verse_lower and "voie des justes" in verse_lower:
+            explanation_parts.append("La **connaissance divine** de la voie des justes exprime l'approbation et la protection de Dieu. Cette connaissance implique une relation personnelle et une surveillance bienveillante.")
+        elif "berger" in verse_lower:
             explanation_parts.append("La métaphore du **berger** évoque la sollicitude divine, la protection et la guidance. Cette image pastorale révèle l'intimité de la relation entre Dieu et son peuple.")
-        if "vallée de l'ombre" in verse_lower:
+        elif "vallée de l'ombre" in verse_lower:
             explanation_parts.append("La **vallée de l'ombre de la mort** symbolise les épreuves existentielles les plus profondes. Même dans ces moments, la présence divine demeure source de réconfort et d'espérance.")
+        else:
+            # Analyse spécifique selon le contenu du verset pour les Psaumes
+            if "éternel" in verse_lower:
+                explanation_parts.append("Ce verset célèbre la souveraineté de l'**Éternel** (יְהוָה) dans la vie du psalmiste, révélant la confiance absolue en la fidélité divine.")
+            elif "louange" in verse_lower or "chante" in verse_lower:
+                explanation_parts.append("L'expression de **louange** transforme les circonstances en opportunités d'adoration, élevant l'âme au-dessus des préoccupations terrestres.")
+            elif "péché" in verse_lower or "iniquité" in verse_lower:
+                explanation_parts.append("La confession du **péché** dans les Psaumes révèle l'authenticité de la relation avec Dieu, où la transparence précède la restauration.")
+            else:
+                explanation_parts.append("Ce verset psalmique exprime la spiritualité authentique d'Israël, mêlant les émotions humaines à la foi en la souveraineté divine.")
     
     # Romains - Doctrine paulinienne
     elif book_name == "Romains":
