@@ -175,7 +175,7 @@ async def list_verses_ids(bible_id: str, osis_book: str, chapter: int) -> List[s
 
 async def fetch_verse_text(bible_id: str, verse_id: str) -> str:
     url = f"{API_BASE}/bibles/{bible_id}/verses/{verse_id}"
-    params = {"contentType": "text"}
+    params = {"content-type": "text"}
     async with httpx.AsyncClient(timeout=30.0) as client:
         r = await client.get(url, headers=headers(), params=params)
         if r.status_code != 200:
