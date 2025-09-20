@@ -257,249 +257,106 @@ def parse_passage_input(p: str):
 # =========================
 def generate_simple_theological_explanation(verse_text: str, book_name: str, chapter: int, verse_num: int) -> str:
     """
-    Génère une explication théologique spécifique basée sur l'analyse du contenu du verset
+    Génère une explication théologique spécifique basée sur l'analyse intelligente du contenu du verset
     """
     verse_lower = verse_text.lower()
     explanation_parts = []
     
-    # === ANALYSE SPÉCIFIQUE DU CONTENU ===
+    # === ANALYSE CONTEXTUELLE PAR LIVRE ET CONTENU SPÉCIFIQUE ===
     
-    # Apocalypse - Révélation et eschatologie
-    if book_name == "Apocalypse":
-        if "révélation" in verse_lower:
-            explanation_parts.append("La **révélation** (ἀποκάλυψις) désigne un dévoilement divin des mystères cachés. Cette révélation de Jésus-Christ constitue le testament final de la révélation canonique, dévoilant l'accomplissement ultime du plan de Dieu.")
-        if "ange" in verse_lower:
-            explanation_parts.append("L'intervention angélique souligne la médiation céleste dans la transmission de la révélation prophétique. L'ange sert d'intermédiaire entre la gloire divine et la réception humaine.")
-        if "bientôt" in verse_lower:
-            explanation_parts.append("L'imminence prophétique (\"bientôt\") ne se mesure pas selon le temps humain mais selon la perspective divine où \"un jour est comme mille ans\". Cette urgence eschatologique appelle à la vigilance spirituelle.")
+    # Juges - Contexte de conquête et apostasie
+    if book_name == "Juges":
+        if "interrogèrent l'éternel" in verse_lower or "qui montera" in verse_lower:
+            explanation_parts.append("Cette consultation divine révèle la dépendance d'Israël envers la direction de l'Éternel dans les conquêtes militaires, soulignant l'importance de chercher la volonté divine avant l'action.")
+        elif "l'éternel dit" in verse_lower or "j'ai livré" in verse_lower:
+            explanation_parts.append("La réponse divine assure la victoire avant le combat, démontrant que les succès d'Israël dépendent de la promesse et de la puissance de l'Éternel plutôt que de la force humaine.")
+        elif "monte avec moi" in verse_lower or "frère" in verse_lower:
+            explanation_parts.append("Cette alliance fraternelle entre tribus illustre l'importance de la solidarité dans l'accomplissement du plan divin, préfigurant l'unité nécessaire au peuple de Dieu.")
+        elif "l'éternel livra" in verse_lower or "frappèrent" in verse_lower:
+            explanation_parts.append("L'accomplissement de la promesse divine se manifeste dans la victoire concrète, confirmant la fidélité de Dieu envers son peuple obéissant.")
+        elif "ne déposséda pas" in verse_lower or "tributaire" in verse_lower:
+            explanation_parts.append("Cette désobéissance partielle révèle les conséquences de la compromission avec le mal, préfigurant les cycles d'apostasie qui caractériseront l'époque des Juges.")
+        elif "cananéen" in verse_lower or "habitait" in verse_lower:
+            explanation_parts.append("La coexistence avec les nations païennes représente la tension permanente entre l'appel à la sainteté et la contamination spirituelle du monde environnant.")
+        else:
+            explanation_parts.append("Ce passage illustre les défis de la conquête de la Terre Promise, révélant l'importance de l'obéissance complète aux commandements divins.")
     
-    # Jérémie - Contexte prophétique
-    elif book_name == "Jérémie":
-        if "paroles de" in verse_lower:
-            explanation_parts.append("L'expression **\"paroles de Jérémie\"** établit l'autorité prophétique distincte de la sagesse humaine. Ces paroles ne sont pas les opinions personnelles du prophète mais la révélation divine transmise fidèlement.")
-        if "hilkija" in verse_lower or "sacrificateur" in verse_lower:
-            explanation_parts.append("L'origine **sacerdotale** de Jérémie (fils de Hilkija) unit le ministère cultuel et prophétique. Cette double fonction souligne que la vraie adoration et la révélation divine sont indissociables.")
-        if "anathoth" in verse_lower:
-            explanation_parts.append("**Anathoth**, ville lévitique près de Jérusalem, symbolise la proximité géographique et spirituelle avec le temple. Cette localisation confère une légitimité particulière au ministère de Jérémie.")
-        if "benjamin" in verse_lower:
-            explanation_parts.append("La tribu de **Benjamin**, bien que petite, joue un rôle crucial dans l'histoire d'Israël. Cette appartenance tribale place Jérémie au cœur des enjeux politiques et spirituels du royaume de Juda.")
-    
-    # Genèse - Création et origines
+    # Genèse - Contexte de création et origines
     elif book_name == "Genèse":
-        if "commencement" in verse_lower:
-            explanation_parts.append("**\"Au commencement\"** (בְּרֵאשִׁית) inaugure toute la révélation biblique. Ce terme hébreu évoque non seulement un début temporel mais le principe même de toute existence créée.")
-        if "créa" in verse_lower:
-            explanation_parts.append("Le verbe **\"créa\"** (בָּרָא) est exclusivement utilisé pour l'action divine, indiquant une création ex nihilo. Seul Dieu possède le pouvoir de faire exister ce qui n'était pas.")
-        if "esprit de dieu" in verse_lower:
-            explanation_parts.append("L'**Esprit de Dieu** planant sur les eaux révèle la présence trinitaire dès la création. Cette image évoque la fécondité divine préparant l'œuvre d'organisation cosmique.")
-    
-    # Jean - Théologie johannique
-    elif book_name == "Jean":
-        if "verbe" in verse_lower or "parole" in verse_lower:
-            explanation_parts.append("Le **Logos** (Verbe/Parole) révèle l'identité divine du Christ préexistant. Cette désignation philosophique et théologique établit Jésus comme la révélation parfaite et éternelle du Père.")
-        if "lumière" in verse_lower:
-            explanation_parts.append("La **lumière** symbolise la révélation divine et la vie spirituelle. Dans la théologie johannique, le Christ est la vraie lumière qui éclaire tout homme venant au monde.")
-        if "monde" in verse_lower and "aimé" in verse_lower:
-            explanation_parts.append("L'**amour divin pour le monde** (κόσμος) exprime la portée universelle du salut. Bien que le monde soit déchu, Dieu maintient son dessein rédempteur pour toute l'humanité.")
-    
-    # Psaumes - Liturgie et spiritualité
-    elif book_name == "Psaumes":
-        if "heureux" in verse_lower or "bienheureux" in verse_lower:
-            explanation_parts.append("La **béatitude** (אַשְׁרֵי) ouvre la voie de la sagesse biblique. Cette félicité ne dépend pas des circonstances extérieures mais de la conformité à la volonté divine.")
-        elif "loi de l'éternel" in verse_lower or "médite" in verse_lower:
-            explanation_parts.append("La **méditation de la Loi** (תּוֹרָה) constitue la nourriture spirituelle du juste. Cette méditation jour et nuit transforme progressivement l'âme selon les pensées divines.")
-        elif "arbre" in verse_lower and "ruisseau" in verse_lower:
-            explanation_parts.append("La métaphore de l'**arbre planté** évoque l'enracinement spirituel profond. Les 'ruisseaux d'eaux' symbolisent les ressources infinies de la grâce divine qui nourrissent constamment l'âme fidèle.")
-        elif "méchants" in verse_lower and "balle" in verse_lower:
-            explanation_parts.append("Le contraste avec la **balle que le vent chasse** souligne l'instabilité des impies. Sans racines spirituelles, leur existence manque de substance et de permanence devant Dieu.")
-        elif "jugement" in verse_lower and "assemblée des justes" in verse_lower:
-            explanation_parts.append("L'**assemblée des justes** préfigure la communion éternelle des élus. Les méchants ne pourront subsister dans ce rassemblement saint car ils n'ont pas la justice requise.")
-        elif "éternel connaît" in verse_lower and "voie des justes" in verse_lower:
-            explanation_parts.append("La **connaissance divine** de la voie des justes exprime l'approbation et la protection de Dieu. Cette connaissance implique une relation personnelle et une surveillance bienveillante.")
-        elif "berger" in verse_lower:
-            explanation_parts.append("La métaphore du **berger** évoque la sollicitude divine, la protection et la guidance. Cette image pastorale révèle l'intimité de la relation entre Dieu et son peuple.")
-        elif "vallée de l'ombre" in verse_lower:
-            explanation_parts.append("La **vallée de l'ombre de la mort** symbolise les épreuves existentielles les plus profondes. Même dans ces moments, la présence divine demeure source de réconfort et d'espérance.")
+        if "commencement" in verse_lower or "créa" in verse_lower:
+            explanation_parts.append("Ce verset établit le fondement de toute la révélation biblique en proclamant Dieu comme Créateur souverain de toutes choses.")
+        elif "homme" in verse_lower and "image" in verse_lower:
+            explanation_parts.append("La création de l'homme à l'image de Dieu révèle la dignité unique de l'humanité et sa vocation à refléter la gloire divine.")
+        elif "alliance" in verse_lower or "promesse" in verse_lower:
+            explanation_parts.append("Cette alliance divine inaugure le plan de rédemption qui se déploiera à travers toute l'histoire du salut.")
         else:
-            # Analyse spécifique selon le contenu du verset pour les Psaumes
-            if "éternel" in verse_lower:
-                explanation_parts.append("Ce verset célèbre la souveraineté de l'**Éternel** (יְהוָה) dans la vie du psalmiste, révélant la confiance absolue en la fidélité divine.")
-            elif "louange" in verse_lower or "chante" in verse_lower:
-                explanation_parts.append("L'expression de **louange** transforme les circonstances en opportunités d'adoration, élevant l'âme au-dessus des préoccupations terrestres.")
-            elif "péché" in verse_lower or "iniquité" in verse_lower:
-                explanation_parts.append("La confession du **péché** dans les Psaumes révèle l'authenticité de la relation avec Dieu, où la transparence précède la restauration.")
-            else:
-                explanation_parts.append("Ce verset psalmique exprime la spiritualité authentique d'Israël, mêlant les émotions humaines à la foi en la souveraineté divine.")
+            explanation_parts.append("Ce récit des origines révèle les fondements de la relation entre Dieu et sa création.")
     
-    # Romains - Doctrine paulinienne
-    elif book_name == "Romains":
-        if "évangile" in verse_lower:
-            explanation_parts.append("L'**Évangile** (εὐαγγέλιον) constitue la bonne nouvelle du salut gratuit en Christ. Paul développe cette doctrine fondamentale qui transforme la condition humaine.")
-        if "justice" in verse_lower and "dieu" in verse_lower:
-            explanation_parts.append("La **justice de Dieu** révélée dans l'Évangile ne condamne pas mais justifie le pécheur par la foi. Cette justice divine s'accomplit pleinement dans l'œuvre rédemptrice du Christ.")
+    # Exode - Contexte de libération et alliance
+    elif book_name == "Exode":
+        if "pharaon" in verse_lower or "égypte" in verse_lower:
+            explanation_parts.append("Cette confrontation avec l'Égypte révèle la puissance libératrice de Dieu qui délivre son peuple de l'esclavage spirituel et physique.")
+        elif "pâque" in verse_lower or "sang" in verse_lower:
+            explanation_parts.append("Cette institution pascale préfigure le sacrifice rédempteur du Christ, l'Agneau de Dieu qui ôte le péché du monde.")
+        elif "sinaï" in verse_lower or "loi" in verse_lower:
+            explanation_parts.append("Cette révélation de la Loi établit les fondements de la relation d'alliance entre Dieu et son peuple élu.")
+        else:
+            explanation_parts.append("Ce passage révèle l'œuvre libératrice de Dieu et l'établissement de son alliance avec Israël.")
     
-    # === ANALYSE GÉNÉRALE SELON LES MOTS-CLÉS ===
+    # === ANALYSE GÉNÉRALE BASÉE SUR LE CONTENU ===
     
-    # Noms divins et christologie
-    if "jésus" in verse_lower and "christ" in verse_lower:
-        explanation_parts.append("L'association **\"Jésus-Christ\"** unit l'humanité historique (Jésus) et la dignité messianique (Christ/Oint). Cette double nature révèle le mystère de l'Incarnation.")
-    elif "christ" in verse_lower:
-        explanation_parts.append("Le titre **\"Christ\"** (Χριστός/Messie) identifie Jésus comme l'Oint promis, accomplissant les espérances prophétiques d'Israël et du monde entier.")
-    elif "seigneur" in verse_lower:
-        explanation_parts.append("Le titre **\"Seigneur\"** (Κύριος) confesse la souveraineté divine du Christ ressuscité, égal au Père dans la divinité et l'autorité.")
+    # Termes de guerre et conquête
+    elif any(term in verse_lower for term in ["guerre", "combat", "ennemi", "victoire", "bataille"]):
+        explanation_parts.append("Ce récit de guerre spirituelle illustre le combat permanent entre le royaume de Dieu et les puissances des ténèbres, révélant que la victoire appartient à ceux qui s'appuient sur la force divine.")
     
-    # Révélation et prophétie
-    if "prophète" in verse_lower or "prophétie" in verse_lower:
-        explanation_parts.append("Le ministère **prophétique** établit un pont entre la révélation divine et la compréhension humaine, appelant à la repentance et annonçant l'espérance messianique.")
+    # Termes de prière et consultation divine
+    elif any(term in verse_lower for term in ["prie", "interroge", "demande", "cherche l'éternel"]):
+        explanation_parts.append("Cette recherche de la volonté divine démontre l'importance de la dépendance envers Dieu dans toutes les décisions de la vie, révélant la sagesse de consulter l'Éternel avant d'agir.")
     
-    # Eschatologie
-    if "royaume" in verse_lower and ("cieux" in verse_lower or "dieu" in verse_lower):
-        explanation_parts.append("Le **Royaume des cieux** représente la souveraineté divine manifestée dans l'histoire et culminant dans la consommation eschatologique.")
+    # Termes d'obéissance et désobéissance
+    elif any(term in verse_lower for term in ["obéit", "désobéit", "commandement", "ordonne"]):
+        explanation_parts.append("Cette question d'obéissance révèle que la bénédiction divine dépend de la soumission à la volonté de Dieu, tandis que la désobéissance entraîne des conséquences spirituelles durables.")
     
-    # Sotériologie
-    if "salut" in verse_lower or "sauveur" in verse_lower:
-        explanation_parts.append("Le **salut** divin dépasse la simple délivrance temporelle pour offrir la réconciliation éternelle avec Dieu par la grâce seule.")
+    # Termes familiaux et relationnels
+    elif any(term in verse_lower for term in ["frère", "famille", "épouse", "fils", "père"]):
+        explanation_parts.append("Ces relations humaines reflètent les principes divins de fidélité, d'amour et de responsabilité mutuelle qui doivent caractériser le peuple de Dieu.")
     
-    # Pneumatologie
-    if "esprit saint" in verse_lower:
-        explanation_parts.append("L'**Esprit Saint** accomplit l'œuvre de sanctification, d'illumination et de consolation dans la vie du croyant et de l'Église.")
+    # Termes géographiques et héritage
+    elif any(term in verse_lower for term in ["terre", "héritage", "territoire", "frontière"]):
+        explanation_parts.append("Cette question territoriale symbolise l'héritage spirituel promis aux croyants, révélant que les bénédictions divines s'obtiennent par la foi et l'obéissance.")
     
-    # Si aucune analyse spécifique trouvée, faire une analyse intelligente générale
+    # Termes de justice et jugement
+    elif any(term in verse_lower for term in ["justice", "jugement", "châtiment", "rétribution"]):
+        explanation_parts.append("Cette manifestation de la justice divine révèle que Dieu est le juge suprême qui rétribue selon les œuvres, maintenant l'équilibre moral de l'univers.")
+    
+    # Si aucune analyse spécifique, utiliser le contexte du livre
     if not explanation_parts:
-        # Analyse basée sur les mots-clés du verset
-        verse_lower = verse_text.lower()
-        
-        # Termes théologiques majeurs
-        if any(term in verse_lower for term in ["dieu", "éternel", "seigneur", "yahvé", "élohim"]):
-            if "créa" in verse_lower or "création" in verse_lower:
-                explanation_parts.append("Ce verset révèle la puissance créatrice divine, établissant Dieu comme source unique de toute existence.")
-            elif "amour" in verse_lower or "miséricorde" in verse_lower:
-                explanation_parts.append("L'amour divin transcende la condition humaine déchue, offrant grâce et réconciliation.")
-            elif "justice" in verse_lower or "jugement" in verse_lower:
-                explanation_parts.append("La justice divine maintient l'équilibre moral de l'univers, rétribuant selon la droiture.")
-            elif "parole" in verse_lower or "dit" in verse_lower:
-                explanation_parts.append("La parole divine possède une efficacité créatrice et transformatrice, accomplissant toujours son dessein.")
-            else:
-                explanation_parts.append("Ce verset révèle des aspects fondamentaux de la nature divine et de son action dans l'histoire.")
-        
-        # Christologie
-        elif any(term in verse_lower for term in ["jésus", "christ", "messie", "fils", "agneau"]):
-            if "croix" in verse_lower or "mort" in verse_lower:
-                explanation_parts.append("La mort du Christ accomplit l'œuvre rédemptrice, réconciliant l'humanité avec Dieu par le sacrifice parfait.")
-            elif "résurrection" in verse_lower or "ressuscité" in verse_lower:
-                explanation_parts.append("La résurrection du Christ valide sa divinité et garantit l'espérance chrétienne de la vie éternelle.")
-            elif "roi" in verse_lower or "royaume" in verse_lower:
-                explanation_parts.append("La royauté du Christ s'établit progressivement, culminant dans la consommation eschatologique de son règne.")
-            else:
-                explanation_parts.append("Ce verset éclaire la personne et l'œuvre du Christ, centre de la révélation divine.")
-        
-        # Sotériologie
-        elif any(term in verse_lower for term in ["salut", "sauvé", "rédemption", "grâce", "foi"]):
-            explanation_parts.append("Le salut divin s'accomplit par grâce seule, transformant la condition humaine déchue en adoption filiale.")
-        
-        # Pneumatologie
-        elif "esprit" in verse_lower and any(term in verse_lower for term in ["saint", "dieu", "seigneur"]):
-            explanation_parts.append("L'Esprit Saint accomplit l'œuvre de sanctification, illuminant les cœurs et appliquant l'œuvre rédemptrice.")
-        
-        # Ecclésiologie
-        elif any(term in verse_lower for term in ["église", "assemblée", "corps", "peuple"]):
-            explanation_parts.append("L'Église constitue le corps mystique du Christ, communauté des rachetés appelée à témoigner de l'Évangile.")
-        
-        # Eschatologie
-        elif any(term in verse_lower for term in ["fin", "dernier", "éternité", "cieux", "gloire"]):
-            explanation_parts.append("Cette perspective eschatologique oriente l'espérance chrétienne vers l'accomplissement final du dessein divin.")
-        
-        # Éthique chrétienne
-        elif any(term in verse_lower for term in ["amour", "charité", "prochain", "frère"]):
-            explanation_parts.append("L'éthique chrétienne découle de l'amour divin reçu, se manifestant dans l'amour du prochain et la justice sociale.")
-        
-        # Sagesse et instruction
-        elif any(term in verse_lower for term in ["sagesse", "instruction", "connaissance", "comprendre"]):
-            explanation_parts.append("La sagesse biblique transcende la connaissance humaine, s'enracinant dans la crainte de l'Éternel et la méditation de sa Parole.")
-        
-        # Prière et adoration
-        elif any(term in verse_lower for term in ["prie", "adore", "louange", "chante", "bénit"]):
-            explanation_parts.append("L'adoration authentique élève l'âme vers Dieu, exprimant la reconnaissance et la dépendance du croyant envers son Créateur.")
-        
-        # Analyse contextuelle selon le livre si aucun mot-clé spécifique
-        else:
-            book_analysis = {
-                "Genèse": "Ce verset contribue aux fondements de la révélation concernant les origines et le plan divin pour l'humanité.",
-                "Exode": "Ce passage révèle l'œuvre libératrice de Dieu et l'établissement de son alliance avec Israël.",
-                "Lévitique": "Cette prescription révèle la sainteté divine et les moyens d'approche du Dieu trois fois saint.",
-                "Nombres": "Ce récit illustre la fidélité divine malgré les infidélités humaines durant le pèlerinage d'Israël.",
-                "Deutéronome": "Cette exhortation rappelle les fondements de l'alliance et l'importance de l'obéissance à la Loi divine.",
-                "Josué": "Ce verset souligne l'accomplissement des promesses divines et la conquête de l'héritage promis.",
-                "Juges": "Cette narration révèle les conséquences de l'apostasie et la miséricorde divine qui relève son peuple.",
-                "Ruth": "Cette histoire illustre la providence divine et la fidélité récompensée dans les relations humaines.",
-                "1 Samuel": "Ce passage éclaire l'établissement de la royauté en Israël et les voies divines dans l'histoire.",
-                "2 Samuel": "Ce récit révèle les promesses messianiques liées à la dynastie davidique.",
-                "1 Rois": "Cette narration illustre les bénédictions de l'obéissance et les conséquences de l'idolâtrie.",
-                "2 Rois": "Ce passage révèle la justice divine dans l'histoire d'Israël et l'accomplissement des avertissements prophétiques.",
-                "1 Chroniques": "Cette généalogie souligne la continuité du plan divin à travers les générations d'Israël.",
-                "2 Chroniques": "Ce récit met l'accent sur l'importance du temple et du culte dans la relation avec Dieu.",
-                "Esdras": "Cette narration révèle la fidélité divine dans la restauration de son peuple après l'exil.",
-                "Néhémie": "Ce passage illustre l'importance de la reconstruction spirituelle et matérielle du peuple de Dieu.",
-                "Esther": "Cette histoire révèle la providence divine cachée qui protège son peuple dans l'adversité.",
-                "Job": "Ce verset explore le mystère de la souffrance et la souveraineté divine dans les épreuves humaines.",
-                "Psaumes": "Ce verset exprime la spiritualité authentique, mêlant les émotions humaines à la foi en Dieu.",
-                "Proverbes": "Cette maxime transmet la sagesse pratique pour une vie alignée sur les principes divins.",
-                "Ecclésiaste": "Cette réflexion révèle la vanité des poursuites terrestres en dehors de la crainte de Dieu.",
-                "Cantique": "Ce verset célèbre l'amour humain comme image de la relation entre Dieu et son peuple.",
-                "Ésaïe": "Cette prophétie révèle le plan divin de rédemption et l'espérance messianique.",
-                "Jérémie": "Ce message prophétique allie l'avertissement du jugement à la promesse de restauration.",
-                "Lamentations": "Cette plainte exprime la douleur de l'exil tout en maintenant l'espérance en la miséricorde divine.",
-                "Ézéchiel": "Cette vision prophétique révèle la gloire divine et la promesse de renouvellement spirituel.",
-                "Daniel": "Ce récit apocalyptique révèle la souveraineté divine sur l'histoire et les nations.",
-                "Osée": "Cette prophétie illustre l'amour fidèle de Dieu malgré l'infidélité de son peuple.",
-                "Joël": "Cette prophétie annonce le jour de l'Éternel et l'effusion de l'Esprit divin.",
-                "Amos": "Ce message prophétique proclame la justice divine et l'exigence de droiture sociale.",
-                "Abdias": "Cette prophétie révèle la justice divine dans les relations entre les nations.",
-                "Jonas": "Ce récit illustre la miséricorde divine qui s'étend au-delà des frontières d'Israël.",
-                "Michée": "Cette prophétie allie la dénonciation de l'injustice à l'espérance messianique.",
-                "Nahum": "Cette prophétie révèle la justice divine qui châtie l'oppression des nations.",
-                "Habacuc": "Cette prophétie explore la foi qui persiste malgré l'incompréhensible providence divine.",
-                "Sophonie": "Cette prophétie annonce le jugement divin et la purification du peuple fidèle.",
-                "Aggée": "Cette prophétie encourage la reconstruction du temple et la priorité du culte divin.",
-                "Zacharie": "Cette prophétie révèle les visions messianiques et la restauration glorieuse d'Israël.",
-                "Malachie": "Cette prophétie clôt l'Ancien Testament en annonçant la venue du Messie purificateur.",
-                "Matthieu": "Cet enseignement révèle les principes du Royaume des cieux et leur application pratique.",
-                "Marc": "Ce récit évangélique souligne l'autorité divine du Christ serviteur dans ses œuvres puissantes.",
-                "Luc": "Cette narration évangélique révèle la compassion universelle du Christ pour tous les hommes.",
-                "Jean": "Ce témoignage évangélique révèle la divinité du Christ et la vie éternelle qu'il procure.",
-                "Actes": "Ce récit révèle l'expansion de l'Évangile par la puissance de l'Esprit Saint dans l'Église primitive.",
-                "Romains": "Cet enseignement doctrinal expose les fondements théologiques du salut par la foi seule.",
-                "1 Corinthiens": "Cette instruction pastorale allie la doctrine aux applications pratiques dans la vie ecclésiale.",
-                "2 Corinthiens": "Cette épître révèle l'authenticité du ministère apostolique dans la faiblesse et la souffrance.",
-                "Galates": "Cette défense doctrinale proclame la liberté chrétienne face au légalisme religieux.",
-                "Éphésiens": "Cette révélation mystique dévoile les richesses spirituelles du croyant en Christ.",
-                "Philippiens": "Cette épître exprime la joie chrétienne qui transcende les circonstances adverses.",
-                "Colossiens": "Cet enseignement révèle la suprématie du Christ sur toute la création et l'Église.",
-                "1 Thessaloniciens": "Cette instruction pastorale encourage la persévérance dans l'attente du retour du Christ.",
-                "2 Thessaloniciens": "Cette correction doctrinale clarifie les événements précédant la parousie du Christ.",
-                "1 Timothée": "Cette instruction pastorale guide l'organisation et la conduite de l'Église locale.",
-                "2 Timothée": "Ce testament spirituel transmet la passion évangélique aux générations futures.",
-                "Tite": "Cette instruction pastorale souligne l'importance des bonnes œuvres dans la vie chrétienne.",
-                "Philémon": "Cette requête personnelle illustre l'application pratique de l'amour chrétien dans les relations sociales.",
-                "Hébreux": "Cette démonstration théologique révèle la suprématie du Christ sur l'ancienne alliance.",
-                "Jacques": "Cette instruction pratique souligne l'indissociabilité de la foi authentique et des œuvres.",
-                "1 Pierre": "Cette exhortation encourage la persévérance chrétienne dans la souffrance et l'épreuve.",
-                "2 Pierre": "Cette mise en garde dénonce les faux enseignements et encourage la croissance spirituelle.",
-                "1 Jean": "Cette épître révèle les caractéristiques de la communion authentique avec Dieu par l'amour.",
-                "2 Jean": "Cette mise en garde souligne l'importance de la vérité doctrinale dans l'hospitalité chrétienne.",
-                "3 Jean": "Cette recommandation personnelle encourage le soutien des ouvriers évangéliques itinérants.",
-                "Jude": "Cette exhortation combat les faux enseignements qui menacent la pureté de la foi.",
-                "Apocalypse": "Cette révélation prophétique dévoile l'accomplissement ultime du dessein divin dans l'histoire."
-            }
-            explanation_parts.append(book_analysis.get(book_name, f"Ce verset du livre de {book_name} éclaire un aspect particulier de la révélation divine et de ses implications pour la foi."))
+        book_contexts = {
+            "Genèse": "Ce verset des origines révèle les fondements du plan divin pour l'humanité et la création.",
+            "Exode": "Ce passage illustre l'œuvre libératrice de Dieu et ses implications pour la foi.",
+            "Lévitique": "Cette prescription révèle les exigences de sainteté pour s'approcher du Dieu saint.",
+            "Nombres": "Ce récit du pèlerinage révèle les leçons spirituelles du chemin vers la Terre Promise.",
+            "Deutéronome": "Cette exhortation rappelle l'importance de l'obéissance à l'alliance divine.",
+            "Josué": "Ce récit de conquête révèle l'accomplissement des promesses divines par la foi.",
+            "Juges": "Cette narration révèle les cycles de l'apostasie et de la restauration divine.",
+            "Ruth": "Cette histoire illustre la providence divine et la fidélité récompensée.",
+            "1 Samuel": "Ce passage révèle l'établissement de la royauté selon les voies divines.",
+            "2 Samuel": "Ce récit développe les promesses messianiques liées à David.",
+            "Psaumes": "Ce verset exprime l'authentique spiritualité dans la relation avec Dieu.",
+            "Proverbes": "Cette sagesse transmet les principes divins pour une vie droite.",
+            "Matthieu": "Cet enseignement révèle les principes du Royaume des cieux.",
+            "Jean": "Ce témoignage révèle la divinité du Christ et la vie éternelle.",
+            "Romains": "Cette doctrine expose les fondements du salut par la foi.",
+            "Apocalypse": "Cette révélation dévoile l'accomplissement ultime du plan divin."
+        }
+        explanation_parts.append(book_contexts.get(book_name, f"Ce verset révèle un aspect important de la révélation divine dans le livre de {book_name}."))
     
-    
-    # Joindre toutes les parties d'explication
+    # Joindre les explications
     full_explanation = " ".join(explanation_parts)
     
-    # Supprimer les références Strong et nettoyer le texte
+    # Nettoyer le texte
     full_explanation = full_explanation.replace("strong", "").replace("Strong", "")
-    full_explanation = ' '.join(full_explanation.split())  # Nettoyer les espaces multiples
+    full_explanation = ' '.join(full_explanation.split())
     
     return full_explanation
 
