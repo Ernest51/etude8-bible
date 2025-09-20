@@ -344,8 +344,8 @@ async def generate_verse_by_verse(req: VerseByVerseRequest):
     lines = [l for l in text.splitlines() if l.strip()]
     blocks: List[str] = [f"{title}\n\n{intro}"]
     
-    # Limitation : maximum 10 versets avec explications LLM pour éviter les timeouts
-    max_verses_with_llm = 10
+    # Limitation : maximum 10 versets avec explications détaillées pour éviter les timeouts
+    max_verses_with_detailed_explanations = 10
     verse_count = 0
     
     for line in lines:
@@ -356,7 +356,7 @@ async def generate_verse_by_verse(req: VerseByVerseRequest):
         vtxt = m.group(2).strip()
         
         # Générer l'explication théologique seulement pour les premiers versets
-        if verse_count < max_verses_with_llm:
+        if verse_count < max_verses_with_detailed_explanations:
             theological_explanation = generate_simple_theological_explanation(vtxt, book_label, chap, vnum)
             verse_count += 1
         else:
