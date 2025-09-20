@@ -444,10 +444,10 @@ async def generate_verse_by_verse(req: VerseByVerseRequest):
         theological_explanation = generate_simple_theological_explanation(text, book_label, chap, verse)
         theological_explanation = format_theological_content(theological_explanation)
         content = (
-            f"{title}\n\n{intro}\n\n"
-            f"**VERSET {verse}**\n\n"
-            f"**TEXTE BIBLIQUE :**\n{text}\n\n"
-            f"**EXPLICATION THÉOLOGIQUE :**\n{theological_explanation}"
+            f"<strong>{title}</strong><br><br>{intro}<br><br"
+            f"<strong>VERSET {verse}</strong><br><br>"
+            f"<strong>TEXTE BIBLIQUE :</strong><br>{text}<br><br>"
+            f"<strong>EXPLICATION THÉOLOGIQUE :</strong><br>{theological_explanation}"
         )
         return {"content": format_theological_content(content)}
 
