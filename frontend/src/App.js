@@ -433,7 +433,7 @@ export default function App() {
         : "Genèse 1 LSG";
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000);
+      const timeoutId = setTimeout(() => controller.abort(), 120000); // 2 minutes au lieu de 30 secondes
 
       const response = await fetch(`${backendUrl}/api/generate-verse-by-verse`, {
         method: "POST",
