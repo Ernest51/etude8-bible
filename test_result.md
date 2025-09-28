@@ -119,6 +119,7 @@ metadata:
 
 test_plan:
   current_focus:
+    - "Frontend Integration"
     - "Character Length Controls"
     - "Single Verse Generation"
     - "Gemini Enrichment"
