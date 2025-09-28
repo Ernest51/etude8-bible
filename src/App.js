@@ -711,106 +711,103 @@ function App() {
       setRubriquesStatus(p => ({ ...p, 0: "inactive" })); // LED grise pour rubrique 0
       setContent(""); // Vider le contenu affiché
       
-      console.log("[GÉNÉRATION 28 RUBRIQUES] Début de la génération intelligente rubrique par rubrique");
+      console.log("[GÉNÉRATION 28 RUBRIQUES] Début de la génération complète");
       
       const passage = (selectedVerse === "--" || selectedVerse === "vide")
         ? `${selectedBook || 'Genèse'} ${selectedChapter || '1'}`
         : `${selectedBook || 'Genèse'} ${selectedChapter || '1'}:${selectedVerse}`;
 
-      // 🔹 ÉTAPE 2: Génération progressive des rubriques 1 à 28
-      const totalRubriques = BASE_RUBRIQUES.length;
+      // 🔹 ÉTAPE 2: UN SEUL APPEL À L'API pour générer TOUTES les 28 rubriques
+      console.log(`[API CALL] Génération complète pour ${passage} avec etude28-bible-api`);
+      
+      // Déterminer l'URL API selon l'environnement
+      let apiUrl;
+      const hostname = typeof window !== "undefined" ? window.location.hostname : "";
+      
+      if (hostname === "localhost" || hostname === "127.0.0.1") {
+        // En local : utiliser le proxy configuré
+        apiUrl = `${API_BASE}/study-proxy/generate-study`;
+        console.log(`[LOCAL] Utilisation du proxy: ${apiUrl}`);
+      } else {
+        // Sur Vercel ou autres : appel direct (avec solution CORS)
+        apiUrl = "https://etude28-bible-api-production.up.railway.app/api/generate-study";
+        console.log(`[PRODUCTION] Appel direct: ${apiUrl}`);
+      }
+      
+      let response, data;
+      
+      try {
+        // Progress indication pendant l'appel API
+        setProgressPercent(10);
+        setContent(formatContent(`# Étude Complète - ${passage}\n\n## 🔄 Génération en cours...\n*Connexion à l'API etude28-bible...*`));
+        
+        response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            book: selectedBook || 'Genèse',
+            chapter: selectedChapter || '1',
+            passage: passage
+          })
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Erreur API: ${response.status} - ${response.statusText}`);
+        }
+        
+        data = await response.json();
+        console.log(`[API SUCCESS] Contenu reçu: ${data.content ? data.content.length : 0} caractères`);
+        
+      } catch (corsError) {
+        console.warn(`[CORS ERROR] ${corsError.message}. Génération de contenu fallback intelligent`);
+        
+        // Fallback intelligent si CORS bloque - générer un contenu spécifique pour chaque rubrique
+        const fallbackContent = generateIntelligentFallback(passage, selectedBook, selectedChapter);
+        data = { content: fallbackContent };
+      }
+      
+      // 🔹 ÉTAPE 3: Parser et afficher progressivement le contenu des 28 rubriques
+      setProgressPercent(30);
+      setContent(formatContent(`# Étude Complète - ${passage}\n\n## 🔄 Traitement du contenu...\n*Extraction des rubriques...*`));
+      
+      // Parser le contenu retourné par l'API
+      const fullContent = data.content || "";
+      const rubriques = parseRubriquesContent(fullContent);
+      
+      console.log(`[PARSING] ${rubriques.length} rubriques extraites`);
+      
+      // Affichage progressif des rubriques
       let accumulatedContent = `# Étude Complète - ${passage}\n\n`;
+      const totalRubriques = BASE_RUBRIQUES.length;
       
       for (let rubriqueIndex = 0; rubriqueIndex < totalRubriques; rubriqueIndex++) {
         const currentRubrique = rubriqueIndex + 1; // Rubriques 1-28
         const rubriqueData = BASE_RUBRIQUES[rubriqueIndex];
         
-        try {
-          console.log(`[RUBRIQUE ${currentRubrique}] Génération: ${rubriqueData.title}`);
-          
-          // Marquer la rubrique courante en cours
-          setRubriquesStatus(p => ({ ...p, [currentRubrique]: "in-progress" }));
-          
-          // Calculer et afficher la progression
-          const progress = Math.round(((currentRubrique - 1) / totalRubriques) * 100);
-          setProgressPercent(progress);
-          
-          // Mise à jour du contenu temporaire pour montrer la progression
-          const progressContent = accumulatedContent + `\n\n## 🔄 Génération en cours...\n**Rubrique ${currentRubrique}:** ${rubriqueData.title}\n*Progression: ${currentRubrique}/${totalRubriques} rubriques*`;
-          setContent(formatContent(progressContent));
-          
-          // 🔹 UTILISER LA NOUVELLE API etude28-bible-api POUR LES RUBRIQUES 1-28
-          console.log(`[GÉNÉRATION RUBRIQUE ${currentRubrique}] ${rubriqueData.title} avec etude28-bible-api`);
-          
-          // Déterminer l'URL API selon l'environnement
-          let apiUrl;
-          const hostname = typeof window !== "undefined" ? window.location.hostname : "";
-          
-          if (hostname === "localhost" || hostname === "127.0.0.1") {
-            // En local : utiliser le proxy configuré
-            apiUrl = `${API_BASE}/study-proxy/generate-study`;
-            console.log(`[LOCAL] Utilisation du proxy: ${apiUrl}`);
-          } else {
-            // Sur Vercel ou autres : appel direct (avec solution CORS)
-            apiUrl = "https://etude28-bible-api-production.up.railway.app/api/generate-study";
-            console.log(`[PRODUCTION] Appel direct: ${apiUrl}`);
-          }
-          
-          let response, data;
-          
-          try {
-            response = await fetch(apiUrl, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                book: selectedBook || 'Genèse',
-                chapter: selectedChapter || '1',
-                passage: passage
-              })
-            });
-            
-            if (!response.ok) {
-              throw new Error(`Erreur API: ${response.status} - ${response.statusText}`);
-            }
-            
-            data = await response.json();
-            
-          } catch (corsError) {
-            console.warn(`[CORS ERROR] ${corsError.message}. Utilisation de contenu fallback pour rubrique ${currentRubrique}`);
-            
-            // Fallback avec contenu générique quand CORS bloque
-            data = {
-              content: `## ${currentRubrique}. ${rubriqueData.title}\n\n**Contenu pour ${passage}**\n\nCette rubrique analyse ${passage} sous l'angle de "${rubriqueData.title}".\n\n**Contexte**: ${passage} révèle des vérités importantes sur la nature de Dieu et son plan.\n\n**Application**: Cette section nous invite à une réflexion approfondie sur notre marche avec le Seigneur.\n\n*Note: Contenu temporaire - Configuration CORS en cours*`
-            };
-          }
-          
-          console.log(`[API etude28-bible OK RUBRIQUE ${currentRubrique}]`, apiUrl);
-          console.log(`[CONTENU REÇU RUBRIQUE ${currentRubrique}]:`, data.content ? data.content.length : 0, "caractères");
-          
-          // Traiter le contenu reçu - copier exactement la logique de la rubrique 0
-          const rubriqueContent = postProcessMarkdown(data.content || "Aucun contenu généré pour cette rubrique");
-          
-          console.log(`[RUBRIQUE ${currentRubrique}] Contenu traité: ${rubriqueContent.length} caractères`);
-          
-          // Ajouter le contenu au résultat accumulé
-          accumulatedContent += `\n\n## ${currentRubrique}. ${rubriqueData.title}\n\n${rubriqueContent}`;
-          
-          // Marquer cette rubrique comme terminée
-          setRubriquesStatus(p => ({ ...p, [currentRubrique]: "completed" }));
-          
-          // Afficher le contenu mis à jour
-          setContent(formatContent(accumulatedContent));
-          
-          // Délai entre les rubriques pour éviter la surcharge
-          await wait(500);
-          
-        } catch (rubriqueError) {
-          console.error(`[RUBRIQUE ${currentRubrique}] Erreur:`, rubriqueError);
-          accumulatedContent += `\n\n## ${currentRubrique}. ${rubriqueData.title}\n\n*Erreur lors de la génération de cette rubrique.*`;
-          setRubriquesStatus(p => ({ ...p, [currentRubrique]: "error" }));
-        }
+        // Marquer la rubrique courante en cours
+        setRubriquesStatus(p => ({ ...p, [currentRubrique]: "in-progress" }));
+        
+        // Calculer et afficher la progression
+        const progress = Math.round(30 + ((currentRubrique) / totalRubriques) * 70);
+        setProgressPercent(progress);
+        
+        // Récupérer le contenu spécifique de cette rubrique
+        const rubriqueContent = rubriques[currentRubrique] || 
+          `**${rubriqueData.title}** pour ${passage}\n\nContenu en cours d'extraction...`;
+        
+        // Ajouter le contenu au résultat accumulé
+        accumulatedContent += `\n\n## ${currentRubrique}. ${rubriqueData.title}\n\n${rubriqueContent}`;
+        
+        // Marquer cette rubrique comme terminée
+        setRubriquesStatus(p => ({ ...p, [currentRubrique]: "completed" }));
+        
+        // Afficher le contenu mis à jour
+        setContent(formatContent(accumulatedContent));
+        
+        // Délai pour l'effet visuel progressif
+        await wait(100);
       }
       
       // 🔹 ÉTAPE 3: Finalisation
