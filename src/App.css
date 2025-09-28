@@ -989,7 +989,13 @@ strong {
 
 .content-text {
   line-height: 1.8;
-  color: #343a40;
+  color: #2c3e50;
+  font-family: 'Inter', 'Segoe UI', 'SF Pro Text', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Styles spéciaux pour l'étude verset par verset */
