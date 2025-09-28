@@ -827,7 +827,7 @@ function App() {
           {/* Colonne centrale - Contenu */}
           <div className="center-column">
             <div className="content-header">
-              <h2>{`${activeRubrique}. ${getRubTitle(activeRubrique)}`}</h2>
+              <h2 className="rubrique-title">{`${activeRubrique}. ${getRubTitle(activeRubrique)}`}</h2>
               <div className="nav-buttons">
                 <button onClick={() => setActiveRubrique(Math.max(0, activeRubrique - 1))} disabled={activeRubrique === 0}>◀ Précédent</button>
                 <button onClick={() => setActiveRubrique(Math.min(BASE_RUBRIQUES.length - 1, activeRubrique + 1))} disabled={activeRubrique === BASE_RUBRIQUES.length - 1}>Suivant ▶</button>
