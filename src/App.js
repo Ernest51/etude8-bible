@@ -662,6 +662,7 @@ function App() {
       setContent(formatContent(finalContent, 'verse-by-verse'));
       setProgressPercent(100);
       setRubriquesStatus(p => ({ ...p, 0: "completed" }));
+      setIsVersetsProgContent(true); // IMPORTANT : activer l'état VERSETS PROG
       console.log("[SUCCESS] Contenu VERSETS PROG affiché correctement");
       
     } catch (err) {
@@ -973,7 +974,7 @@ function App() {
               ) : content ? (
                 <div>
                   <div className="content-text" dangerouslySetInnerHTML={{ __html: formatContent(content, isVersetsProgContent ? 'versets-prog' : 'default') }} />
-                  {isVersetsProgContent && canContinueVerses && (
+                  {(isVersetsProgContent || content.includes('VERSET')) && canContinueVerses && (
                     <div className="continue-verses-section">
                       <button 
                         className="btn-continue-verses" 
