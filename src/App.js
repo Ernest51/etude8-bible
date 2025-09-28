@@ -421,6 +421,121 @@ function App() {
   // Progress bar
   const wait = (ms) => new Promise(r => setTimeout(r, ms));
 
+  // Fonction pour parser le contenu des 28 rubriques retourné par l'API
+  const parseRubriquesContent = (fullContent) => {
+    const rubriques = {};
+    
+    // Diviser le contenu par les titres de rubriques (## 1. , ## 2. , etc.)
+    const sections = fullContent.split(/##\s*(\d+)\.\s*/);
+    
+    for (let i = 1; i < sections.length; i += 2) {
+      const rubriqueNumber = parseInt(sections[i]);
+      const rubriqueContent = sections[i + 1] ? sections[i + 1].trim() : "";
+      
+      if (rubriqueNumber >= 1 && rubriqueNumber <= 28) {
+        rubriques[rubriqueNumber] = rubriqueContent;
+      }
+    }
+    
+    console.log(`[PARSING] Rubriques extraites:`, Object.keys(rubriques));
+    return rubriques;
+  };
+
+  // Fonction pour générer un contenu fallback intelligent
+  const generateIntelligentFallback = (passage, book, chapter) => {
+    return `**ÉTUDE BIBLIQUE — 28 RUBRIQUES**
+**Passage :** ${passage} (LSG)
+
+## 1. Prière d'ouverture
+Seigneur, ouvre nos cœurs à la compréhension de ${passage}. Que ton Esprit nous guide dans ta vérité et nous transforme par ta Parole. Accorde-nous la sagesse pour discerner tes enseignements et la force pour les appliquer dans notre vie quotidienne.
+
+## 2. Structure littéraire
+Le passage de ${passage} révèle une structure littéraire soigneusement orchestrée qui sert le propos théologique de l'auteur inspiré. Cette organisation guide le lecteur vers une compréhension progressive des vérités divines révélées.
+
+## 3. Questions du chapitre précédent
+L'étude de ${passage} doit être mise en relation avec le contexte qui précède. Quels thèmes et enseignements préparent le lecteur à comprendre ce passage dans sa continuité narrative et théologique ?
+
+## 4. Thème doctrinal
+Le thème doctrinal central de ${passage} manifeste des vérités fondamentales sur la nature de Dieu, la condition humaine et le plan de salut. Ces enseignements s'inscrivent dans la révélation progressive de Dieu.
+
+## 5. Fondements théologiques
+${passage} établit des fondements théologiques importants qui éclairent notre compréhension de l'œuvre de Dieu dans l'histoire et dans nos vies. Ces vérités fondamentales structurent la foi chrétienne.
+
+## 6. Contexte historique
+Le contexte historique de ${passage} éclaire la situation des premiers auditeurs et enrichit notre compréhension contemporaine. Connaître les circonstances originales aide à saisir l'intention divine.
+
+## 7. Contexte culturel
+Les éléments culturels présents dans ${passage} révèlent les coutumes et pratiques de l'époque, permettant une meilleure interprétation des enseignements bibliques dans leur cadre original.
+
+## 8. Contexte géographique
+La géographie de ${passage} offre des clés d'interprétation importantes. Les lieux mentionnés portent souvent une signification symbolique et théologique qui enrichit le message.
+
+## 9. Analyse lexicale
+L'étude des termes clés dans ${passage} révèle la richesse du vocabulaire biblique et les nuances importantes pour une compréhension précise du texte inspiré.
+
+## 10. Parallèles bibliques
+${passage} trouve des échos dans d'autres parties de l'Écriture. Ces parallèles bibliques éclairent le sens et montrent l'unité de la révélation divine.
+
+## 11. Prophétie et accomplissement
+Les éléments prophétiques présents dans ${passage} s'inscrivent dans le plan rédempteur de Dieu et trouvent leur accomplissement ultime en Jésus-Christ.
+
+## 12. Personnages
+Les personnages mentionnés dans ${passage} offrent des modèles ou des avertissements pour notre marche chrétienne. Leur exemple instruit notre foi.
+
+## 13. Structure rhétorique
+La rhétorique employée dans ${passage} révèle l'art divin de la communication. La structure argumentative guide le lecteur vers les vérités essentielles.
+
+## 14. Théologie trinitaire
+${passage} révèle des aspects de la nature trinitaire de Dieu : Père, Fils et Saint-Esprit œuvrent ensemble dans l'histoire du salut.
+
+## 15. Christ au centre
+Christ se révèle au centre de ${passage} comme accomplissement des promesses et clé d'interprétation de l'Écriture. L'herméneutique christocentrique éclaire ce texte.
+
+## 16. Évangile et grâce
+${passage} manifeste la grâce de Dieu et les vérités évangéliques fondamentales. Le salut par grâce au moyen de la foi transparaît dans ce texte.
+
+## 17. Application personnelle
+Comment ${passage} transforme-t-il notre marche quotidienne avec Dieu ? Ce texte nous interpelle sur nos attitudes, nos priorités et notre relation avec le Seigneur.
+
+## 18. Application communautaire
+${passage} éclaire la vie de l'Église et les relations fraternelles. Les principes énoncés s'appliquent à la communauté des croyants.
+
+## 19. Prière de réponse
+En réponse à l'étude de ${passage}, offrons à Dieu notre reconnaissance, notre confession et nos requêtes. Que sa Parole transforme nos cœurs.
+
+## 20. Questions d'étude
+- Que révèle ${passage} sur la nature de Dieu ?
+- Que nous enseigne ce texte sur la condition humaine ?
+- Quels changements ce passage appelle-t-il dans notre vie ?
+
+## 21. Points de vigilance
+Quelles sont les erreurs d'interprétation à éviter concernant ${passage} ? Quels écueils théologiques ce texte nous aide-t-il à contourner ?
+
+## 22. Objections et réponses
+Comment répondre aux objections couramment soulevées contre les enseignements de ${passage} ? Quels arguments bibliques y répondent ?
+
+## 23. Perspective missionnelle
+${passage} éclaire-t-il notre mission d'évangélisation ? Comment ce texte motive-t-il et oriente-t-il l'œuvre missionnaire ?
+
+## 24. Éthique chrétienne
+Quels principes éthiques ${passage} établit-il ? Comment guide-t-il nos choix moraux et notre conduite chrétienne ?
+
+## 25. Louange / liturgie
+Comment ${passage} nourrit-il notre adoration ? Quels éléments peuvent enrichir notre louange communautaire et personnelle ?
+
+## 26. Méditation guidée
+Prenons un moment pour méditer personnellement sur ${passage}. Que le Saint-Esprit grave ces vérités dans nos cœurs.
+
+## 27. Mémoire / versets clés
+Verset-clé suggéré : ${passage}:1
+Mémorisons ce verset pour porter sa vérité dans notre quotidien.
+
+## 28. Plan d'action
+- Une action personnelle cette semaine en réponse à ${passage}
+- Une application communautaire ce mois-ci
+- Un témoignage à partager de l'impact de ce texte`;
+  };
+
   // Fonction pour générer du contenu de fallback intelligent par rubrique
   const generateFallbackRubriqueContent = (rubriqueNum, rubriqueTitle, passage) => {
     const fallbacks = {
