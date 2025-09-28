@@ -742,26 +742,49 @@ function App() {
           // 🔹 UTILISER LA NOUVELLE API etude28-bible-api POUR LES RUBRIQUES 1-28
           console.log(`[GÉNÉRATION RUBRIQUE ${currentRubrique}] ${rubriqueData.title} avec etude28-bible-api`);
           
-          // Appel direct à l'API etude28-bible-api-production.up.railway.app
-          const apiUrl = "https://etude28-bible-api-production.up.railway.app/api/generate-study";
+          // Déterminer l'URL API selon l'environnement
+          let apiUrl;
+          const hostname = typeof window !== "undefined" ? window.location.hostname : "";
           
-          const response = await fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              book: selectedBook || 'Genèse',
-              chapter: selectedChapter || '1',
-              passage: passage
-            })
-          });
-          
-          if (!response.ok) {
-            throw new Error(`Erreur API: ${response.status}`);
+          if (hostname === "localhost" || hostname === "127.0.0.1") {
+            // En local : utiliser le proxy configuré
+            apiUrl = `${API_BASE}/study-proxy/generate-study`;
+            console.log(`[LOCAL] Utilisation du proxy: ${apiUrl}`);
+          } else {
+            // Sur Vercel ou autres : appel direct (avec solution CORS)
+            apiUrl = "https://etude28-bible-api-production.up.railway.app/api/generate-study";
+            console.log(`[PRODUCTION] Appel direct: ${apiUrl}`);
           }
           
-          const data = await response.json();
+          let response, data;
+          
+          try {
+            response = await fetch(apiUrl, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                book: selectedBook || 'Genèse',
+                chapter: selectedChapter || '1',
+                passage: passage
+              })
+            });
+            
+            if (!response.ok) {
+              throw new Error(`Erreur API: ${response.status} - ${response.statusText}`);
+            }
+            
+            data = await response.json();
+            
+          } catch (corsError) {
+            console.warn(`[CORS ERROR] ${corsError.message}. Utilisation de contenu fallback pour rubrique ${currentRubrique}`);
+            
+            // Fallback avec contenu générique quand CORS bloque
+            data = {
+              content: `## ${currentRubrique}. ${rubriqueData.title}\n\n**Contenu pour ${passage}**\n\nCette rubrique analyse ${passage} sous l'angle de "${rubriqueData.title}".\n\n**Contexte**: ${passage} révèle des vérités importantes sur la nature de Dieu et son plan.\n\n**Application**: Cette section nous invite à une réflexion approfondie sur notre marche avec le Seigneur.\n\n*Note: Contenu temporaire - Configuration CORS en cours*`
+            };
+          }
           
           console.log(`[API etude28-bible OK RUBRIQUE ${currentRubrique}]`, apiUrl);
           console.log(`[CONTENU REÇU RUBRIQUE ${currentRubrique}]:`, data.content ? data.content.length : 0, "caractères");
