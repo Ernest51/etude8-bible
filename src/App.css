@@ -838,7 +838,7 @@ strong {
 
 /* Headers de versets avec effet néomorphisme */
 .verset-header, .content-text h2.verset-header {
-  background: linear-gradient(145deg, #667eea, #764ba2);
+  background: linear-gradient(145deg, #8b5cf6, #7c3aed);
   color: white;
   padding: 20px 30px;
   border-radius: 16px;
@@ -848,7 +848,7 @@ strong {
   text-align: center;
   position: relative;
   box-shadow: 
-    0 10px 30px rgba(102, 126, 234, 0.4),
+    0 10px 30px rgba(139, 92, 246, 0.4),
     0 4px 16px rgba(0, 0, 0, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.2);
