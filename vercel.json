@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "name": "etude8-bible",
+  "builds": [
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "frontend/$1"
+    }
+  ],
+  "env": {
+    "REACT_APP_BACKEND_URL": "https://bible-gemini-app.preview.emergentagent.com",
+    "DISABLE_ESLINT_PLUGIN": "true",
+    "CI": "false"
+  }
+}
