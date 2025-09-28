@@ -181,8 +181,8 @@ async function smartPost(pathList, payload) {
 
 function App() {
   // États principaux
-  const [selectedBook, setSelectedBook] = useState("Genèse");
-  const [selectedChapter, setSelectedChapter] = useState("1");
+  const [selectedBook, setSelectedBook] = useState("--");
+  const [selectedChapter, setSelectedChapter] = useState("--");
   const [selectedVerse, setSelectedVerse] = useState("--");
   const [selectedVersion, setSelectedVersion] = useState("LSG");
   const [selectedLength, setSelectedLength] = useState(500);
@@ -208,10 +208,7 @@ function App() {
   });
   const [showNotesModal, setShowNotesModal] = useState(false);
 
-  // Génération automatique de Genèse 1 au démarrage (comme dans l'image)
-  useEffect(() => {
-    handleGenerateGenese1();
-  }, []);
+  // Interface prête mais vide au démarrage
 
   // Thèmes
   const colorThemes = [
@@ -837,7 +834,7 @@ function App() {
         <div className="action-buttons responsive-actions">
           <button className="btn-reset" onClick={handleReset}>🔄 Reset</button>
           <button className="btn-palette" onClick={changePalette}>🎨 Violet Mystique</button>
-          <button className="btn-genese" onClick={() => {setSelectedBook("Genèse"); setSelectedChapter("1"); handleGenerateGenese1();}}>📖 Genèse 1</button>
+          <button className="btn-genese" onClick={handleGenerateGenese1}>📖 Genèse 1</button>
           <button className={`btn-gemini ${isLoading ? "loading" : ""}`} onClick={generateWithGemini} disabled={isLoading}>🤖 Gemini Flash</button>
           <button className="btn-versets-prog" onClick={generateVerseByVerseProgressive} disabled={isLoading} title="Analyse progressive enrichie - traitement uniforme des versets">⚡ Versets Prog</button>
           <button className="btn-generate" onClick={generate28Points} disabled={isLoading}>Générer</button>
