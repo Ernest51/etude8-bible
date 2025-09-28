@@ -763,7 +763,7 @@ function App() {
           
           const data = await response.json();
           
-          console.log(`[API LOCALE OK RUBRIQUE ${currentRubrique}]`, url);
+          console.log(`[API etude28-bible OK RUBRIQUE ${currentRubrique}]`, apiUrl);
           console.log(`[CONTENU REÇU RUBRIQUE ${currentRubrique}]:`, data.content ? data.content.length : 0, "caractères");
           
           // Traiter le contenu reçu - copier exactement la logique de la rubrique 0
