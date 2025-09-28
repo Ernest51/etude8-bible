@@ -140,7 +140,6 @@ metadata:
 
 test_plan:
   current_focus:
-    - "CSS Color Harmonization"
     - "Character Length Controls"
     - "Single Verse Generation"
     - "Gemini Enrichment"
