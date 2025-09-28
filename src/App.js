@@ -201,7 +201,7 @@ function App() {
   const [progressiveStats, setProgressiveStats] = useState(null);
   const [isVersetsProgContent, setIsVersetsProgContent] = useState(false);
   const [currentVerseCount, setCurrentVerseCount] = useState(5);
-  const [canContinueVerses, setCanContinueVerses] = useState(false);
+  const [canContinueVerses, setCanContinueVerses] = useState(true);
   
   // États pour les notes persistantes
   const [personalNotes, setPersonalNotes] = useState(() => {
