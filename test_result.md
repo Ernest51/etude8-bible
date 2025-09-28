@@ -98,15 +98,18 @@ backend:
 frontend:
   - task: "Frontend Integration"
     implemented: true
-    working: "NA"
+    working: false
     file: "frontend/src/App.js"
-    stuck_count: 0
-    priority: "low"
+    stuck_count: 1
+    priority: "high"
     needs_retesting: false
     status_history:
       - working: "NA"
         agent: "testing"
         comment: "Frontend testing not performed as per instructions - backend testing only"
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL ISSUE IDENTIFIED: VERSETS PROG button has display bug - API returns 4750 characters of content but UI only shows 95 characters of loading text. Content generation is working (API calls successful) but content display is broken. GEMINI FLASH works correctly with proper theological content. The user's reported placeholder text issue was not confirmed - actual content is substantial and properly formatted."
 
 metadata:
   created_by: "testing_agent"
