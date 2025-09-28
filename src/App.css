@@ -80,17 +80,507 @@ strong {
   color: #2c3e50;
 }
 
-/* Typographie responsive */
-@media (max-width: 768px) {
+/* =========================
+   RESPONSIVE DESIGN - MOBILE FIRST
+========================= */
+
+/* Header responsive */
+.header-banner {
+  height: 60px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+}
+
+@media (max-width: 480px) {
+  .header-banner {
+    height: 40px;
+  }
+  
+  .scroll-text {
+    font-size: 12px !important;
+    animation-duration: 20s !important;
+  }
+}
+
+/* Container principal responsive */
+.main-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+/* Recherche responsive */
+.search-section {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 600px;
+}
+
+.search-field {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 25px;
+  background: rgba(255,255,255,0.95);
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.search-field:focus {
+  outline: none;
+  border-color: rgba(255,255,255,0.8);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+
+/* Base mobile (320px+) */
+@media (max-width: 480px) {
   body {
     font-size: 14px;
     line-height: 1.5;
+    padding: 8px;
   }
   
-  p {
-    font-size: 15px;
-    line-height: 1.6;
+  .App {
+    padding: 0;
   }
+  
+  /* Container principal mobile */
+  .main-container {
+    padding: 8px !important;
+    margin: 0 !important;
+  }
+  
+  /* Header mobile */
+  .search-container {
+    padding: 12px !important;
+    border-radius: 16px !important;
+  }
+  
+  .search-container input {
+    font-size: 14px !important;
+    padding: 10px 12px !important;
+  }
+  
+  /* Contrôles en colonnes sur mobile */
+  .controls-row {
+    flex-direction: column !important;
+    gap: 12px !important;
+    align-items: stretch !important;
+  }
+  
+  .select-pill {
+    width: 100% !important;
+    min-width: unset !important;
+  }
+  
+  .select-pill select {
+    width: 100% !important;
+    font-size: 16px !important; /* Évite le zoom sur iOS */
+    padding: 16px 14px !important;
+  }
+  
+  .select-pill label {
+    font-size: 11px !important;
+    padding: 3px 6px !important;
+  }
+  
+  /* Boutons d'action mobile */
+  .action-buttons {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  
+  .action-buttons button {
+    width: 100% !important;
+    padding: 16px 20px !important;
+    font-size: 14px !important;
+    min-height: 48px !important; /* Touch target */
+  }
+  
+  /* Bouton notes responsive */
+  .btn-notes {
+    padding: 16px 20px !important;
+    font-size: 14px !important;
+    justify-content: center !important;
+  }
+  
+  /* Layout principal mobile */
+  .content-layout {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  
+  .sidebar {
+    width: 100% !important;
+    order: 2 !important;
+    max-height: 200px !important;
+    overflow-y: auto !important;
+  }
+  
+  .main-content {
+    width: 100% !important;
+    order: 1 !important;
+    padding: 16px !important;
+  }
+  
+  /* Rubriques mobile */
+  .rubriques-container {
+    padding: 12px !important;
+  }
+  
+  .rubrique-item {
+    padding: 12px 16px !important;
+    font-size: 13px !important;
+    margin-bottom: 8px !important;
+  }
+  
+  /* Titre principal mobile */
+  .rubrique-title {
+    font-size: 28px !important;
+    padding: 15px 0 !important;
+    margin: 20px 0 25px 0 !important;
+  }
+  
+  /* Contenu mobile */
+  .content-area {
+    padding: 16px !important;
+    max-height: none !important;
+    min-height: 300px !important;
+  }
+  
+  .content-text {
+    font-size: 15px !important;
+    line-height: 1.7 !important;
+  }
+  
+  /* Modal notes mobile */
+  .notes-modal {
+    width: 95% !important;
+    max-width: none !important;
+    margin: 20px !important;
+    max-height: 90vh !important;
+  }
+  
+  .notes-modal-header {
+    padding: 16px 20px !important;
+  }
+  
+  .notes-modal-header h3 {
+    font-size: 18px !important;
+  }
+  
+  .notes-modal-body {
+    padding: 20px !important;
+  }
+  
+  .notes-textarea {
+    height: 250px !important;
+    font-size: 16px !important; /* Évite le zoom */
+  }
+  
+  .notes-modal-footer {
+    padding: 0 20px 20px !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  
+  .notes-modal-footer button {
+    width: 100% !important;
+    padding: 16px !important;
+  }
+}
+
+/* Tablette portrait (481px - 768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  body {
+    font-size: 15px;
+    padding: 12px;
+  }
+  
+  .main-container {
+    padding: 16px !important;
+  }
+  
+  .controls-row {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 16px !important;
+  }
+  
+  .select-pill:nth-child(5) { /* LONGUEUR */
+    grid-column: 1 / -1 !important;
+    justify-self: center !important;
+    max-width: 200px !important;
+  }
+  
+  .btn-validate {
+    grid-column: 1 / -1 !important;
+    justify-self: center !important;
+    max-width: 200px !important;
+  }
+  
+  .action-buttons {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  
+  .btn-notes {
+    grid-column: 1 / -1 !important;
+    justify-self: center !important;
+    max-width: 250px !important;
+  }
+  
+  .content-layout {
+    flex-direction: column !important;
+  }
+  
+  .sidebar {
+    width: 100% !important;
+    max-height: 250px !important;
+    overflow-y: auto !important;
+  }
+  
+  .main-content {
+    width: 100% !important;
+    padding: 20px !important;
+  }
+  
+  .rubrique-title {
+    font-size: 36px !important;
+  }
+  
+  .notes-modal {
+    width: 90% !important;
+    max-width: 500px !important;
+  }
+}
+
+/* Tablette paysage (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .main-container {
+    padding: 20px !important;
+  }
+  
+  .controls-row {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+    align-items: end !important;
+  }
+  
+  .btn-validate {
+    grid-column: 2 !important;
+    justify-self: center !important;
+  }
+  
+  .select-pill:nth-child(5) { /* LONGUEUR */
+    grid-column: 3 !important;
+  }
+  
+  .action-buttons {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+  }
+  
+  .btn-notes {
+    grid-column: 2 !important;
+    justify-self: center !important;
+  }
+  
+  .content-layout {
+    gap: 24px !important;
+  }
+  
+  .sidebar {
+    min-width: 280px !important;
+    max-width: 320px !important;
+  }
+  
+  .main-content {
+    flex: 1 !important;
+    padding: 24px !important;
+  }
+  
+  .rubrique-title {
+    font-size: 42px !important;
+  }
+}
+
+/* Desktop (1025px+) */
+@media (min-width: 1025px) {
+  .main-container {
+    padding: 30px !important;
+    max-width: 1400px !important;
+    margin: 0 auto !important;
+  }
+  
+  .controls-row {
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 20px !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+  }
+  
+  .action-buttons {
+    justify-content: center !important;
+    flex-wrap: wrap !important;
+    gap: 16px !important;
+    max-width: 1000px !important;
+    margin: 0 auto !important;
+  }
+  
+  .content-layout {
+    gap: 30px !important;
+  }
+  
+  .sidebar {
+    min-width: 320px !important;
+    max-width: 360px !important;
+  }
+  
+  .main-content {
+    flex: 1 !important;
+    max-width: 800px !important;
+  }
+  
+  .rubrique-title {
+    font-size: 48px !important;
+  }
+  
+  .notes-modal {
+    max-width: 650px !important;
+  }
+  
+  .notes-textarea {
+    height: 350px !important;
+  }
+}
+
+/* Écrans ultra-larges (1440px+) */
+@media (min-width: 1440px) {
+  .main-container {
+    max-width: 1600px !important;
+    padding: 40px !important;
+  }
+  
+  .controls-row {
+    gap: 24px !important;
+  }
+  
+  .action-buttons {
+    gap: 20px !important;
+  }
+  
+  .content-layout {
+    gap: 40px !important;
+  }
+  
+  .sidebar {
+    max-width: 400px !important;
+  }
+  
+  .main-content {
+    max-width: 900px !important;
+    padding: 32px !important;
+  }
+  
+  .notes-modal {
+    max-width: 700px !important;
+  }
+}
+
+/* Mode paysage mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+  .main-container {
+    padding: 8px !important;
+  }
+  
+  .controls-row {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 8px !important;
+  }
+  
+  .action-buttons {
+    display: grid !important;
+    grid-template-columns: repeat(6, 1fr) !important;
+    gap: 6px !important;
+  }
+  
+  .action-buttons button {
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+    min-height: 40px !important;
+  }
+  
+  .content-layout {
+    flex-direction: row !important;
+    height: calc(100vh - 200px) !important;
+  }
+  
+  .sidebar {
+    width: 250px !important;
+    max-height: none !important;
+  }
+  
+  .main-content {
+    flex: 1 !important;
+    overflow-y: auto !important;
+  }
+  
+  .notes-modal {
+    width: 95% !important;
+    max-height: 90vh !important;
+  }
+  
+  .notes-textarea {
+    height: 200px !important;
+  }
+}
+
+/* Mode sombre (optionnel) */
+@media (prefers-color-scheme: dark) {
+  /* Garder le design actuel pour l'instant */
+}
+
+/* Haute densité de pixels */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .select-pill label,
+  .action-buttons button {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* Réduction de mouvement pour accessibilité */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Styles généraux */
+p {
+  font-size: 15px;
+  line-height: 1.6;
 }
 
 /* =========================

@@ -798,18 +798,18 @@ function App() {
       {/* Interface principale */}
       <div className="main-container">
         {/* Section de recherche */}
-        <div className="search-section">
+        <div className="search-section responsive-search">
           <div className="search-input">
             <input
               type="text"
               placeholder="Rechercher (ex : Marc 5:1, 1 Jean 2, Genèse 1:1-5)"
-              className="search-field"
+              className="search-field responsive-input"
               value={searchQuery}
               onChange={handleSearchChange}
             />
           </div>
 
-          <div className="controls-row">
+          <div className="controls-row responsive-controls">
             <SelectPill label="Livre" value={selectedBook} options={["--", ...BOOKS]} onChange={handleBookChange} />
             <SelectPill label="Chapitre" value={selectedChapter} options={availableChapters} onChange={handleChapterChange} />
             <SelectPill label="Verset" value={selectedVerse} options={["--", ...Array.from({ length: 50 }, (_, i) => i + 1)]} onChange={handleVerseChange} />
@@ -822,7 +822,7 @@ function App() {
           </div>
 
           {/* Boutons d'action */}
-          <div className="action-buttons">
+          <div className="action-buttons responsive-actions">
             <button className="btn-reset" onClick={handleReset}>🔄 Reset</button>
             <button className="btn-palette" onClick={changePalette}>🎨 {colorThemes[currentTheme].name}</button>
             <button className="btn-last-study" onClick={restoreLastStudy} disabled={!lastStudy}
@@ -836,15 +836,15 @@ function App() {
         </div>
 
         {/* Layout 2 colonnes */}
-        <div className="three-column-layout" style={{ gridTemplateColumns: "300px 1fr" }}>
+        <div className="three-column-layout content-layout responsive-layout" style={{ gridTemplateColumns: "300px 1fr" }}>
           {/* Colonne gauche - Rubriques */}
-          <div className="left-column">
+          <div className="left-column sidebar responsive-sidebar">
             <h3>Rubriques (29)</h3>
             <RubriquesInline items={rubriquesItems} activeId={activeRubrique} onSelect={handleRubriqueSelect} rubriquesStatus={rubriquesStatus} />
           </div>
 
           {/* Colonne centrale - Contenu */}
-          <div className="center-column">
+          <div className="center-column main-content responsive-content">
             <div className="content-header">
               <h2>{`${activeRubrique}. ${getRubTitle(activeRubrique)}`}</h2>
               <div className="nav-buttons">
