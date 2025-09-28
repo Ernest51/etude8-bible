@@ -411,8 +411,8 @@ function App() {
     setShowNotesModal(false);
   };
 
-  const handleGenerateGenese1 = async () => {
-    setSelectedBook("Genèse");
+  const handleGenerateApocalypse1 = async () => {
+    setSelectedBook("Apocalypse");
     setSelectedChapter("1");
     setIsLoading(true);
     
@@ -421,7 +421,7 @@ function App() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          passage: "Genèse 1",
+          passage: "Apocalypse 1",
           tokens: parseInt(selectedLength) || 500,
           use_gemini: true,
           enriched: true
@@ -435,7 +435,7 @@ function App() {
         setIsVersetsProgContent(true);
       }
     } catch (error) {
-      console.error('Erreur génération Genèse 1:', error);
+      console.error('Erreur génération Apocalypse 1:', error);
       setContent("❌ Erreur lors de la génération du contenu");
     }
     
@@ -830,15 +830,42 @@ function App() {
 
       {/* Interface principale */}
       <div className="main-container">
-        {/* Boutons d'action principaux - Layout horizontal comme dans l'image */}
+        {/* Section de recherche */}
+        <div className="search-section responsive-search">
+          <div className="search-input">
+            <input
+              type="text"
+              placeholder="Rechercher (ex : Marc 5:1, 1 Jean 2, Genèse 1:1-5)"
+              className="search-field responsive-input"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+          </div>
+
+          <div className="controls-row responsive-controls">
+            <SelectPill label="Livre" value={selectedBook} options={["--", ...BOOKS]} onChange={handleBookChange} />
+            <SelectPill label="Chapitre" value={selectedChapter} options={availableChapters} onChange={handleChapterChange} />
+            <SelectPill label="Verset" value={selectedVerse} options={["--", ...Array.from({ length: 50 }, (_, i) => i + 1)]} onChange={handleVerseChange} />
+            <SelectPill label="Version" value={selectedVersion} options={["LSG", "Darby", "NEG"]} onChange={handleVersionChange} />
+            <button className="btn-validate" disabled={isLoading}>Valider</button>
+          </div>
+
+          <div className="controls-row-2">
+            <SelectPill label="Longueur" value={selectedLength} options={[300, 500, 1000, 2000]} onChange={handleLengthChange} />
+            <button className="btn-read" onClick={openYouVersion}>Lire la Bible</button>
+            <button className="btn-chat" onClick={() => window.open('https://chatgpt.com/', '_blank')}>ChatGPT</button>
+            <button className="btn-notes" onClick={handleNotesClick}>📝 Prise de Note</button>
+          </div>
+        </div>
+
+        {/* Boutons d'action horizontaux en bas comme dans l'image */}
         <div className="action-buttons responsive-actions">
           <button className="btn-reset" onClick={handleReset}>🔄 Reset</button>
           <button className="btn-palette" onClick={changePalette}>🎨 Violet Mystique</button>
-          <button className="btn-genese" onClick={handleGenerateGenese1}>📖 Genèse 1</button>
+          <button className="btn-apocalypse" onClick={handleGenerateApocalypse1}>📖 Apocalypse 1</button>
           <button className={`btn-gemini ${isLoading ? "loading" : ""}`} onClick={generateWithGemini} disabled={isLoading}>🤖 Gemini Flash</button>
           <button className="btn-versets-prog" onClick={generateVerseByVerseProgressive} disabled={isLoading} title="Analyse progressive enrichie - traitement uniforme des versets">⚡ Versets Prog</button>
           <button className="btn-generate" onClick={generate28Points} disabled={isLoading}>Générer</button>
-          <button className="btn-notes" onClick={handleNotesClick}>📝 Prise de Note</button>
         </div>
 
         {/* Layout 2 colonnes */}
