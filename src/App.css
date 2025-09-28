@@ -46,6 +46,37 @@ h2 {
   letter-spacing: -0.01em;
 }
 
+/* Style spécialisé pour le titre de rubrique principal */
+.rubrique-title {
+  font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif;
+  font-size: clamp(36px, 6vw, 56px) !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.04em !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #5f27cd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 32px 0 40px 0 !important;
+  text-align: center;
+  position: relative;
+  padding: 20px 0;
+  line-height: 1.1;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.rubrique-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #5f27cd 100%);
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
 h3 {
   font-size: clamp(18px, 3vw, 22px);
   font-weight: 600;
