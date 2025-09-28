@@ -48,20 +48,22 @@ h2 {
 
 /* Style spécialisé pour le titre de rubrique principal */
 .rubrique-title {
-  font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif;
-  font-size: clamp(36px, 6vw, 56px) !important;
+  font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif !important;
+  font-size: 72px !important;
   font-weight: 900 !important;
-  letter-spacing: -0.04em !important;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #5f27cd 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin: 32px 0 40px 0 !important;
-  text-align: center;
+  letter-spacing: -0.05em !important;
+  color: #ff0000 !important;
+  background: linear-gradient(135deg, #ff0000 0%, #ff6600 50%, #ffaa00 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  margin: 50px 0 60px 0 !important;
+  text-align: center !important;
   position: relative;
-  padding: 20px 0;
+  padding: 30px 0;
   line-height: 1.1;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  text-shadow: 0 4px 8px rgba(255,0,0,0.3) !important;
+  transform: scale(1.2) !important;
 }
 
 .rubrique-title::after {
