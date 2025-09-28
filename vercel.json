@@ -1,7 +1,7 @@
 {
-  "buildCommand": "cd app-frontend && DISABLE_ESLINT_PLUGIN=true CI=false yarn build",
-  "outputDirectory": "app-frontend/build",
-  "installCommand": "cd app-frontend && yarn install",
+  "buildCommand": "DISABLE_ESLINT_PLUGIN=true CI=false yarn build",
+  "outputDirectory": "build",
+  "installCommand": "yarn install",
   "env": {
     "REACT_APP_BACKEND_URL": "https://bible-gemini-app.preview.emergentagent.com",
     "DISABLE_ESLINT_PLUGIN": "true",
