@@ -376,14 +376,22 @@ function App() {
   const transformBibleReferences = (text) => {
     if (!text) return text;
     
+    // Sauvegarder les balises HTML existantes pour les restaurer après
+    const htmlTags = [];
+    let tempText = text.replace(/<[^>]*>/g, (match) => {
+      const placeholder = `__HTML_TAG_${htmlTags.length}__`;
+      htmlTags.push(match);
+      return placeholder;
+    });
+    
     // Set pour éviter les doublons
     const processedRefs = new Set();
     
-    // Regex améliorée pour détecter les références bibliques
-    // Formats supportés: Genèse 1:1, Lévitique 2:3-5, 1 Jean 3:16, Marc 5, 2 Corinthiens 4:6, etc.
+    // Regex améliorée pour détecter les références bibliques (seulement dans le texte brut)
     const bibleRefRegex = /(\d?\s*[A-ZÀ-ÿ][a-zà-ÿ]*(?:\s+\d*\s*[A-ZÀ-ÿ][a-zà-ÿ]*)*)\s+(\d+)(?::(\d+)(?:[-–](\d+))?)?(?!\d)/g;
     
-    return text.replace(bibleRefRegex, (match, book, chapter, verse1, verse2) => {
+    // Traiter les références dans le texte temporaire (sans HTML)
+    tempText = tempText.replace(bibleRefRegex, (match, book, chapter, verse1, verse2) => {
       const cleanMatch = match.trim();
       
       // Vérifier si cette référence a déjà été traitée (éviter les doublons)
@@ -396,9 +404,16 @@ function App() {
       // Construire l'URL YouVersion avec recherche directe
       const youVersionUrl = `https://www.bible.com/search/bible?q=${encodeURIComponent(cleanMatch)}`;
       
-      // Créer le lien HTML avec styles (sans "sur YouVersion Bible")
+      // Créer le lien HTML avec styles
       return `<a href="${youVersionUrl}" target="_blank" class="bible-reference" title="${cleanMatch}">${cleanMatch}</a>`;
     });
+    
+    // Restaurer les balises HTML originales
+    htmlTags.forEach((tag, index) => {
+      tempText = tempText.replace(`__HTML_TAG_${index}__`, tag);
+    });
+    
+    return tempText;
   };
 
   // Progress bar
