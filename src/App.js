@@ -372,6 +372,27 @@ function App() {
 
   // Gestionnaires supprimés - définis plus bas
 
+  // Fonction pour détecter et transformer les références bibliques en liens YouVersion
+  const transformBibleReferences = (text) => {
+    if (!text) return text;
+    
+    // Regex améliorée pour détecter les références bibliques
+    // Formats supportés: Genèse 1:1, Lévitique 2:3-5, 1 Jean 3:16, Marc 5, 2 Corinthiens 4:6, etc.
+    const bibleRefRegex = /(\d?\s*[A-ZÀ-ÿ][a-zà-ÿ]*(?:\s+\d*\s*[A-ZÀ-ÿ][a-zà-ÿ]*)*)\s+(\d+)(?::(\d+)(?:[-–](\d+))?)?(?!\d)/g;
+    
+    return text.replace(bibleRefRegex, (match, book, chapter, verse1, verse2) => {
+      // Nettoyer le nom du livre
+      const cleanBook = book.trim();
+      const cleanMatch = match.trim();
+      
+      // Construire l'URL YouVersion avec recherche directe
+      const youVersionUrl = `https://www.bible.com/search/bible?q=${encodeURIComponent(cleanMatch)}`;
+      
+      // Créer le lien HTML avec styles
+      return `<a href="${youVersionUrl}" target="_blank" class="bible-reference" title="Ouvrir ${cleanMatch} sur YouVersion Bible">${cleanMatch}</a>`;
+    });
+  };
+
   // Progress bar
   const wait = (ms) => new Promise(r => setTimeout(r, ms));
 
@@ -738,7 +759,7 @@ function App() {
     if (!text) return "";
     
     // Formatage avec contexte pour VERSETS PROG
-    const formattedText = text
+    let formattedText = text
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/^\# (.*$)/gim, "<h1>$1</h1>")
       .replace(/^\## (.*$)/gim, "<h2>$1</h2>")
@@ -749,6 +770,9 @@ function App() {
       .split("\n\n")
       .map(p => (p.trim() ? `<p>${p.replace(/\n/g, "<br>")}</p>` : ""))
       .join("");
+
+    // Appliquer la transformation des références bibliques
+    formattedText = transformBibleReferences(formattedText);
 
     // Wrapper spécial pour le contexte VERSETS PROG
     if (context === 'versets-prog') {
