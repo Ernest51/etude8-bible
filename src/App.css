@@ -234,6 +234,7 @@ strong {
   flex-direction: column;
   min-width: 120px;
   position: relative;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .select-pill label {
@@ -241,6 +242,7 @@ strong {
   color: #ffffff;
   margin-bottom: 8px;
   font-weight: 800;
+  font-family: 'Montserrat', sans-serif;
   text-transform: uppercase;
   letter-spacing: 1.2px;
   text-align: center;
@@ -263,6 +265,7 @@ strong {
   background: rgba(255,255,255,0.95);
   font-size: 15px;
   font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
@@ -274,6 +277,7 @@ strong {
 .select-pill select option {
   text-align: center;
   padding: 8px;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .select-pill select:focus {
@@ -311,6 +315,7 @@ strong {
 .btn-validate {
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: white;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .btn-validate:hover:not(:disabled) {
@@ -331,6 +336,7 @@ strong {
   padding: 12px 24px;
   border-radius: 25px;
   font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(52,152,219,0.3);
@@ -356,6 +362,7 @@ strong {
   padding: 12px 24px;
   border-radius: 25px;
   font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(46,204,113,0.3);
@@ -2085,6 +2092,7 @@ strong {
   padding: 12px 24px;
   border-radius: 25px;
   font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px var(--theme-accent-shadow, rgba(155,89,182,0.3));

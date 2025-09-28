@@ -376,20 +376,28 @@ function App() {
   const transformBibleReferences = (text) => {
     if (!text) return text;
     
+    // Set pour éviter les doublons
+    const processedRefs = new Set();
+    
     // Regex améliorée pour détecter les références bibliques
     // Formats supportés: Genèse 1:1, Lévitique 2:3-5, 1 Jean 3:16, Marc 5, 2 Corinthiens 4:6, etc.
     const bibleRefRegex = /(\d?\s*[A-ZÀ-ÿ][a-zà-ÿ]*(?:\s+\d*\s*[A-ZÀ-ÿ][a-zà-ÿ]*)*)\s+(\d+)(?::(\d+)(?:[-–](\d+))?)?(?!\d)/g;
     
     return text.replace(bibleRefRegex, (match, book, chapter, verse1, verse2) => {
-      // Nettoyer le nom du livre
-      const cleanBook = book.trim();
       const cleanMatch = match.trim();
+      
+      // Vérifier si cette référence a déjà été traitée (éviter les doublons)
+      if (processedRefs.has(cleanMatch)) {
+        return cleanMatch; // Retourner le texte sans lien si c'est un doublon
+      }
+      
+      processedRefs.add(cleanMatch);
       
       // Construire l'URL YouVersion avec recherche directe
       const youVersionUrl = `https://www.bible.com/search/bible?q=${encodeURIComponent(cleanMatch)}`;
       
-      // Créer le lien HTML avec styles
-      return `<a href="${youVersionUrl}" target="_blank" class="bible-reference" title="Ouvrir ${cleanMatch} sur YouVersion Bible">${cleanMatch}</a>`;
+      // Créer le lien HTML avec styles (sans "sur YouVersion Bible")
+      return `<a href="${youVersionUrl}" target="_blank" class="bible-reference" title="${cleanMatch}">${cleanMatch}</a>`;
     });
   };
 
