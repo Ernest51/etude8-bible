@@ -739,17 +739,29 @@ function App() {
           const progressContent = accumulatedContent + `\n\n## 🔄 Génération en cours...\n**Rubrique ${currentRubrique}:** ${rubriqueData.title}\n*Progression: ${currentRubrique}/${totalRubriques} rubriques*`;
           setContent(formatContent(progressContent));
           
-          // 🔹 UTILISER LA MÊME API LOCALE QUI FONCTIONNE POUR LA RUBRIQUE 0
-          console.log(`[GÉNÉRATION RUBRIQUE ${currentRubrique}] ${rubriqueData.title} avec API locale`);
+          // 🔹 UTILISER LA NOUVELLE API etude28-bible-api POUR LES RUBRIQUES 1-28
+          console.log(`[GÉNÉRATION RUBRIQUE ${currentRubrique}] ${rubriqueData.title} avec etude28-bible-api`);
           
-          // Copier exactement la logique qui fonctionne dans la rubrique 0
-          const { data, url } = await smartPost(ENDPOINTS.studyGemini, {
-            passage: passage,
-            version: selectedVersion || 'LSG',
-            tokens: parseInt(selectedLength) || 500,
-            requestedRubriques: [currentRubrique - 1],  // API utilise indices 0-27
-            enriched: true
+          // Appel direct à l'API etude28-bible-api-production.up.railway.app
+          const apiUrl = "https://etude28-bible-api-production.up.railway.app/api/generate-study";
+          
+          const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              book: selectedBook || 'Genèse',
+              chapter: selectedChapter || '1',
+              passage: passage
+            })
           });
+          
+          if (!response.ok) {
+            throw new Error(`Erreur API: ${response.status}`);
+          }
+          
+          const data = await response.json();
           
           console.log(`[API LOCALE OK RUBRIQUE ${currentRubrique}]`, url);
           console.log(`[CONTENU REÇU RUBRIQUE ${currentRubrique}]:`, data.content ? data.content.length : 0, "caractères");
