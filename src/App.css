@@ -421,54 +421,80 @@ strong {
   }
 }
 
-/* Desktop (1025px+) */
+/* Desktop (1025px+) - Restore original layout */
 @media (min-width: 1025px) {
-  .main-container {
-    padding: 30px !important;
-    max-width: 1400px !important;
-    margin: 0 auto !important;
+  /* Restaurer le layout desktop original */
+  .controls-row {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: flex-end !important;
+    gap: 16px !important;
+    flex-wrap: wrap !important;
+    margin: 20px 0 !important;
   }
   
-  .controls-row {
-    justify-content: center !important;
-    flex-wrap: wrap !important;
-    gap: 20px !important;
-    max-width: 1200px !important;
-    margin: 0 auto !important;
+  .select-pill {
+    width: auto !important;
+    min-width: 140px !important;
   }
   
   .action-buttons {
+    display: flex !important;
+    flex-direction: row !important;
     justify-content: center !important;
+    align-items: center !important;
+    gap: 12px !important;
     flex-wrap: wrap !important;
-    gap: 16px !important;
-    max-width: 1000px !important;
-    margin: 0 auto !important;
+    margin: 20px 0 !important;
   }
   
+  .btn-notes {
+    width: auto !important;
+    min-width: auto !important;
+    padding: 12px 24px !important;
+  }
+  
+  /* Layout 3 colonnes original */
   .content-layout {
+    display: flex !important;
+    flex-direction: row !important;
     gap: 30px !important;
   }
   
   .sidebar {
-    min-width: 320px !important;
-    max-width: 360px !important;
+    width: 300px !important;
+    min-width: 300px !important;
+    max-width: 300px !important;
+    order: 1 !important;
   }
   
   .main-content {
     flex: 1 !important;
-    max-width: 800px !important;
+    width: auto !important;
+    order: 2 !important;
   }
   
+  /* Titre normal */
   .rubrique-title {
-    font-size: 48px !important;
+    font-size: clamp(32px, 5vw, 48px) !important;
   }
   
+  /* Modal desktop */
   .notes-modal {
     max-width: 650px !important;
   }
   
   .notes-textarea {
     height: 350px !important;
+  }
+  
+  .notes-modal-footer {
+    flex-direction: row !important;
+  }
+  
+  .notes-modal-footer button {
+    width: auto !important;
   }
 }
 
@@ -1196,14 +1222,14 @@ p {
 
 .three-column-layout {
   display: grid;
-  grid-template-columns: 300px 1fr 250px;
+  grid-template-columns: 300px 1fr;
   gap: 25px;
   min-height: 600px;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1200px) and (min-width: 969px) {
   .three-column-layout {
-    grid-template-columns: 280px 1fr 220px;
+    grid-template-columns: 280px 1fr;
     gap: 20px;
   }
 }
