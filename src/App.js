@@ -200,6 +200,13 @@ function App() {
   const [currentBatchVerse, setCurrentBatchVerse] = useState(1);
   const [progressiveStats, setProgressiveStats] = useState(null);
   const [isVersetsProgContent, setIsVersetsProgContent] = useState(false);
+  
+  // État pour les notes persistantes
+  const [personalNotes, setPersonalNotes] = useState(() => {
+    const savedNotes = localStorage.getItem('bible-study-notes');
+    return savedNotes ? JSON.parse(savedNotes) : '';
+  });
+  const [showNotesModal, setShowNotesModal] = useState(false);
 
   // Thèmes
   const colorThemes = [
@@ -389,6 +396,17 @@ function App() {
     setSelectedVersion("LSG"); setSelectedLength(500); setActiveRubrique(0);
     setContent(""); setRubriquesStatus({});
     setProgressiveStats(null);
+    // Note: Les notes personnelles ne sont jamais effacées lors du reset
+  };
+
+  const handleNotesClick = () => {
+    setShowNotesModal(true);
+  };
+
+  const handleSaveNotes = (notes) => {
+    setPersonalNotes(notes);
+    localStorage.setItem('bible-study-notes', JSON.stringify(notes));
+    setShowNotesModal(false);
   };
 
   const handleRubriqueSelect = (id) => {
@@ -800,6 +818,7 @@ function App() {
             <SelectPill label="Longueur" value={selectedLength} options={[300, 500, 1000, 2000]} onChange={handleLengthChange} />
             <button className="btn-read" onClick={openYouVersion}>Lire la Bible</button>
             <button className="btn-chat" onClick={() => window.open('https://chatgpt.com/', '_blank')}>ChatGPT</button>
+            <button className="btn-notes" onClick={handleNotesClick}>📝 Prise de Note</button>
           </div>
 
           {/* Boutons d'action */}
@@ -861,6 +880,35 @@ function App() {
 
         </div>
       </div>
+      
+      {/* Modal pour les notes persistantes */}
+      {showNotesModal && (
+        <div className="notes-modal-overlay" onClick={() => setShowNotesModal(false)}>
+          <div className="notes-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="notes-modal-header">
+              <h3>📝 Mes Notes Personnelles</h3>
+              <button className="notes-close-btn" onClick={() => setShowNotesModal(false)}>×</button>
+            </div>
+            <div className="notes-modal-body">
+              <textarea
+                className="notes-textarea"
+                value={personalNotes}
+                onChange={(e) => setPersonalNotes(e.target.value)}
+                placeholder="Écrivez vos notes personnelles ici... Elles seront sauvegardées automatiquement et ne seront jamais effacées."
+                rows={15}
+              />
+            </div>
+            <div className="notes-modal-footer">
+              <button className="btn-save-notes" onClick={() => handleSaveNotes(personalNotes)}>
+                💾 Sauvegarder
+              </button>
+              <button className="btn-cancel-notes" onClick={() => setShowNotesModal(false)}>
+                Annuler
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

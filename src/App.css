@@ -49,34 +49,18 @@ h2 {
 /* Style spécialisé pour le titre de rubrique principal */
 .rubrique-title {
   font-family: 'Inter', 'Segoe UI', -apple-system, sans-serif !important;
-  font-size: 72px !important;
+  font-size: clamp(32px, 5vw, 48px) !important;
   font-weight: 900 !important;
-  letter-spacing: -0.05em !important;
-  color: #ff0000 !important;
-  background: linear-gradient(135deg, #ff0000 0%, #ff6600 50%, #ffaa00 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  background-clip: text !important;
-  margin: 50px 0 60px 0 !important;
-  text-align: center !important;
+  letter-spacing: -0.03em !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #5f27cd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 32px 0 40px 0 !important;
+  text-align: center;
   position: relative;
-  padding: 30px 0;
+  padding: 20px 0;
   line-height: 1.1;
-  text-shadow: 0 4px 8px rgba(255,0,0,0.3) !important;
-  transform: scale(1.2) !important;
-}
-
-.rubrique-title::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 120px;
-  height: 4px;
-  background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #5f27cd 100%);
-  border-radius: 2px;
-  opacity: 0.6;
 }
 
 h3 {
@@ -268,23 +252,23 @@ strong {
 }
 
 .select-pill label {
-  font-size: 14px;
+  font-size: 12px;
   color: #ffffff;
   margin-bottom: 8px;
-  font-weight: 900;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  text-align: center !important;
-  display: block !important;
-  width: 100% !important;
+  letter-spacing: 1.2px;
+  text-align: center;
+  display: block;
+  width: 100%;
   text-shadow: 
-    0 2px 4px rgba(0,0,0,0.8),
-    0 1px 2px rgba(0,0,0,0.9);
-  background: rgba(255,0,0,0.8);
-  padding: 8px 12px;
-  border-radius: 8px;
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255,255,255,0.4);
+    0 2px 4px rgba(0,0,0,0.6),
+    0 1px 2px rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.3);
+  padding: 4px 8px;
+  border-radius: 6px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255,255,255,0.2);
 }
 
 .select-pill select {
@@ -298,6 +282,13 @@ strong {
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   color: #2c3e50;
+  text-align: center;
+  text-align-last: center;
+}
+
+.select-pill select option {
+  text-align: center;
+  padding: 8px;
 }
 
 .select-pill select:focus {
@@ -488,6 +479,151 @@ strong {
   opacity: 0.8;
   cursor: not-allowed;
   animation: pulse 2s infinite;
+}
+
+.btn-notes {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(155,89,182,0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-notes:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 30px rgba(155,89,182,0.4);
+}
+
+/* Modal des notes persistantes */
+.notes-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.notes-modal {
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+.notes-modal-header {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  color: white;
+  padding: 20px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notes-modal-header h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.notes-close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.notes-close-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.notes-modal-body {
+  padding: 30px;
+}
+
+.notes-textarea {
+  width: 100%;
+  height: 300px;
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  padding: 15px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.notes-textarea:focus {
+  border-color: #9b59b6;
+  box-shadow: 0 0 0 3px rgba(155,89,182,0.1);
+}
+
+.notes-modal-footer {
+  padding: 0 30px 30px;
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+}
+
+.btn-save-notes {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-save-notes:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(155,89,182,0.4);
+}
+
+.btn-cancel-notes {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel-notes:hover {
+  background: #5a6268;
+  transform: translateY(-2px);
 }
 
 .btn-versets {
@@ -1021,17 +1157,14 @@ strong {
 ========================= */
 
 .content-text {
-  line-height: 1.9;
-  color: #000000 !important;
-  font-family: 'Times New Roman', 'Georgia', serif !important;
-  font-size: 24px !important;
-  font-weight: 700 !important;
-  letter-spacing: 0.05em;
+  line-height: 1.8;
+  color: #2c3e50;
+  font-family: 'Inter', 'Segoe UI', 'SF Pro Text', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  background: #ffffcc !important;
-  padding: 20px !important;
-  border: 3px solid #ff0000 !important;
 }
 
 /* Styles spéciaux pour l'étude verset par verset */
@@ -1040,16 +1173,13 @@ strong {
 }
 
 .verse-block {
-  background: linear-gradient(145deg, #ffffff 0%, #fdfdfd 100%);
-  border: 1px solid rgba(0,0,0,0.06);
-  border-radius: 20px;
-  margin-bottom: 32px;
-  padding: 32px;
-  box-shadow: 
-    0 8px 32px rgba(0,0,0,0.06),
-    0 2px 16px rgba(0,0,0,0.04);
-  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-  font-family: 'Inter', 'Segoe UI', 'SF Pro Text', system-ui, sans-serif;
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  border: 1px solid #e9ecef;
+  border-radius: 15px;
+  margin-bottom: 30px;
+  padding: 25px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transition: all 0.3s ease;
 }
 
 .verse-block:hover {
