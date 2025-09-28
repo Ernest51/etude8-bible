@@ -100,7 +100,7 @@ frontend:
     implemented: true
     working: false
     file: "frontend/src/App.js"
-    stuck_count: 1
+    stuck_count: 2
     priority: "high"
     needs_retesting: false
     status_history:
@@ -110,6 +110,9 @@ frontend:
       - working: false
         agent: "testing"
         comment: "❌ CRITICAL ISSUE IDENTIFIED: VERSETS PROG button has display bug - API returns 4750 characters of content but UI only shows 95 characters of loading text. Content generation is working (API calls successful) but content display is broken. GEMINI FLASH works correctly with proper theological content. The user's reported placeholder text issue was not confirmed - actual content is substantial and properly formatted."
+      - working: false
+        agent: "testing"
+        comment: "❌ VERCEL DEPLOYMENT ROOT CAUSE FOUND: API endpoint mismatch between Vercel app configuration and actual API calls. Vercel app configured for https://bible-gemini-app.preview.emergentagent.com/api but VERSETS PROG calls https://etude8-bible-api-production.up.railway.app/api instead. VERSETS PROG: API succeeds (200 OK, 4750 chars) but content stuck in loading state. GEMINI FLASH: Works correctly using preview API. Preview app: Both buttons work correctly using same preview API. Issue is inconsistent API endpoint usage in generateVerseByVerseProgressive() function."
 
 metadata:
   created_by: "testing_agent"
