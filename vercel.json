@@ -1,26 +1,26 @@
 {
   "version": 2,
   "name": "etude8-bible",
-  "builds": [
-    {
-      "src": "frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build",
-        "installCommand": "yarn install",
-        "buildCommand": "DISABLE_ESLINT_PLUGIN=true CI=false yarn build"
-      }
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "frontend/$1"
-    }
-  ],
+  "buildCommand": "cd frontend && DISABLE_ESLINT_PLUGIN=true CI=false yarn build",
+  "outputDirectory": "frontend/build",
+  "installCommand": "cd frontend && yarn install",
   "env": {
     "REACT_APP_BACKEND_URL": "https://bible-gemini-app.preview.emergentagent.com",
     "DISABLE_ESLINT_PLUGIN": "true",
     "CI": "false"
-  }
+  },
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|ico|svg))",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
 }
