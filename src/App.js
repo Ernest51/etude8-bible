@@ -201,14 +201,12 @@ function App() {
   const [progressiveStats, setProgressiveStats] = useState(null);
   const [isVersetsProgContent, setIsVersetsProgContent] = useState(false);
   
-  // État pour les notes persistantes
+  // États pour les notes persistantes
   const [personalNotes, setPersonalNotes] = useState(() => {
     const savedNotes = localStorage.getItem('bible-study-notes');
     return savedNotes ? JSON.parse(savedNotes) : '';
   });
   const [showNotesModal, setShowNotesModal] = useState(false);
-
-  // Interface prête mais vide au démarrage
 
   // Thèmes
   const colorThemes = [
@@ -355,6 +353,8 @@ function App() {
     }
   };
 
+  // Gestionnaires supprimés - définis plus bas
+
   // Progress bar
   const wait = (ms) => new Promise(r => setTimeout(r, ms));
 
@@ -411,35 +411,8 @@ function App() {
     setShowNotesModal(false);
   };
 
-  const handleGenerateApocalypse1 = async () => {
-    setSelectedBook("Apocalypse");
-    setSelectedChapter("1");
-    setIsLoading(true);
-    
-    try {
-      const response = await fetch(`${API_BASE}/generate-verse-by-verse`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          passage: "Apocalypse 1",
-          tokens: parseInt(selectedLength) || 500,
-          use_gemini: true,
-          enriched: true
-        })
-      });
-      
-      const data = await response.json();
-      if (data.content) {
-        const finalContent = postProcessMarkdown(data.content);
-        setContent(formatContent(finalContent, 'verse-by-verse'));
-        setIsVersetsProgContent(true);
-      }
-    } catch (error) {
-      console.error('Erreur génération Apocalypse 1:', error);
-      setContent("❌ Erreur lors de la génération du contenu");
-    }
-    
-    setIsLoading(false);
+  const handleCloseNotes = () => {
+    setShowNotesModal(false);
   };
 
   const handleRubriqueSelect = (id) => {
@@ -831,53 +804,53 @@ function App() {
       {/* Interface principale */}
       <div className="main-container">
         {/* Section de recherche */}
-        <div className="search-section responsive-search">
+        <div className="search-section">
           <div className="search-input">
             <input
               type="text"
               placeholder="Rechercher (ex : Marc 5:1, 1 Jean 2, Genèse 1:1-5)"
-              className="search-field responsive-input"
+              className="search-field"
               value={searchQuery}
               onChange={handleSearchChange}
             />
           </div>
 
-          <div className="controls-row responsive-controls">
+          <div className="controls-row">
             <SelectPill label="Livre" value={selectedBook} options={["--", ...BOOKS]} onChange={handleBookChange} />
             <SelectPill label="Chapitre" value={selectedChapter} options={availableChapters} onChange={handleChapterChange} />
             <SelectPill label="Verset" value={selectedVerse} options={["--", ...Array.from({ length: 50 }, (_, i) => i + 1)]} onChange={handleVerseChange} />
             <SelectPill label="Version" value={selectedVersion} options={["LSG", "Darby", "NEG"]} onChange={handleVersionChange} />
             <button className="btn-validate" disabled={isLoading}>Valider</button>
-          </div>
-
-          <div className="controls-row-2">
             <SelectPill label="Longueur" value={selectedLength} options={[300, 500, 1000, 2000]} onChange={handleLengthChange} />
             <button className="btn-read" onClick={openYouVersion}>Lire la Bible</button>
             <button className="btn-chat" onClick={() => window.open('https://chatgpt.com/', '_blank')}>ChatGPT</button>
             <button className="btn-notes" onClick={handleNotesClick}>📝 Prise de Note</button>
           </div>
-        </div>
 
-        {/* Boutons d'action horizontaux en bas comme dans l'image */}
-        <div className="action-buttons responsive-actions">
-          <button className="btn-reset" onClick={handleReset}>🔄 Reset</button>
-          <button className="btn-palette" onClick={changePalette}>🎨 Violet Mystique</button>
-          <button className="btn-apocalypse" onClick={handleGenerateApocalypse1}>📖 Apocalypse 1</button>
-          <button className={`btn-gemini ${isLoading ? "loading" : ""}`} onClick={generateWithGemini} disabled={isLoading}>🤖 Gemini Flash</button>
-          <button className="btn-versets-prog" onClick={generateVerseByVerseProgressive} disabled={isLoading} title="Analyse progressive enrichie - traitement uniforme des versets">⚡ Versets Prog</button>
-          <button className="btn-generate" onClick={generate28Points} disabled={isLoading}>Générer</button>
+          {/* Boutons d'action */}
+          <div className="action-buttons">
+            <button className="btn-reset" onClick={handleReset}>🔄 Reset</button>
+            <button className="btn-palette" onClick={changePalette}>🎨 {colorThemes[currentTheme].name}</button>
+            <button className="btn-last-study" onClick={restoreLastStudy} disabled={!lastStudy}
+              title={lastStudy ? `Restaurer: ${lastStudy.book} ${lastStudy.chapter}${lastStudy.verse !== "--" ? ":" + lastStudy.verse : ""}` : "Aucune étude sauvegardée"}>
+              {lastStudy ? `📖 ${lastStudy.book} ${lastStudy.chapter}${lastStudy.verse !== "--" ? ":" + lastStudy.verse : ""}` : "📖 Dernière étude"}
+            </button>
+            <button className={`btn-gemini ${isLoading ? "loading" : ""}`} onClick={generateWithGemini} disabled={isLoading}>🤖 Gemini Flash</button>
+            <button className="btn-versets-prog" onClick={generateVerseByVerseProgressive} disabled={isLoading} title="Analyse progressive enrichie - traitement uniforme des versets">⚡ Versets Prog</button>
+            <button className="btn-generate" onClick={generate28Points} disabled={isLoading}>Générer</button>
+          </div>
         </div>
 
         {/* Layout 2 colonnes */}
-        <div className="three-column-layout content-layout responsive-layout" style={{ gridTemplateColumns: "300px 1fr" }}>
+        <div className="three-column-layout" style={{ gridTemplateColumns: "300px 1fr" }}>
           {/* Colonne gauche - Rubriques */}
-          <div className="left-column sidebar responsive-sidebar">
+          <div className="left-column">
             <h3>Rubriques (29)</h3>
             <RubriquesInline items={rubriquesItems} activeId={activeRubrique} onSelect={handleRubriqueSelect} rubriquesStatus={rubriquesStatus} />
           </div>
 
           {/* Colonne centrale - Contenu */}
-          <div className="center-column main-content responsive-content">
+          <div className="center-column">
             <div className="content-header">
               <h2>{`${activeRubrique}. ${getRubTitle(activeRubrique)}`}</h2>
               <div className="nav-buttons">
@@ -913,7 +886,7 @@ function App() {
 
         </div>
       </div>
-      
+
       {/* Modal pour les notes persistantes */}
       {showNotesModal && (
         <div className="notes-modal-overlay" onClick={() => setShowNotesModal(false)}>
@@ -961,6 +934,44 @@ function SelectPill({ label, value, options, onChange }) {
       <select value={value} onChange={onChange}>
         {options.map((o) => <option key={o} value={o}>{o}</option>)}
       </select>
+    </div>
+  );
+}
+
+function NotesModal({ isOpen, notes, onNotesChange, onSave, onClose }) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="notes-modal-overlay" onClick={onClose}>
+      <div className="notes-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="notes-modal-header">
+          <h3>📝 Mes Notes d'Étude Biblique</h3>
+          <button className="notes-close-btn" onClick={onClose}>×</button>
+        </div>
+        <div className="notes-modal-content">
+          <textarea
+            className="notes-textarea"
+            value={notes}
+            onChange={(e) => onNotesChange(e.target.value)}
+            placeholder="Écrivez vos réflexions, questions, et insights spirituels ici...
+
+Exemples :
+• Versets qui m'ont marqué
+• Questions pour approfondir
+• Applications personnelles
+• Prières inspirées par l'étude"
+            rows={15}
+          />
+        </div>
+        <div className="notes-modal-footer">
+          <button className="notes-save-btn" onClick={onSave}>
+            💾 Sauvegarder
+          </button>
+          <button className="notes-cancel-btn" onClick={onClose}>
+            Annuler
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
