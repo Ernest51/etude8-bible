@@ -13,7 +13,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         FRONTEND_ALLOWED, 
-        "https://bible-gemini-app.preview.emergentagent.com",  # ← AJOUTÉ POUR EMERGENT
+        "https://biblestudy-ai-1.preview.emergentagent.com",  # ← AJOUTÉ POUR EMERGENT
         "http://localhost:3000", 
         "http://127.0.0.1:3000"
     ],
