@@ -724,6 +724,29 @@ p {
   box-shadow: 0 10px 30px rgba(155,89,182,0.4);
 }
 
+.btn-genese {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(39,174,96,0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-genese:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 30px rgba(39,174,96,0.4);
+}
+
 /* Modal des notes persistantes */
 .notes-modal-overlay {
   position: fixed;
