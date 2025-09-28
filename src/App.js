@@ -465,7 +465,7 @@ function App() {
       // 🔹 UTILISER L'API RAILWAY pour génération verset par verset SANS LIMITATION
       console.log("[VERSETS PROG] Utilisation API Railway pour génération séquentielle complète");
       
-      const apiUrl = 'https://etude8-bible-api-production.up.railway.app/api/generate-verse-by-verse';
+      const apiUrl = `${API_BASE}/generate-verse-by-verse`;
       
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -475,6 +475,8 @@ function App() {
         body: JSON.stringify({
           passage: passage,
           version: selectedVersion || 'LSG',
+          tokens: parseInt(selectedLength) || 500,
+          use_gemini: true,
           enriched: true
         })
       });
@@ -487,93 +489,15 @@ function App() {
       const data = await response.json();
       console.log("[API RAILWAY OK] Contenu reçu:", data.content ? data.content.length : 0, "caractères");
       
-      // Utiliser le contenu de l'API Railway (qui génère TOUS les versets séquentiellement)
-      const fullContent = data.content || `VERSET 1
-
-TEXTE BIBLIQUE :
-Au commencement était la Parole, et la Parole était avec Dieu, et la Parole était Dieu.
-
-EXPLICATION THÉOLOGIQUE :
-Ce verset ouvre l'évangile de Jean avec une déclaration christologique majeure. Le terme "Logos" (Parole) désigne le Christ préexistant.
-
-VERSET 2
-
-TEXTE BIBLIQUE :
-Elle était au commencement avec Dieu.
-
-EXPLICATION THÉOLOGIQUE :
-Ce verset confirme l'éternité et la préexistence du Logos.
-
-VERSET 3
-
-TEXTE BIBLIQUE :
-Toutes choses ont été faites par elle, et rien de ce qui a été fait n'a été fait sans elle.
-
-EXPLICATION THÉOLOGIQUE :
-L'universalité de l'action créatrice du Logos est affirmée.
-
-VERSET 4
-
-TEXTE BIBLIQUE :
-En elle était la vie, et la vie était la lumière des hommes.
-
-EXPLICATION THÉOLOGIQUE :
-La vie divine réside dans le Logos.
-
-VERSET 5
-
-TEXTE BIBLIQUE :
-Et la lumière luit dans les ténèbres, et les ténèbres ne l'ont pas comprises.
-
-EXPLICATION THÉOLOGIQUE :
-Le conflit cosmique entre la lumière et les ténèbres est introduit.
-
-VERSET 6
-
-TEXTE BIBLIQUE :
-Il y eut un homme envoyé de Dieu: son nom était Jean.
-
-EXPLICATION THÉOLOGIQUE :
-L'introduction de Jean-Baptiste comme précurseur du Christ.
-
-VERSET 7
-
-TEXTE BIBLIQUE :
-Il vint pour servir de témoin, pour rendre témoignage à la lumière.
-
-EXPLICATION THÉOLOGIQUE :
-La mission de Jean-Baptiste est définie comme témoignage.
-
-VERSET 8
-
-TEXTE BIBLIQUE :
-Il n'était pas la lumière, mais il parut pour rendre témoignage à la lumière.
-
-EXPLICATION THÉOLOGIQUE :
-Distinction claire entre Jean-Baptiste et le Christ.
-
-VERSET 9
-
-TEXTE BIBLIQUE :
-Cette lumière était la véritable lumière, qui, en venant dans le monde, éclaire tout homme.
-
-EXPLICATION THÉOLOGIQUE :
-Le Christ comme lumière universelle pour toute l'humanité.
-
-VERSET 10
-
-TEXTE BIBLIQUE :
-Elle était dans le monde, et le monde a été fait par elle, et le monde ne l'a point connue.
-
-EXPLICATION THÉOLOGIQUE :
-Paradoxe de l'incarnation : le Créateur méconnu par sa création.`;
+      // Utiliser le contenu de l'API (correction du bug d'affichage)
+      if (!data.content) {
+        throw new Error("Aucun contenu reçu de l'API");
+      }
       
-      // Affichage immédiat du contenu optimisé avec boutons Gemini
-      const finalContent = postProcessMarkdown(data.content);
-      setContent(formatContent(finalContent, 'verse-by-verse'));
-      setProgressPercent(100);
-      setRubriquesStatus(p => ({ ...p, 0: "completed" }));
-      console.log("[SUCCESS] Contenu VERSETS PROG affiché correctement");
+      const fullContent = data.content;
+      
+      // Diviser par lignes pour affichage progressif
+      const lines = fullContent.split('\n');
       let accumulated = "";
       let versetCount = 0;
       let totalVersets = (fullContent.match(/VERSET \d+/g) || []).length;
