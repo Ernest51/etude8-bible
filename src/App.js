@@ -200,6 +200,8 @@ function App() {
   const [currentBatchVerse, setCurrentBatchVerse] = useState(1);
   const [progressiveStats, setProgressiveStats] = useState(null);
   const [isVersetsProgContent, setIsVersetsProgContent] = useState(false);
+  const [currentVerseCount, setCurrentVerseCount] = useState(5);
+  const [canContinueVerses, setCanContinueVerses] = useState(false);
   
   // États pour les notes persistantes
   const [personalNotes, setPersonalNotes] = useState(() => {
@@ -476,6 +478,65 @@ function App() {
     setShowNotesModal(false);
   };
 
+  const continueVerses = async () => {
+    try {
+      setIsLoading(true);
+      
+      const book = selectedBook || 'Genèse';
+      const chapter = selectedChapter || '1';
+      const passage = `${book} ${chapter}`;
+      const startVerse = currentVerseCount + 1;
+      const endVerse = currentVerseCount + 5;
+      
+      console.log(`[CONTINUE VERSETS] Génération versets ${startVerse} à ${endVerse} pour ${passage}`);
+      
+      const apiUrl = `${API_BASE}/generate-verse-by-verse`;
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          passage: `${passage}:${startVerse}-${endVerse}`,
+          version: selectedVersion || 'LSG',
+          tokens: parseInt(selectedLength) || 500,
+          use_gemini: true,
+          enriched: true
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Erreur API: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.content) {
+        const currentContent = content;
+        const newContent = postProcessMarkdown(data.content);
+        const formattedNewContent = formatContent(newContent, 'verse-by-verse');
+        
+        // Ajouter le nouveau contenu au contenu existant
+        setContent(currentContent + '\n\n' + formattedNewContent);
+        setCurrentVerseCount(endVerse);
+        
+        // Vérifier s'il y a encore des versets à générer
+        if (endVerse >= 31) { // Genèse 1 a 31 versets
+          setCanContinueVerses(false);
+        }
+        
+        console.log(`[SUCCESS] Versets ${startVerse}-${endVerse} ajoutés avec succès`);
+      }
+      
+    } catch (error) {
+      console.error('[ERROR] Erreur continuation versets:', error);
+      setContent(prev => prev + '\n\n❌ Erreur lors de la génération des versets suivants');
+    }
+    
+    setIsLoading(false);
+  };
+
   const handleRubriqueSelect = (id) => {
     setActiveRubrique(id);
     if (rubriquesStatus[id] === "completed") setContent(`Contenu de la rubrique ${id}: ${getRubTitle(id)}`);
@@ -592,54 +653,16 @@ function App() {
       
       const fullContent = data.content;
       
-      // Diviser par lignes pour affichage progressif
-      const lines = fullContent.split('\n');
-      let accumulated = "";
-      let versetCount = 0;
-      let totalVersets = (fullContent.match(/VERSET \d+/g) || []).length;
+      // Initialiser les états de continuation
+      setCurrentVerseCount(5); // Par défaut, on génère 5 versets
+      setCanContinueVerses(true); // Permettre la continuation
       
-      setProgressiveStats({
-        processed: 0,
-        total: totalVersets,
-        current_batch: "Démarrage...",
-        speed: "Standard ⚡"
-      });
-      
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        accumulated += line + '\n';
-        
-        // Si on trouve un verset, on met à jour les stats
-        if (line.match(/^VERSET \d+/)) {
-          versetCount++;
-          setProgressiveStats({
-            processed: versetCount,
-            total: totalVersets,
-            current_batch: line.trim(),
-            speed: "Standard ⚡"
-          });
-        }
-        
-        // Mettre à jour le contenu affiché avec le style VERSETS PROG
-        setContent(formatContent(accumulated, 'versets-prog'));
-        
-        const progress = Math.round((i / lines.length) * 100);
-        setProgressPercent(progress);
-        
-        // Délai uniforme pour tous les versets
-        if (i % 3 === 0) { // Afficher par groupes de 3 lignes
-          await wait(100); // Vitesse uniforme pour tous les versets
-        }
-      }
-      
-      // S'assurer que le contenu final est bien affiché avec design moderne
-      const finalContent = accumulated || exempleContent;
-      console.log("[DEBUG] Final content length:", finalContent.length);
-      setContent(formatContent(finalContent, 'versets-prog'));
-      setRubriquesStatus(p => ({ ...p, 0: "completed" }));
+      // Affichage immédiat du contenu optimisé avec boutons Gemini
+      const finalContent = postProcessMarkdown(fullContent);
+      setContent(formatContent(finalContent, 'verse-by-verse'));
       setProgressPercent(100);
-      setProgressiveStats(prev => prev ? {...prev, speed: "Terminé ✅"} : null);
-      saveCurrentStudy();
+      setRubriquesStatus(p => ({ ...p, 0: "completed" }));
+      console.log("[SUCCESS] Contenu VERSETS PROG affiché correctement");
       
     } catch (err) {
       console.error("Erreur génération VERSETS PROG:", err);
@@ -948,7 +971,24 @@ function App() {
                   )}
                 </div>
               ) : content ? (
-                <div className="content-text" dangerouslySetInnerHTML={{ __html: formatContent(content, isVersetsProgContent ? 'versets-prog' : 'default') }} />
+                <div>
+                  <div className="content-text" dangerouslySetInnerHTML={{ __html: formatContent(content, isVersetsProgContent ? 'versets-prog' : 'default') }} />
+                  {isVersetsProgContent && canContinueVerses && (
+                    <div className="continue-verses-section">
+                      <button 
+                        className="btn-continue-verses" 
+                        onClick={continueVerses} 
+                        disabled={isLoading}
+                        title={`Générer les versets ${currentVerseCount + 1} à ${currentVerseCount + 5}`}
+                      >
+                        📖 Continuer les versets ({currentVerseCount + 1}-{currentVerseCount + 5})
+                      </button>
+                      <p className="continue-verses-info">
+                        Versets actuels : 1-{currentVerseCount} • Cliquez pour continuer la lecture
+                      </p>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <div className="welcome-section">
                   <h1>🙏 Bienvenue dans votre Espace d'Étude</h1>

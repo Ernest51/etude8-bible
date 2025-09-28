@@ -2053,6 +2053,61 @@ strong {
 }
 
 /* =========================
+   Bouton Continuer les versets
+========================= */
+
+.continue-verses-section {
+  text-align: center;
+  margin: 40px 0;
+  padding: 30px;
+  background: linear-gradient(145deg, rgba(255,255,255,0.9), rgba(248,249,250,0.9));
+  border-radius: 20px;
+  border: 2px solid rgba(102,126,234,0.2);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.btn-continue-verses {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 0 6px 20px rgba(102,126,234,0.3);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.btn-continue-verses:hover:not(:disabled) {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 12px 35px rgba(102,126,234,0.4);
+  background: linear-gradient(135deg, #5a67d8, #6b46c1);
+}
+
+.btn-continue-verses:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.continue-verses-info {
+  color: #6b7280;
+  font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* =========================
    Références bibliques cliquables
 ========================= */
 
