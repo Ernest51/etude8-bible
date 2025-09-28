@@ -568,8 +568,12 @@ Elle était dans le monde, et le monde a été fait par elle, et le monde ne l'a
 EXPLICATION THÉOLOGIQUE :
 Paradoxe de l'incarnation : le Créateur méconnu par sa création.`;
       
-      // Diviser par lignes pour affichage progressif
-      const lines = fullContent.split('\n');
+      // Affichage immédiat du contenu optimisé avec boutons Gemini
+      const finalContent = postProcessMarkdown(data.content);
+      setContent(formatContent(finalContent, 'verse-by-verse'));
+      setProgressPercent(100);
+      setRubriquesStatus(p => ({ ...p, 0: "completed" }));
+      console.log("[SUCCESS] Contenu VERSETS PROG affiché correctement");
       let accumulated = "";
       let versetCount = 0;
       let totalVersets = (fullContent.match(/VERSET \d+/g) || []).length;
