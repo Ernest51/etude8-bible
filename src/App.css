@@ -146,357 +146,59 @@ strong {
   transform: translateY(-2px);
 }
 
-/* Base mobile (320px+) */
+/* Mobile uniquement (max 480px) */
 @media (max-width: 480px) {
-  body {
-    font-size: 14px;
-    line-height: 1.5;
-    padding: 8px;
-  }
-  
-  .App {
-    padding: 0;
-  }
-  
-  /* Container principal mobile */
-  .main-container {
-    padding: 8px !important;
-    margin: 0 !important;
-  }
-  
-  /* Header mobile */
-  .search-container {
-    padding: 12px !important;
-    border-radius: 16px !important;
-  }
-  
-  .search-container input {
-    font-size: 14px !important;
-    padding: 10px 12px !important;
-  }
-  
-  /* Contrôles en colonnes sur mobile */
   .controls-row {
-    flex-direction: column !important;
-    gap: 12px !important;
-    align-items: stretch !important;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
   }
   
   .select-pill {
-    width: 100% !important;
-    min-width: unset !important;
+    width: 100%;
+    min-width: unset;
   }
   
-  .select-pill select {
-    width: 100% !important;
-    font-size: 16px !important; /* Évite le zoom sur iOS */
-    padding: 16px 14px !important;
-  }
-  
-  .select-pill label {
-    font-size: 11px !important;
-    padding: 3px 6px !important;
-  }
-  
-  /* Boutons d'action mobile */
   .action-buttons {
-    flex-direction: column !important;
-    gap: 10px !important;
+    flex-direction: column;
+    gap: 10px;
   }
   
   .action-buttons button {
-    width: 100% !important;
-    padding: 16px 20px !important;
-    font-size: 14px !important;
-    min-height: 48px !important; /* Touch target */
+    width: 100%;
+    min-height: 48px;
   }
   
-  /* Bouton notes responsive */
-  .btn-notes {
-    padding: 16px 20px !important;
-    font-size: 14px !important;
-    justify-content: center !important;
+  .three-column-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
   
-  /* Layout principal mobile */
-  .content-layout {
-    flex-direction: column !important;
-    gap: 16px !important;
-  }
-  
-  .sidebar {
-    width: 100% !important;
-    order: 2 !important;
-    max-height: 200px !important;
-    overflow-y: auto !important;
-  }
-  
-  .main-content {
-    width: 100% !important;
-    order: 1 !important;
-    padding: 16px !important;
-  }
-  
-  /* Rubriques mobile */
-  .rubriques-container {
-    padding: 12px !important;
-  }
-  
-  .rubrique-item {
-    padding: 12px 16px !important;
-    font-size: 13px !important;
-    margin-bottom: 8px !important;
-  }
-  
-  /* Titre principal mobile */
-  .rubrique-title {
-    font-size: 28px !important;
-    padding: 15px 0 !important;
-    margin: 20px 0 25px 0 !important;
-  }
-  
-  /* Contenu mobile */
-  .content-area {
-    padding: 16px !important;
-    max-height: none !important;
-    min-height: 300px !important;
-  }
-  
-  .content-text {
-    font-size: 15px !important;
-    line-height: 1.7 !important;
-  }
-  
-  /* Modal notes mobile */
   .notes-modal {
-    width: 95% !important;
-    max-width: none !important;
-    margin: 20px !important;
-    max-height: 90vh !important;
-  }
-  
-  .notes-modal-header {
-    padding: 16px 20px !important;
-  }
-  
-  .notes-modal-header h3 {
-    font-size: 18px !important;
-  }
-  
-  .notes-modal-body {
-    padding: 20px !important;
-  }
-  
-  .notes-textarea {
-    height: 250px !important;
-    font-size: 16px !important; /* Évite le zoom */
+    width: 95%;
+    margin: 20px;
   }
   
   .notes-modal-footer {
-    padding: 0 20px 20px !important;
-    flex-direction: column !important;
-    gap: 10px !important;
+    flex-direction: column;
   }
   
   .notes-modal-footer button {
-    width: 100% !important;
-    padding: 16px !important;
+    width: 100%;
   }
 }
 
-/* Tablette portrait (481px - 768px) */
+/* Tablette (481px - 768px) */
 @media (min-width: 481px) and (max-width: 768px) {
-  body {
-    font-size: 15px;
-    padding: 12px;
-  }
-  
-  .main-container {
-    padding: 16px !important;
-  }
-  
-  .controls-row {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 16px !important;
-  }
-  
-  .select-pill:nth-child(5) { /* LONGUEUR */
-    grid-column: 1 / -1 !important;
-    justify-self: center !important;
-    max-width: 200px !important;
-  }
-  
-  .btn-validate {
-    grid-column: 1 / -1 !important;
-    justify-self: center !important;
-    max-width: 200px !important;
-  }
-  
-  .action-buttons {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
-  }
-  
-  .btn-notes {
-    grid-column: 1 / -1 !important;
-    justify-self: center !important;
-    max-width: 250px !important;
-  }
-  
-  .content-layout {
-    flex-direction: column !important;
-  }
-  
-  .sidebar {
-    width: 100% !important;
-    max-height: 250px !important;
-    overflow-y: auto !important;
-  }
-  
-  .main-content {
-    width: 100% !important;
-    padding: 20px !important;
-  }
-  
-  .rubrique-title {
-    font-size: 36px !important;
-  }
-  
-  .notes-modal {
-    width: 90% !important;
-    max-width: 500px !important;
+  .three-column-layout {
+    grid-template-columns: 1fr;
+    gap: 20px;
   }
 }
 
-/* Tablette paysage (769px - 1024px) */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .main-container {
-    padding: 20px !important;
-  }
-  
-  .controls-row {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 16px !important;
-    align-items: end !important;
-  }
-  
-  .btn-validate {
-    grid-column: 2 !important;
-    justify-self: center !important;
-  }
-  
-  .select-pill:nth-child(5) { /* LONGUEUR */
-    grid-column: 3 !important;
-  }
-  
-  .action-buttons {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 12px !important;
-  }
-  
-  .btn-notes {
-    grid-column: 2 !important;
-    justify-self: center !important;
-  }
-  
-  .content-layout {
-    gap: 24px !important;
-  }
-  
-  .sidebar {
-    min-width: 280px !important;
-    max-width: 320px !important;
-  }
-  
-  .main-content {
-    flex: 1 !important;
-    padding: 24px !important;
-  }
-  
-  .rubrique-title {
-    font-size: 42px !important;
-  }
-}
+/* Tablette paysage (769px - 1024px) - Garde le layout desktop */
 
-/* Desktop (1025px+) - Restore original layout */
-@media (min-width: 1025px) {
-  /* Restaurer le layout desktop original */
-  .controls-row {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: center !important;
-    align-items: flex-end !important;
-    gap: 16px !important;
-    flex-wrap: wrap !important;
-    margin: 20px 0 !important;
-  }
-  
-  .select-pill {
-    width: auto !important;
-    min-width: 140px !important;
-  }
-  
-  .action-buttons {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 12px !important;
-    flex-wrap: wrap !important;
-    margin: 20px 0 !important;
-  }
-  
-  .btn-notes {
-    width: auto !important;
-    min-width: auto !important;
-    padding: 12px 24px !important;
-  }
-  
-  /* Layout 3 colonnes original */
-  .content-layout {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 30px !important;
-  }
-  
-  .sidebar {
-    width: 300px !important;
-    min-width: 300px !important;
-    max-width: 300px !important;
-    order: 1 !important;
-  }
-  
-  .main-content {
-    flex: 1 !important;
-    width: auto !important;
-    order: 2 !important;
-  }
-  
-  /* Titre normal */
-  .rubrique-title {
-    font-size: clamp(32px, 5vw, 48px) !important;
-  }
-  
-  /* Modal desktop */
-  .notes-modal {
-    max-width: 650px !important;
-  }
-  
-  .notes-textarea {
-    height: 350px !important;
-  }
-  
-  .notes-modal-footer {
-    flex-direction: row !important;
-  }
-  
-  .notes-modal-footer button {
-    width: auto !important;
-  }
-}
+/* Desktop - garde le layout par défaut */
 
 /* Écrans ultra-larges (1440px+) */
 @media (min-width: 1440px) {
@@ -741,10 +443,12 @@ p {
 ========================= */
 
 .controls-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 20px;
-  align-items: end;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
   margin-bottom: 30px;
   padding: 20px;
   background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
