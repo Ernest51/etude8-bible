@@ -255,14 +255,31 @@ function App() {
     return ["--", ...Array.from({ length: max }, (_, i) => i + 1)];
   }, [selectedBook]);
 
-  // Charger/sauver dernière étude
+  // Charger/sauver dernière étude et initialiser couleurs
   useEffect(() => {
     const saved = localStorage.getItem("lastBibleStudy");
     if (saved) { try { setLastStudy(JSON.parse(saved)); } catch(e){ console.error(e);} }
     const beforeUnload = () => saveCurrentStudy();
     window.addEventListener("beforeunload", beforeUnload);
+    
+    // Initialiser les couleurs du thème par défaut
+    const theme = colorThemes[currentTheme];
+    document.documentElement.style.setProperty('--theme-primary', `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`);
+    document.documentElement.style.setProperty('--theme-secondary', `linear-gradient(135deg, ${theme.secondary}, ${theme.primary})`);
+    document.documentElement.style.setProperty('--theme-accent', `linear-gradient(135deg, ${theme.accent}, ${theme.secondary})`);
+    
+    const hexToRgba = (hex, alpha) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+    
+    document.documentElement.style.setProperty('--theme-accent-shadow', hexToRgba(theme.accent, 0.3));
+    document.documentElement.style.setProperty('--theme-accent-shadow-hover', hexToRgba(theme.accent, 0.4));
+    
     return () => window.removeEventListener("beforeunload", beforeUnload);
-  }, []);
+  }, [currentTheme]);
 
   // Appliquer thème au chargement
   useEffect(() => {
@@ -433,9 +450,20 @@ function App() {
     const header = document.querySelector('.header-banner');
     if (header) header.style.background = theme.headerBg;
 
-    document.documentElement.style.setProperty('--theme-primary', theme.primary);
-    document.documentElement.style.setProperty('--theme-secondary', theme.secondary);
-    document.documentElement.style.setProperty('--theme-accent', theme.accent);
+    document.documentElement.style.setProperty('--theme-primary', `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`);
+    document.documentElement.style.setProperty('--theme-secondary', `linear-gradient(135deg, ${theme.secondary}, ${theme.primary})`);
+    document.documentElement.style.setProperty('--theme-accent', `linear-gradient(135deg, ${theme.accent}, ${theme.secondary})`);
+    
+    // Couleurs pour les ombres
+    const hexToRgba = (hex, alpha) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+    
+    document.documentElement.style.setProperty('--theme-accent-shadow', hexToRgba(theme.accent, 0.3));
+    document.documentElement.style.setProperty('--theme-accent-shadow-hover', hexToRgba(theme.accent, 0.4));
 
     const progressPill = document.querySelector('.progress-pill');
     if (progressPill) progressPill.style.background = theme.primary;

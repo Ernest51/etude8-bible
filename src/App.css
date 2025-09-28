@@ -325,18 +325,51 @@ strong {
 }
 
 .btn-read {
-  background: linear-gradient(135deg, #11998e, #38ef7d);
+  background: var(--theme-primary, linear-gradient(135deg, #3498db, #2980b9));
   color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(52,152,219,0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .btn-read:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(17,153,142,0.4);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 30px rgba(52,152,219,0.4);
 }
 
+/* Old btn-read:hover rule removed - replaced with new styling above */
+
 .btn-chat {
-  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  background: var(--theme-secondary, linear-gradient(135deg, #2ecc71, #27ae60));
   color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(46,204,113,0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-chat:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 30px rgba(46,204,113,0.4);
 }
 
 .btn-chat:hover {
@@ -2017,7 +2050,7 @@ strong {
 ========================= */
 
 .btn-notes {
-  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  background: var(--theme-accent, linear-gradient(135deg, #9b59b6, #8e44ad));
   color: white;
   border: none;
   padding: 12px 24px;
@@ -2025,7 +2058,7 @@ strong {
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(155,89,182,0.3);
+  box-shadow: 0 4px 15px var(--theme-accent-shadow, rgba(155,89,182,0.3));
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 12px;
@@ -2036,7 +2069,7 @@ strong {
 
 .btn-notes:hover {
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 10px 30px rgba(155,89,182,0.4);
+  box-shadow: 0 10px 30px var(--theme-accent-shadow-hover, rgba(155,89,182,0.4));
 }
 
 /* =========================
