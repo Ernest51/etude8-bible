@@ -622,6 +622,33 @@ Même la capacité humaine de répondre à Dieu, de le connaître et de l'adorer
 Cette perspective évangélique de la création nourrit notre gratitude et nous prépare à mieux saisir la grandeur de la grâce salvatrice manifestée en Christ Jésus notre Seigneur.`;
   };
 
+  // Fonction générique pour contenu par défaut selon la longueur
+  const generateDefaultContent = (rubriqueTitle, passage, book, chapter, targetLength) => {
+    const baseContent = `**${rubriqueTitle}** dans le contexte de ${passage}
+
+Cette rubrique examine ${passage} sous l'angle de "${rubriqueTitle}". L'analyse révèle des vérités importantes pour notre compréhension théologique et notre marche chrétienne selon la sainte doctrine.
+
+**Enseignement biblique :** ${passage} nous instruit sur la nature de Dieu et son œuvre dans l'histoire du salut.
+**Application pratique :** Ces vérités transforment notre relation avec le Créateur et notre vision du monde.`;
+
+    // Étendre le contenu selon la longueur cible
+    if (targetLength >= 1500) {
+      return baseContent + `
+
+La narration scripturaire nous invite à une méditation approfondie sur les implications de ce passage. L'Esprit Saint, par sa grâce illuminatrice, nous révèle les richesses cachées de la Parole divine. Cette section de l'Écriture s'inscrit dans le grand dessein rédempteur de Dieu, préparant la venue du Messie et l'établissement de son royaume éternel.
+
+Dans la tradition réformée, nous reconnaissons l'autorité suprême de l'Écriture comme règle de foi et de vie. Ce passage contribue à édifier l'Église dans la connaissance de Dieu et dans la sanctification progressive des croyants.
+
+**Dimension théologique :** L'étude de ${passage} enrichit notre compréhension de la nature divine et de ses attributs selon la révélation biblique.
+**Portée sotériologique :** Ce texte contribue à notre compréhension du salut par grâce seule, par la foi seule, en Christ seul.
+**Perspective eschatologique :** Les vérités révélées ici éclairent notre espérance en la consommation du royaume de Dieu et en la restauration de toutes choses.
+
+La sagesse divine se manifeste dans chaque détail de ce texte, invitant le peuple de Dieu à une adoration plus profonde et à une obéissance plus fidèle.`;
+    }
+
+    return baseContent;
+  };
+
   // Fonctions génériques pour les autres rubriques
   const generateCulturalContextContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Contexte culturel", passage, book, chapter, targetLength);
