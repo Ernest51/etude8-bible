@@ -1,12 +1,9 @@
 {
-  "timestamp": "2025-09-29T04:37:00Z",
-  "version": "2.1.0",
-  "features": [
-    "Rubrique 0 - Étude verset par verset fonctionnelle",
-    "Rubriques 1-28 - Études thématiques fonctionnelles", 
-    "Bible de Concordance intégrée",
-    "Design glassmorphism moderne",
-    "Cohabitation des deux systèmes testée"
-  ],
-  "status": "READY_FOR_USER_TESTING"
+  "timestamp": "2025-09-29T04:46:00Z",
+  "version": "2.1.1-HOTFIX",
+  "critical_fix": "API URL correction for verse-by-verse generation",
+  "before": "verse-insight.preview.emergentagent.com/api/generate-verse-by-verse",
+  "after": "etude8-bible-api-production.up.railway.app/api/generate-verse-by-verse",
+  "test_result": "4750 characters generated successfully for Genesis 1",
+  "status": "HOTFIX_DEPLOYED"
 }
