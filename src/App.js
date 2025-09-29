@@ -1601,18 +1601,36 @@ ${contextualEnrichment}
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/^\# (.*$)/gim, "<h1>$1</h1>")
       .replace(/^\## (.*$)/gim, "<h2>$1</h2>")
-      .replace(/^\### (.*$)/gim, "<h3>$1</h3>")
+      .replace(/^\### (.*$)/gim, "<h3>$1</h3>");
+
+    // Traitement spécial pour éviter de wrapper les headers dans des <p>
+    if (context === 'versets-prog') {
+      // Diviser le texte en blocs et traiter chaque bloc séparément
+      let blocks = formattedText.split(/\n\s*\n/);
+      let processedBlocks = blocks.map(block => {
+        block = block.trim();
+        if (!block) return "";
+        
+        // Si le bloc commence par un header, ne pas le wrapper
+        if (block.match(/^<h[1-6]/i) || block.match(/^<h[1-6][^>]*class=['"](?:verset-header|texte-biblique-label|explication-label)['"][^>]*>/i)) {
+          return block;
+        }
+        
+        // Sinon, wrapper dans un paragraphe
+        return `<p>${block.replace(/\n/g, "<br>")}</p>`;
+      }).filter(block => block);
+      
+      return `<div class="versets-prog-content">${processedBlocks.join("")}</div>`;
+    }
+    
+    // Pour les autres contextes, traitement normal
+    formattedText = formattedText
       .split("\n\n")
       .map(p => (p.trim() ? `<p>${p.replace(/\n/g, "<br>")}</p>` : ""))
       .join("");
 
     // Appliquer la transformation des références bibliques
     formattedText = transformBibleReferences(formattedText);
-
-    // Wrapper spécial pour le contexte VERSETS PROG
-    if (context === 'versets-prog') {
-      return `<div class="versets-prog-content">${formattedText}</div>`;
-    }
     
     return formattedText;
   };
