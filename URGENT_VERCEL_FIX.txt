@@ -1,0 +1,24 @@
+URGENT VERCEL DEPLOYMENT - RAILWAY URL FORCÉE - 2025-09-29 04:57
+
+🔥 PROBLÈME VERCEL IDENTIFIÉ ET RÉSOLU :
+- CAUSE: URL API non forcée vers Railway sur Vercel
+- SOLUTION: URL Railway forcée ligne 1241 dans App.js
+- TEST LOCAL: ✅ 5117 caractères générés pour Genèse 1:1-2
+
+🎯 CORRECTION APPLIQUÉE :
+const versetAPIUrl = "https://etude8-bible-api-production.up.railway.app/api/generate-verse-by-verse";
+console.log("[VERSETS PROG] URL forcée Railway:", versetAPIUrl);
+
+✅ LOGS DE SUCCÈS LOCAL :
+- "[VERSETS PROG] URL forcée Railway: https://etude8-bible-api-production.up.railway.app/api/generate-verse-by-verse"
+- "[API RAILWAY OK] Contenu reçu: 4750 caractères"
+- "[SUCCESS] Contenu VERSETS PROG affiché correctement"
+
+✅ CONTENU GÉNÉRÉ CONFIRMÉ :
+- VERSET 1 avec Genèse 1:1
+- VERSET 2 avec Genèse 1:2  
+- TEXTE BIBLIQUE et EXPLICATION THÉOLOGIQUE
+- Rubrique 0 complétée avec ✓
+
+📤 FICHIER SYNCHRONISÉ VERS VERCEL : /app/src/App.js
+🚀 READY FOR VERCEL DEPLOYMENT
