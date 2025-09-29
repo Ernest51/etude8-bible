@@ -2498,8 +2498,7 @@ strong {
 /* Mobile - Adaptation spécifique */
 @media (max-width: 768px) {
   /* Masquer le texte de bienvenue sur mobile */
-  .main-container > p:first-of-type,
-  .main-container p:contains("Bienvenue dans votre espace d'étude") {
+  .desktop-only {
     display: none !important;
   }
 
