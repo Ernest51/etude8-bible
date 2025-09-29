@@ -934,7 +934,7 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
         
         // Récupérer le contenu spécifique de cette rubrique
         const rubriqueContent = rubriques[currentRubrique] || 
-          `Contenu spécifique pour **${rubriqueTitle}** basé sur ${passage}.\n\nAnalyse théologique en cours...`;
+          generateRubriqueContent(currentRubrique, rubriqueTitle, passage, selectedBook, selectedChapter);
         
         // Remplacer le "Génération en cours..." par le vrai contenu
         accumulatedContent = accumulatedContent.replace(`## ${currentRubrique}. ${rubriqueTitle}\n\n🔄 Génération en cours...`, 
