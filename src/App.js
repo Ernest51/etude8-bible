@@ -976,8 +976,9 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
         ? `${selectedBook || 'Genèse'} ${selectedChapter || '1'}`
         : `${selectedBook || 'Genèse'} ${selectedChapter || '1'}:${selectedVerse}`;
 
-      // 🔹 COMMENCER PAR LA RUBRIQUE 1 UNIQUEMENT
+      // 🔹 COMMENCER PAR LA RUBRIQUE 1 UNIQUEMENT ET NAVIGUER VERS ELLE
       await generateSingleRubrique(1, "Prière d'ouverture", passage);
+      setActiveRubrique(1); // Se positionner sur la rubrique 1
       
     } catch (error) {
       console.error("[ERREUR GÉNÉRATION]", error);
