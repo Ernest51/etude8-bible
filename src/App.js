@@ -914,13 +914,12 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       
       console.log(`[PARSING] ${rubriques.length} rubriques extraites`);
       
-      // Affichage progressif des rubriques
+      // Affichage progressif des rubriques 1-28 (PAS la rubrique 0)
       let accumulatedContent = `# Étude Complète - ${passage}\n\n`;
-      const totalRubriques = BASE_RUBRIQUES.length;
+      const totalRubriques = 28; // Seulement les rubriques 1-28
       
-      for (let rubriqueIndex = 0; rubriqueIndex < totalRubriques; rubriqueIndex++) {
-        const currentRubrique = rubriqueIndex + 1; // Rubriques 1-28
-        const rubriqueTitle = BASE_RUBRIQUES[rubriqueIndex]; // C'est un string, pas un objet
+      for (let currentRubrique = 1; currentRubrique <= totalRubriques; currentRubrique++) {
+        const rubriqueTitle = BASE_RUBRIQUES[currentRubrique]; // Index correct : BASE_RUBRIQUES[1] = "Prière d'ouverture"
         
         // Marquer la rubrique courante en cours
         setRubriquesStatus(p => ({ ...p, [currentRubrique]: "in-progress" }));
@@ -929,12 +928,17 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
         const progress = Math.round(30 + ((currentRubrique) / totalRubriques) * 70);
         setProgressPercent(progress);
         
+        // Affichage progressif : montrer le titre avant de récupérer le contenu
+        accumulatedContent += `\n\n## ${currentRubrique}. ${rubriqueTitle}\n\n🔄 Génération en cours...`;
+        setContent(formatContent(accumulatedContent));
+        
         // Récupérer le contenu spécifique de cette rubrique
         const rubriqueContent = rubriques[currentRubrique] || 
-          `**${rubriqueTitle}** pour ${passage}\n\nContenu en cours d'extraction...`;
+          `Contenu spécifique pour **${rubriqueTitle}** basé sur ${passage}.\n\nAnalyse théologique en cours...`;
         
-        // Ajouter le contenu au résultat accumulé
-        accumulatedContent += `\n\n## ${currentRubrique}. ${rubriqueTitle}\n\n${rubriqueContent}`;
+        // Remplacer le "Génération en cours..." par le vrai contenu
+        accumulatedContent = accumulatedContent.replace(`## ${currentRubrique}. ${rubriqueTitle}\n\n🔄 Génération en cours...`, 
+          `## ${currentRubrique}. ${rubriqueTitle}\n\n${rubriqueContent}`);
         
         // Marquer cette rubrique comme terminée
         setRubriquesStatus(p => ({ ...p, [currentRubrique]: "completed" }));
@@ -942,8 +946,8 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
         // Afficher le contenu mis à jour
         setContent(formatContent(accumulatedContent));
         
-        // Délai pour l'effet visuel progressif
-        await wait(100);
+        // Délai entre les rubriques pour l'effet visuel progressif
+        await wait(800);
       }
       
       // 🔹 ÉTAPE 3: Finalisation
