@@ -2485,3 +2485,167 @@ strong {
     padding: 14px;
   }
 }
+
+/* ==========================================
+   ADAPTATION MOBILE RESPONSIVE 
+   ========================================== */
+
+/* Desktop - Garder tout tel quel (pas de changement) */
+@media (min-width: 769px) {
+  /* Aucune modification desktop - tout reste identique */
+}
+
+/* Mobile - Adaptation spécifique */
+@media (max-width: 768px) {
+  /* Masquer le texte de bienvenue sur mobile */
+  .main-container > p:first-of-type,
+  .main-container p:contains("Bienvenue dans votre espace d'étude") {
+    display: none !important;
+  }
+
+  /* Layout mobile principal */
+  .main-container {
+    flex-direction: column !important;
+    padding: 10px !important;
+    gap: 15px !important;
+  }
+
+  /* Contrôles en haut - compacts sur mobile */
+  .controls-section {
+    order: 1;
+    width: 100% !important;
+    max-width: none !important;
+    margin-bottom: 15px;
+  }
+
+  .control-group {
+    margin-bottom: 10px;
+  }
+
+  .control-group select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px; /* Éviter le zoom sur iOS */
+  }
+
+  /* Boutons de contrôle - adaptés mobile */
+  .btn-validate, .btn-read, .btn-chat, .btn-quick, .btn-notes, .btn-concordance {
+    width: 100% !important;
+    margin: 5px 0 !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+  }
+
+  /* ZONE DE CONTENU - EN BAS ET PLEINE LARGEUR */
+  .content-section {
+    order: 2;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Contenu généré - PLEINEMENT DE GAUCHE À DROITE */
+  .content-display {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 15px !important;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+    /* Assurer que le texte s'étend complètement */
+    box-sizing: border-box;
+  }
+
+  /* Contenu VERSETS PROG - Adaptation mobile */
+  .versets-prog-content {
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .versets-prog-content .verset-header {
+    font-size: 18px !important;
+    margin: 15px 0 10px 0 !important;
+    padding: 12px 15px !important;
+  }
+
+  .versets-prog-content .texte-biblique-label,
+  .versets-prog-content .explication-label {
+    font-size: 14px !important;
+    margin: 10px 0 8px 0 !important;
+    padding: 8px 12px !important;
+  }
+
+  .versets-prog-content p {
+    margin: 0 0 15px 0 !important;
+    padding: 0 !important;
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+    /* Texte s'étend complètement de gauche à droite */
+    width: 100%;
+    text-align: justify;
+  }
+
+  /* Rubriques - Adaptation mobile */
+  .rubrique-navigation {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .rubrique-button {
+    width: 100% !important;
+    margin: 2px 0 !important;
+  }
+
+  /* Notes modal - Adaptation mobile */
+  .notes-modal {
+    width: 95% !important;
+    max-width: 95% !important;
+    margin: 10px !important;
+  }
+
+  .notes-textarea {
+    font-size: 16px !important; /* Éviter le zoom iOS */
+  }
+
+  /* Concordance modal - Adaptation mobile */
+  .concordance-modal {
+    width: 95% !important;
+    max-width: 95% !important;
+  }
+
+  /* Progress bar - Plus compact sur mobile */
+  .progress-container {
+    margin: 10px 0 !important;
+  }
+
+  /* Boutons spéciaux - Pleine largeur mobile */
+  .btn-versets-prog, .btn-gemini, .btn-continue {
+    width: 100% !important;
+    margin: 8px 0 !important;
+    padding: 14px 20px !important;
+  }
+}
+
+/* Très petits écrans (téléphones en portrait) */
+@media (max-width: 480px) {
+  .main-container {
+    padding: 5px !important;
+  }
+
+  .content-display {
+    padding: 12px !important;
+    font-size: 15px !important;
+  }
+
+  .versets-prog-content .verset-header {
+    font-size: 16px !important;
+  }
+}
+
+/* Fin de l'adaptation mobile */
+/* ========================================== */
