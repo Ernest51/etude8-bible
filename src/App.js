@@ -590,6 +590,29 @@ L'historicité du récit, débattue dans les cercles académiques contemporains,
 Cette perspective historique enrichit notre compréhension et renforce notre foi en la véracité de la révélation divine face aux idéologies contemporaines qui tentent de réduire l'homme à un simple produit du hasard évolutif.`;
   };
 
+  // Fonction générique pour contenu par défaut
+  const generateDefaultContent = (rubriqueTitle, passage, book, chapter, targetLength) => {
+    const baseContent = `**${rubriqueTitle}** dans le contexte de ${passage}
+
+Cette rubrique examine ${passage} sous l'angle de "${rubriqueTitle}". L'analyse révèle des vérités importantes pour notre compréhension théologique et notre marche chrétienne.
+
+**Enseignement biblique :** ${passage} nous instruit sur la nature de Dieu et son œuvre dans l'histoire du salut.
+**Application pratique :** Ces vérités transforment notre relation avec le Créateur et notre vision du monde.`;
+
+    // Étendre le contenu selon la longueur cible
+    if (targetLength >= 1500) {
+      return baseContent + `
+
+La narration scripturaire nous invite à une méditation approfondie sur les implications de ce passage. L'Esprit Saint, par sa grâce illuminatrice, nous révèle les richesses cachées de la Parole divine. Cette section de l'Écriture s'inscrit dans le grand dessein rédempteur de Dieu, préparant la venue du Messie et l'établissement de son royaume éternel.
+
+**Dimension théologique :** L'étude de ${passage} enrichit notre compréhension de la nature divine et de ses attributs.
+**Portée sotériologique :** Ce texte contribue à notre compréhension du salut par grâce au moyen de la foi.
+**Perspective eschatologique :** Les vérités révélées ici éclairent notre espérance en la consommation du royaume de Dieu.`;
+    }
+
+    return baseContent;
+  };
+
   // Fonction pour Christ au centre (2000 caractères) - Très théologique et narratif
   const generateChristCenteredContent = (passage, book, chapter, targetLength) => {
     return `La lecture christocentrique de ${passage} révèle la présence du Fils éternel dès l'œuvre créatrice. L'Écriture nous enseigne que "toutes choses ont été faites par lui, et rien de ce qui a été fait n'a été fait sans lui" (Jean 1:3). Cette vérité transforme radicalement notre compréhension de la création.
@@ -622,120 +645,85 @@ Même la capacité humaine de répondre à Dieu, de le connaître et de l'adorer
 Cette perspective évangélique de la création nourrit notre gratitude et nous prépare à mieux saisir la grandeur de la grâce salvatrice manifestée en Christ Jésus notre Seigneur.`;
   };
 
-  // Fonction générique pour contenu par défaut selon la longueur
-  const generateDefaultContent = (rubriqueTitle, passage, book, chapter, targetLength) => {
-    const baseContent = `**${rubriqueTitle}** dans le contexte de ${passage}
-
-Cette rubrique examine ${passage} sous l'angle de "${rubriqueTitle}". L'analyse révèle des vérités importantes pour notre compréhension théologique et notre marche chrétienne selon la sainte doctrine.
-
-**Enseignement biblique :** ${passage} nous instruit sur la nature de Dieu et son œuvre dans l'histoire du salut.
-**Application pratique :** Ces vérités transforment notre relation avec le Créateur et notre vision du monde.`;
-
-    // Étendre le contenu selon la longueur cible
-    if (targetLength >= 1500) {
-      return baseContent + `
-
-La narration scripturaire nous invite à une méditation approfondie sur les implications de ce passage. L'Esprit Saint, par sa grâce illuminatrice, nous révèle les richesses cachées de la Parole divine. Cette section de l'Écriture s'inscrit dans le grand dessein rédempteur de Dieu, préparant la venue du Messie et l'établissement de son royaume éternel.
-
-Dans la tradition réformée, nous reconnaissons l'autorité suprême de l'Écriture comme règle de foi et de vie. Ce passage contribue à édifier l'Église dans la connaissance de Dieu et dans la sanctification progressive des croyants.
-
-**Dimension théologique :** L'étude de ${passage} enrichit notre compréhension de la nature divine et de ses attributs selon la révélation biblique.
-**Portée sotériologique :** Ce texte contribue à notre compréhension du salut par grâce seule, par la foi seule, en Christ seul.
-**Perspective eschatologique :** Les vérités révélées ici éclairent notre espérance en la consommation du royaume de Dieu et en la restauration de toutes choses.
-
-La sagesse divine se manifeste dans chaque détail de ce texte, invitant le peuple de Dieu à une adoration plus profonde et à une obéissance plus fidèle.`;
-    }
-
-    return baseContent;
-  };
-
-  // Fonctions génériques pour les autres rubriques
+  // Ajouter d'autres fonctions pour les rubriques restantes...
   const generateCulturalContextContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Contexte culturel", passage, book, chapter, targetLength);
   };
+
   const generateGeographicalContextContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Contexte géographique", passage, book, chapter, targetLength);
   };
+
   const generateLexicalAnalysisContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Analyse lexicale", passage, book, chapter, targetLength);
   };
+
   const generateBiblicalParallelsContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Parallèles bibliques", passage, book, chapter, targetLength);
   };
+
   const generateProphecyContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Prophétie et accomplissement", passage, book, chapter, targetLength);
   };
+
   const generateCharactersContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Personnages", passage, book, chapter, targetLength);
   };
+
   const generateRhetoricalStructureContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Structure rhétorique", passage, book, chapter, targetLength);
   };
+
   const generateTrinityTheologyContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Théologie trinitaire", passage, book, chapter, targetLength);
   };
+
   const generatePersonalApplicationContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Application personnelle", passage, book, chapter, targetLength);
   };
+
   const generateCommunityApplicationContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Application communautaire", passage, book, chapter, targetLength);
   };
+
   const generateResponsePrayerContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Prière de réponse", passage, book, chapter, targetLength);
   };
+
   const generateStudyQuestionsContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Questions d'étude", passage, book, chapter, targetLength);
   };
+
   const generateVigilancePointsContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Points de vigilance", passage, book, chapter, targetLength);
   };
+
   const generateObjectionsResponsesContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Objections et réponses", passage, book, chapter, targetLength);
   };
+
   const generateMissionalPerspectiveContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Perspective missionnelle", passage, book, chapter, targetLength);
   };
+
   const generateChristianEthicsContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Éthique chrétienne", passage, book, chapter, targetLength);
   };
+
   const generateWorshipLiturgyContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Louange / liturgie", passage, book, chapter, targetLength);
   };
+
   const generateGuidedMeditationContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Méditation guidée", passage, book, chapter, targetLength);
   };
+
   const generateMemoryVersesContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Mémoire / versets clés", passage, book, chapter, targetLength);
   };
+
   const generateActionPlanContent = (passage, book, chapter, targetLength) => {
     return generateDefaultContent("Plan d'action", passage, book, chapter, targetLength);
-  };
-
-  // Fonction pour générer du contenu par défaut selon la longueur
-  const generateDefaultContent = (rubriqueTitle, passage, book, chapter, targetLength) => {
-    const baseContent = `**${rubriqueTitle}** dans le contexte de ${passage}
-
-Cette rubrique examine ${passage} sous l'angle de "${rubriqueTitle}". L'analyse révèle des vérités importantes pour notre compréhension théologique et notre marche chrétienne selon la sainte doctrine.
-
-**Enseignement biblique :** ${passage} nous instruit sur la nature de Dieu et son œuvre dans l'histoire du salut.
-**Application pratique :** Ces vérités transforment notre relation avec le Créateur et notre vision du monde.`;
-
-    // Étendre le contenu selon la longueur cible
-    if (targetLength >= 1500) {
-      return baseContent + `
-
-La narration scripturaire nous invite à une méditation approfondie sur les implications de ce passage. L'Esprit Saint, par sa grâce illuminatrice, nous révèle les richesses cachées de la Parole divine. Cette section de l'Écriture s'inscrit dans le grand dessein rédempteur de Dieu, préparant la venue du Messie et l'établissement de son royaume éternel.
-
-Dans la tradition réformée, nous reconnaissons l'autorité suprême de l'Écriture comme règle de foi et de vie. Ce passage contribue à édifier l'Église dans la connaissance de Dieu et dans la sanctification progressive des croyants.
-
-**Dimension théologique :** L'étude de ${passage} enrichit notre compréhension de la nature divine et de ses attributs selon la révélation biblique.
-**Portée sotériologique :** Ce texte contribue à notre compréhension du salut par grâce seule, par la foi seule, en Christ seul.
-**Perspective eschatologique :** Les vérités révélées ici éclairent notre espérance en la consommation du royaume de Dieu et en la restauration de toutes choses.
-
-La sagesse divine se manifeste dans chaque détail de ce texte, invitant le peuple de Dieu à une adoration plus profonde et à une obéissance plus fidèle.`;
-    }
-
-    return baseContent;
   };
 
   // Fonction pour générer un contenu fallback intelligent
@@ -990,8 +978,7 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       const contentEnCours = `# Étude - ${passage}\n\n## ${rubriqueNum}. ${rubriqueTitle}\n\n🔄 Génération intelligente en cours...`;
       setContent(formatContent(contentEnCours));
       
-      // Générer le contenu intelligent théologique local (qualité maximale)
-      console.log(`[GÉNÉRATION LOCALE FORCÉE] Rubrique ${rubriqueNum} avec contenu théologique sophistiqué`);
+      // Générer le contenu intelligent pour cette rubrique
       const rubriqueContent = generateRubriqueContent(rubriqueNum, rubriqueTitle, passage, selectedBook, selectedChapter);
       
       // Délai pour effet visuel
@@ -999,10 +986,15 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       
       // Afficher le contenu final
       const contentFinal = `# Étude - ${passage}\n\n## ${rubriqueNum}. ${rubriqueTitle}\n\n${rubriqueContent}`;
-      setContent(formatContent(contentFinal));
+      const formattedContent = formatContent(contentFinal);
+      setContent(formattedContent);
       
-      // Sauvegarder le contenu localement
-      localStorage.setItem(`rubrique_${rubriqueNum}_${selectedBook}_${selectedChapter}`, formatContent(contentFinal));
+      // Sauvegarder le contenu dans l'état (plus fiable que localStorage)
+      const contentKey = `${selectedBook}_${selectedChapter}_${rubriqueNum}`;
+      setGeneratedRubriques(prev => ({
+        ...prev,
+        [contentKey]: formattedContent
+      }));
       
       // Marquer comme terminé
       setRubriquesStatus(p => ({ ...p, [rubriqueNum]: "completed" }));
@@ -1246,9 +1238,9 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
         const data = await response.json();
         console.log(`[API SUCCESS RUBRIQUE ${rubriqueNum}]`, data.content ? data.content.length : 0, "caractères");
         
-        // FORCER L'UTILISATION DU CONTENU INTELLIGENT LOCAL AU LIEU DE L'API
-        console.log(`[FORCE LOCAL CONTENT] Génération locale pour qualité théologique maximale`);
-        rubriqueContent = generateRubriqueContent(rubriqueNum, rubriqueTitle, passage, selectedBook, selectedChapter);
+        // Parser pour extraire SEULEMENT cette rubrique
+        const rubriques = parseRubriquesContent(data.content || "");
+        rubriqueContent = rubriques[rubriqueNum];
         
       } catch (apiError) {
         console.warn(`[API BLOQUÉE RUBRIQUE ${rubriqueNum}] ${apiError.message}`);
@@ -1258,7 +1250,7 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       
       setProgressPercent(80);
       
-      // S'assurer que le contenu est toujours intelligent et théologique
+      // Si pas de contenu spécifique, utiliser le générateur intelligent
       if (!rubriqueContent || rubriqueContent.length < 50) {
         rubriqueContent = generateRubriqueContent(rubriqueNum, rubriqueTitle, passage, selectedBook, selectedChapter);
       }
@@ -1268,7 +1260,7 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       const formattedContent = formatContent(contentFinal);
       setContent(formattedContent);
       
-      // Sauvegarder dans l'état pour persistance
+      // Sauvegarder dans l'état pour la fonction generateSingleRubrique aussi
       const contentKey = `${selectedBook}_${selectedChapter}_${rubriqueNum}`;
       setGeneratedRubriques(prev => ({
         ...prev,
@@ -1285,25 +1277,6 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       console.error(`[ERREUR RUBRIQUE ${rubriqueNum}]`, error);
       setRubriquesStatus(p => ({ ...p, [rubriqueNum]: "error" }));
       throw error;
-    }
-      
-      // 🔹 ÉTAPE 3: Finalisation
-      setProgressPercent(100);
-      setContent(formatContent(accumulatedContent));
-      console.log("[GÉNÉRATION 28 RUBRIQUES] Terminée avec succès");
-      
-    } catch (err) {
-      console.error("Erreur génération 28 rubriques:", err);
-      setContent(`Erreur lors de la génération des 28 rubriques: ${err.message}`);
-      
-      // Marquer toutes les rubriques en erreur
-      const errorStatus = {};
-      BASE_RUBRIQUES.forEach((_, i) => errorStatus[i + 1] = "error");
-      setRubriquesStatus(errorStatus);
-      
-    } finally {
-      setIsLoading(false);
-      setProgressPercent(100);
     }
   };
 
