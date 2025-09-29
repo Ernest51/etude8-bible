@@ -1,0 +1,29 @@
+// Fonctions pour générer le contenu des rubriques selon la doctrine
+
+// Fonction pour structure littéraire (500 caractères)
+export const generateStructureContent = (passage, book, chapter, targetLength) => {
+  return `L'architecture littéraire de ${passage} révèle l'ordre divin dans la création. Cette structure en sept jours manifeste la perfection divine : trois jours de séparation (lumière/ténèbres, eaux/eaux, terre/mer) suivis de trois jours de peuplement (luminaires, animaux aquatiques et volants, animaux terrestres et l'homme). Le septième jour couronne l'œuvre par le repos divin, établissant le principe du sabbat. Cette progression méthodique "Dieu dit... et cela fut... Dieu vit que cela était bon" démontre la souveraineté divine.`;
+};
+
+// Fonction pour questions du chapitre précédent (500 caractères)
+export const generatePreviousChapterContent = (passage, book, chapter, targetLength) => {
+  if (chapter === "1") {
+    return `${passage} ouvre le récit biblique sans prologue humain, plongeant directement dans l'acte créateur divin. Cette ouverture majestueuse établit Dieu comme l'acteur principal de l'histoire. L'absence de contexte préalable souligne l'éternité et la primauté divines. Cette introduction théologique prépare tout le développement biblique ultérieur, posant les fondements de l'alliance, de la révélation progressive et du plan de salut qui se déploieront dans toute l'Écriture.`;
+  }
+  return `L'étude de ${passage} s'inscrit dans la continuité du récit biblique. Les événements précédents éclairent la compréhension de ce passage et préparent les développements théologiques qui suivront.`;
+};
+
+// Fonction pour thème doctrinal (500 caractères)
+export const generateDoctrinalThemeContent = (passage, book, chapter, targetLength) => {
+  return `Le thème doctrinal central de ${passage} proclame la souveraineté créatrice de Dieu. Trois vérités fondamentales émergent : l'existence éternelle de Dieu avant toute création, sa parole efficace qui appelle à l'existence ce qui n'était pas, et sa bonne volonté envers son œuvre. L'homme, créé à l'image divine, reçoit la dignité unique de représentant de Dieu sur terre. Le sabbat établit le rythme divin entre travail et repos, révélant la nature même de Dieu dans l'alternance activité/contemplation.`;
+};
+
+// Fonction pour fondements théologiques (1500 caractères) - Plus narratif et théologique
+export const generateTheologicalFoundationsContent = (passage, book, chapter, targetLength) => {
+  return `La narration de ${passage} établit les piliers théologiques de la foi chrétienne avec une profondeur doctrinale remarquable. L'Écriture nous enseigne ici que Dieu, dans sa trinité éternelle, précède toute réalité créée. "Au commencement était Dieu" – cette déclaration fondamentale révèle l'antériorité divine sur le temps et l'espace.\n\nLa création ex nihilo (à partir du néant) manifeste la toute-puissance divine. Contrairement aux cosmogonies païennes qui décrivent des divinités luttant contre le chaos préexistant, l'Écriture présente un Dieu souverain qui, par sa seule parole, fait surgir l'univers entier. Cette doctrine fondamentale distingue radicalement la foi biblique de toute philosophie naturaliste ou panthéiste.\n\nL'anthropologie biblique trouve ici ses racines : l'homme, créé à l'image de Dieu (imago Dei), reçoit une dignité unique dans la création. Cette ressemblance divine ne réside pas dans la corporéité mais dans les facultés spirituelles : intelligence, volonté, capacité relationnelle et responsabilité morale. L'homme devient ainsi le vice-gérent de Dieu sur terre.\n\nLe sabbat révèle la nature contemplative de Dieu. En se reposant le septième jour, Dieu établit un modèle pour l'humanité : l'alternance entre action créatrice et contemplation adoratrice. Cette institution préfigure le repos éternel promis au peuple de Dieu et trouve son accomplissement en Christ, notre repos sabbatique véritable.\n\nCes fondements théologiques nourrissent la foi chrétienne depuis des millénaires et demeurent inébranlables face aux défis contemporains.`;
+};
+
+// Fonction pour contexte historique (1500 caractères) - Plus narratif et théologique
+export const generateHistoricalContextContent = (passage, book, chapter, targetLength) => {
+  return `L'étude du contexte historique de ${passage} nous plonge dans l'univers du Proche-Orient ancien, où les cosmogonies babyloniennes et égyptiennes dominaient la pensée religieuse. Dans ce milieu culturel saturé de mythologies, la révélation biblique émerge comme une voix prophétique unique et révolutionnaire.\n\nLes récits babyloniens comme l'Enuma Elish présentent la création comme le résultat de conflits titanesques entre divinités primordiales. Marduk vainc Tiamat, déesse du chaos, et de son cadavre forme le cosmos. Ces mythes reflètent une vision cyclique du temps et une compréhension polythéiste du divin. La révélation mosaïque s'oppose radicalement à ces conceptions.\n\nL'Écriture proclame un Dieu unique, éternel, qui crée par sa parole sans opposition ni combat. Cette vérité révélée corrige les erreurs théologiques de l'environnement culturel israélite. Le peuple de Dieu reçoit ainsi une compréhension purifiée de la divinité, libérée des superstitions et des craintes liées aux forces naturelles divinisées.\n\nL'historicité du récit, débattue dans les cercles académiques contemporains, ne diminue en rien sa portée théologique. Que l'on adopte une lecture littérale ou littéraire, l'enseignement doctrinal demeure inchangé : Dieu est le créateur souverain, l'homme porte son image, et la création révèle sa gloire.\n\nCette perspective historique enrichit notre compréhension et renforce notre foi en la véracité de la révélation divine face aux idéologies contemporaines qui tentent de réduire l'homme à un simple produit du hasard évolutif.`;
+};
