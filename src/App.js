@@ -430,9 +430,30 @@ function App() {
     
     for (let i = 1; i < sections.length; i += 2) {
       const rubriqueNumber = parseInt(sections[i]);
-      const rubriqueContent = sections[i + 1] ? sections[i + 1].trim() : "";
+      let rubriqueContent = sections[i + 1] ? sections[i + 1].trim() : "";
       
-      if (rubriqueNumber >= 1 && rubriqueNumber <= 28) {
+      // Nettoyer le contenu et extraire le titre de la rubrique
+      if (rubriqueContent) {
+        // Supprimer le titre de la rubrique s'il est répété
+        rubriqueContent = rubriqueContent.replace(/^[^\n]*\n/, '').trim();
+        
+        // Formatage spécifique selon le contenu de l'API
+        if (rubriqueContent.includes('- Adoration :')) {
+          // C'est la rubrique 1 (Prière d'ouverture)
+          rubriqueContent = rubriqueContent
+            .replace(/- Adoration : reconnaître Dieu pour qui Il est\./, '**Adoration :** Reconnaissons Dieu pour qui Il est dans sa grandeur et sa sainteté.')
+            .replace(/- Confession : se placer dans la lumière\./, '**Confession :** Plaçons-nous humblement dans la lumière de sa vérité.')
+            .replace(/- Demande : sagesse et compréhension du passage\./, '**Demande :** Accordez-nous, Seigneur, sagesse et compréhension pour saisir les vérités de ce passage.');
+        } else if (rubriqueContent.includes('- Contexte')) {
+          // Autres rubriques avec format contexte/lien/application
+          rubriqueContent = rubriqueContent
+            .replace(/- Contexte \([^)]+\) : ([^.]+)\./g, '**Contexte :** $1')
+            .replace(/- Lien biblique : ([^.]+)\./g, '**Lien biblique :** $1')
+            .replace(/- Application : une mise en pratique concrète\./g, '**Application :** Mise en pratique concrète dans notre marche quotidienne.');
+        }
+      }
+      
+      if (rubriqueNumber >= 1 && rubriqueNumber <= 28 && rubriqueContent) {
         rubriques[rubriqueNumber] = rubriqueContent;
       }
     }
