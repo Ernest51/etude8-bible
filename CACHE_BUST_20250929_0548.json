@@ -1,0 +1,10 @@
+{
+  "cache_invalidation_timestamp": "2025-09-29T05:48:00Z",
+  "issue": "Vercel cache not showing Bible Concordance button",
+  "local_status": "✅ Button visible and functional",
+  "vercel_status": "❌ Button not visible (cache issue)",
+  "solution": "Force cache invalidation with visible text change",
+  "change_made": "Bible de Concordance → BIBLE DE CONCORDANCE",
+  "expected_result": "Button visibility on Vercel after deployment",
+  "cache_bust_id": "CONCORDANCE_BUTTON_FIX_20250929"
+}
