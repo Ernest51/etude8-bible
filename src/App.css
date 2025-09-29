@@ -406,98 +406,144 @@ strong {
     0 5px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* Boutons de contrôle - Design moderne unifié */
-.btn-validate, .btn-read, .btn-chat, .btn-quick, .btn-notes {
-  padding: 16px 24px;
+/* ==========================================
+   BOUTONS DE CONTRÔLE - DESIGN MODERNE HARMONISÉ
+   ========================================== */
+
+/* Base commune pour tous les boutons de contrôle */
+.btn-validate, .btn-read, .btn-chat, .btn-quick, .btn-notes, .btn-concordance {
+  padding: 14px 28px;
   border: none;
-  border-radius: 16px;
-  font-weight: 600;
-  font-size: 14px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 13px;
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 
-    0 8px 25px rgba(0, 0, 0, 0.15),
-    0 4px 12px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(15px);
+  backdrop-filter: blur(20px);
   text-decoration: none;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   font-family: 'Montserrat', sans-serif;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  min-width: 140px;
+  height: 48px;
+  transform-style: preserve-3d;
 }
 
-.btn-validate::before, .btn-read::before, .btn-chat::before, .btn-quick::before, .btn-notes::before {
+/* Effet de brillance sur hover */
+.btn-validate::before, .btn-read::before, .btn-chat::before, .btn-quick::before, .btn-notes::before, .btn-concordance::before {
   content: '';
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  transition: left 0.5s;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.6s ease-out;
   z-index: 1;
 }
 
-.btn-validate:hover::before, .btn-read:hover::before, .btn-chat:hover::before, .btn-quick:hover::before, .btn-notes:hover::before {
+.btn-validate:hover::before, .btn-read:hover::before, .btn-chat:hover::before, .btn-quick:hover::before, .btn-notes:hover::before, .btn-concordance:hover::before {
   left: 100%;
 }
 
+/* Styles individuels des boutons - Palette harmonieuse */
 .btn-validate {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  font-family: 'Montserrat', sans-serif;
+  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.25);
 }
 
 .btn-validate:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(102,126,234,0.4);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    0 15px 40px rgba(102, 126, 234, 0.35),
+    0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
 .btn-validate:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
   transform: none;
+  filter: grayscale(0.3);
 }
 
 .btn-read {
-  background: var(--theme-primary, linear-gradient(135deg, #3498db, #2980b9));
+  background: linear-gradient(135deg, #00d4aa 0%, #00a085 100%);
   color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 25px;
-  font-weight: 700;
-  font-family: 'Montserrat', sans-serif;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(52,152,219,0.3);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  box-shadow: 0 8px 32px rgba(0, 212, 170, 0.25);
 }
 
-.btn-read:hover {
+.btn-read:hover:not(:disabled) {
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 10px 30px rgba(52,152,219,0.4);
+  box-shadow: 
+    0 15px 40px rgba(0, 212, 170, 0.35),
+    0 8px 20px rgba(0, 0, 0, 0.1);
 }
-
-/* Old btn-read:hover rule removed - replaced with new styling above */
 
 .btn-chat {
-  background: var(--theme-secondary, linear-gradient(135deg, #2ecc71, #27ae60));
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
   color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 25px;
-  font-weight: 700;
-  font-family: 'Montserrat', sans-serif;
-  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(255, 107, 107, 0.25);
+}
+
+.btn-chat:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    0 15px 40px rgba(255, 107, 107, 0.35),
+    0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.btn-quick {
+  background: linear-gradient(135deg, #ffd93d 0%, #ff9500 100%);
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(255, 217, 61, 0.25);
+}
+
+.btn-quick:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    0 15px 40px rgba(255, 217, 61, 0.35),
+    0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.btn-notes {
+  background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+  color: white;
+  box-shadow: 0 8px 32px rgba(167, 139, 250, 0.25);
+}
+
+.btn-notes:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    0 15px 40px rgba(167, 139, 250, 0.35),
+    0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.btn-concordance {
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+  color: white;
+  box-shadow: 0 8px 32px rgba(6, 182, 212, 0.25);
+}
+
+.btn-concordance:hover:not(:disabled) {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    0 15px 40px rgba(6, 182, 212, 0.35),
+    0 8px 20px rgba(0, 0, 0, 0.1);
+}
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(46,204,113,0.3);
   text-transform: uppercase;
