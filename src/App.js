@@ -181,8 +181,8 @@ async function smartPost(pathList, payload) {
 
 function App() {
   // États principaux
-  const [selectedBook, setSelectedBook] = useState("--");
-  const [selectedChapter, setSelectedChapter] = useState("--");
+  const [selectedBook, setSelectedBook] = useState("Genèse");
+  const [selectedChapter, setSelectedChapter] = useState("1");
   const [selectedVerse, setSelectedVerse] = useState("--");
   const [selectedVersion, setSelectedVersion] = useState("LSG");
   const [selectedLength, setSelectedLength] = useState(500);
