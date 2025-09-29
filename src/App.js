@@ -1236,9 +1236,12 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       // 🔹 UTILISER L'API RAILWAY pour génération verset par verset SANS LIMITATION
       console.log("[VERSETS PROG] Utilisation API Railway pour génération séquentielle complète");
       
-      // CORRECTION: Utiliser notre backend LOCAL fonctionnel pour verset par verset (rubrique 0)
-      const versetAPIUrl = `${API_BASE}/generate-verse-by-verse`;
-      console.log("[VERSETS PROG] URL backend local:", versetAPIUrl);
+      // CORRECTION: Forcer backend LOCAL (port 8001) pour verset par verset (rubrique 0)  
+      const backendLocalUrl = typeof window !== "undefined" && window.location.hostname === "localhost" 
+        ? "http://localhost:8001"
+        : "https://verse-insight.preview.emergentagent.com";
+      const versetAPIUrl = `${backendLocalUrl}/api/generate-verse-by-verse`;
+      console.log("[VERSETS PROG] URL backend forcé:", versetAPIUrl);
       const apiUrl = versetAPIUrl;
       
       const response = await fetch(apiUrl, {
