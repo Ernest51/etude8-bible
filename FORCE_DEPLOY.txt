@@ -1,1 +1,4 @@
-Force deploy - Concordance update - 2025-09-29 04:27
+Force deploy - Concordance update + Backend URL fix - 2025-09-29 04:30
+- Fixed backend URL consistency
+- Added Bible de Concordance button with full functionality
+- Updated Vercel configuration
