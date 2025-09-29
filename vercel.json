@@ -6,10 +6,5 @@
     "REACT_APP_BACKEND_URL": "https://etude8-bible-api-production.up.railway.app",
     "DISABLE_ESLINT_PLUGIN": "true",
     "CI": "false"
-  },
-  "functions": {
-    "src/**/*.js": {
-      "runtime": "nodejs18.x"
-    }
   }
 }
