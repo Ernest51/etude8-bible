@@ -740,18 +740,20 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
   const handleRubriqueSelect = async (id) => {
     setActiveRubrique(id);
     
-    // Si la rubrique est déjà générée, afficher son contenu
-    if (rubriquesStatus[id] === "completed") {
-      // Récupérer le contenu sauvegardé ou régénérer
-      const savedContent = localStorage.getItem(`rubrique_${id}_${selectedBook}_${selectedChapter}`);
-      if (savedContent) {
-        setContent(savedContent);
-      } else {
-        setContent(`Contenu de la rubrique ${id}: ${getRubTitle(id)}`);
-      }
+    // Créer une clé unique pour cette combinaison livre/chapitre
+    const contentKey = `${selectedBook}_${selectedChapter}_${id}`;
+    
+    // Si la rubrique est déjà générée, afficher son contenu sauvegardé
+    if (rubriquesStatus[id] === "completed" && generatedRubriques[contentKey]) {
+      console.log(`[AFFICHAGE RUBRIQUE ${id}] Contenu sauvegardé trouvé`);
+      setContent(generatedRubriques[contentKey]);
     } else if (id >= 1 && id <= 28) {
       // Générer la rubrique à la demande pour les rubriques 1-28
+      console.log(`[GÉNÉRATION REQUISE] Rubrique ${id} non trouvée dans le cache`);
       await generateRubriqueOnDemand(id);
+    } else if (id === 0) {
+      // Rubrique 0 utilise VERSETS PROG - ne pas interférer
+      setContent("");
     } else {
       setContent("");
     }
