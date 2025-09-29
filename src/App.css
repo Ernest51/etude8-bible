@@ -528,6 +528,16 @@ strong {
   box-shadow: 0 8px 25px rgba(245,158,11,0.4);
 }
 
+.btn-concordance {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: white;
+}
+
+.btn-concordance:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(139,92,246,0.4);
+}
+
 .btn-quick {
   background: linear-gradient(135deg, #3742fa, #5f27cd);
   color: white;
@@ -539,7 +549,7 @@ strong {
 }
 
 /* Effet de brillance pour tous les boutons */
-.btn-validate::before, .btn-read::before, .btn-chat::before, .btn-quick::before, .btn-notes::before {
+.btn-validate::before, .btn-read::before, .btn-chat::before, .btn-quick::before, .btn-notes::before, .btn-concordance::before {
   content: '';
   position: absolute;
   top: 0;
@@ -551,7 +561,7 @@ strong {
 }
 
 .btn-validate:hover::before, .btn-read:hover::before, 
-.btn-chat:hover::before, .btn-quick:hover::before, .btn-notes:hover::before {
+.btn-chat:hover::before, .btn-quick:hover::before, .btn-notes:hover::before, .btn-concordance:hover::before {
   left: 100%;
 }
 
@@ -578,7 +588,7 @@ strong {
 }
 
 /* Style de base pour tous les boutons d'action */
-.btn-reset, .btn-palette, .btn-last-study, .btn-gemini, .btn-versets, .btn-versets-prog, .btn-generate {
+.btn-reset, .btn-palette, .btn-last-study, .btn-gemini, .btn-versets, .btn-versets-prog, .btn-generate, .btn-concordance {
   padding: 16px 24px;
   border: none;
   border-radius: 14px;
@@ -707,7 +717,7 @@ strong {
 
 /* Effet de brillance pour tous les boutons d'action */
 .btn-reset::before, .btn-palette::before, .btn-last-study::before, 
-.btn-gemini::before, .btn-versets::before, .btn-versets-prog::before, .btn-generate::before {
+.btn-gemini::before, .btn-versets::before, .btn-versets-prog::before, .btn-generate::before, .btn-concordance::before {
   content: '';
   position: absolute;
   top: 0;
@@ -720,7 +730,7 @@ strong {
 
 .btn-reset:hover::before, .btn-palette:hover::before, .btn-last-study:hover:not(:disabled)::before,
 .btn-gemini:hover:not(:disabled)::before, .btn-versets:hover:not(:disabled)::before, 
-.btn-versets-prog:hover:not(:disabled)::before, .btn-generate:hover:not(:disabled)::before {
+.btn-versets-prog:hover:not(:disabled)::before, .btn-generate:hover:not(:disabled)::before, .btn-concordance:hover::before {
   left: 100%;
 }
 
@@ -2688,6 +2698,485 @@ strong {
 /* Boutons de navigation modernes */
 .navigation-buttons-modern {
   display: flex;
+/* =========================
+   Modal de Concordance Biblique - Design Ultra-Moderne
+========================= */
+
+.concordance-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.concordance-modal {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.98) 0%, 
+    rgba(248, 250, 252, 0.95) 100%);
+  border-radius: 24px;
+  box-shadow: 
+    0 32px 80px rgba(0, 0, 0, 0.3),
+    0 16px 40px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  width: 95%;
+  max-width: 900px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  animation: modalSlideIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+.concordance-modal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, 
+    #8b5cf6 0%, 
+    #7c3aed 50%, 
+    #8b5cf6 100%);
+  border-radius: 24px 24px 0 0;
+  opacity: 0.8;
+}
+
+.concordance-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 30px;
+  border-bottom: 2px solid rgba(139, 92, 246, 0.1);
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.concordance-modal-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.1), 
+    transparent);
+  animation: shimmerHeader 3s ease-in-out infinite;
+}
+
+.concordance-modal-header h3 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 800;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.concordance-close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  font-size: 28px;
+  color: white;
+  cursor: pointer;
+  padding: 8px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+}
+
+.concordance-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+}
+
+.concordance-modal-content {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.4) 0%, 
+    rgba(248, 250, 252, 0.2) 100%);
+}
+
+.concordance-search-section {
+  margin-bottom: 30px;
+}
+
+.concordance-search-input {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.concordance-search-field {
+  flex: 1;
+  padding: 16px 20px;
+  border: 2px solid rgba(139, 92, 246, 0.2);
+  border-radius: 16px;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.9) 0%, 
+    rgba(248, 250, 252, 0.8) 100%);
+  font-size: 16px;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 15px rgba(139, 92, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+.concordance-search-field:focus {
+  border-color: #8b5cf6;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 1) 0%, 
+    rgba(240, 249, 255, 0.95) 100%);
+  box-shadow: 
+    0 8px 25px rgba(139, 92, 246, 0.2),
+    0 0 0 4px rgba(139, 92, 246, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  transform: translateY(-2px);
+}
+
+.concordance-search-field::placeholder {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.concordance-youversion-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  padding: 16px 24px;
+  border-radius: 14px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 6px 20px rgba(59, 130, 246, 0.3),
+    0 2px 10px rgba(0, 0, 0, 0.1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-family: 'Montserrat', sans-serif;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.concordance-youversion-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(255, 255, 255, 0.3), 
+    transparent);
+  transition: left 0.5s ease;
+}
+
+.concordance-youversion-btn:hover::before {
+  left: 100%;
+}
+
+.concordance-youversion-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 
+    0 10px 30px rgba(59, 130, 246, 0.4),
+    0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.concordance-results-section {
+  min-height: 300px;
+}
+
+.concordance-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #6b7280;
+}
+
+.concordance-loading .loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(139, 92, 246, 0.2);
+  border-top: 3px solid #8b5cf6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+.concordance-results h4 {
+  color: #374151;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid rgba(139, 92, 246, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.concordance-verses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.concordance-verse-item {
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.9) 0%, 
+    rgba(248, 250, 252, 0.8) 100%);
+  border: 2px solid rgba(139, 92, 246, 0.1);
+  border-radius: 16px;
+  padding: 20px 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 4px 20px rgba(139, 92, 246, 0.08),
+    0 2px 10px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.concordance-verse-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #8b5cf6, #7c3aed);
+  opacity: 0.7;
+}
+
+.concordance-verse-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 30px rgba(139, 92, 246, 0.15),
+    0 4px 20px rgba(0, 0, 0, 0.08);
+  border-color: rgba(139, 92, 246, 0.2);
+}
+
+.concordance-verse-reference {
+  font-size: 16px;
+  font-weight: 800;
+  color: #8b5cf6;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.concordance-verse-text {
+  font-size: 16px;
+  line-height: 1.7;
+  color: #374151;
+  font-style: italic;
+  text-align: justify;
+  font-weight: 500;
+}
+
+.concordance-no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6b7280;
+}
+
+.concordance-no-results p:first-child {
+  font-size: 18px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 15px;
+}
+
+.concordance-welcome {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.concordance-welcome h4 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 15px;
+  border: none;
+  padding: 0;
+}
+
+.concordance-welcome p {
+  font-size: 16px;
+  color: #6b7280;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.concordance-suggestions h5 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 20px;
+}
+
+.concordance-suggestion-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.concordance-suggestion-tag {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(124, 58, 237, 0.05));
+  color: #8b5cf6;
+  border: 2px solid rgba(139, 92, 246, 0.2);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(5px);
+  text-transform: capitalize;
+}
+
+.concordance-suggestion-tag:hover {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  color: white;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
+}
+
+.concordance-modal-footer {
+  display: flex;
+  justify-content: center;
+  padding: 25px 30px;
+  border-top: 2px solid rgba(139, 92, 246, 0.1);
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.6) 0%, 
+    rgba(248, 250, 252, 0.4) 100%);
+  backdrop-filter: blur(10px);
+}
+
+.concordance-close-footer-btn {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.concordance-close-footer-btn:hover {
+  background: linear-gradient(135deg, #4b5563, #374151);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(107, 114, 128, 0.3);
+}
+
+/* Animation pour l'en-tête */
+@keyframes shimmerHeader {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+@keyframes modalSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+  .concordance-modal {
+    width: 95%;
+    max-height: 90vh;
+    margin: 20px;
+    border-radius: 20px;
+  }
+  
+  .concordance-modal-header {
+    padding: 20px 24px;
+  }
+  
+  .concordance-modal-header h3 {
+    font-size: 20px;
+  }
+  
+  .concordance-modal-content {
+    padding: 24px;
+  }
+  
+  .concordance-search-input {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .concordance-search-field {
+    font-size: 16px; /* Évite le zoom sur iOS */
+    padding: 14px 18px;
+  }
+  
+  .concordance-youversion-btn {
+    width: 100%;
+    padding: 16px;
+  }
+  
+  .concordance-verse-item {
+    padding: 16px 20px;
+  }
+  
+  .concordance-suggestion-tags {
+    gap: 8px;
+  }
+  
+  .concordance-suggestion-tag {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}
   justify-content: space-between;
   align-items: center;
   margin-top: 35px;
