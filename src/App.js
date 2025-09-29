@@ -920,7 +920,7 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       
       for (let rubriqueIndex = 0; rubriqueIndex < totalRubriques; rubriqueIndex++) {
         const currentRubrique = rubriqueIndex + 1; // Rubriques 1-28
-        const rubriqueData = BASE_RUBRIQUES[rubriqueIndex];
+        const rubriqueTitle = BASE_RUBRIQUES[rubriqueIndex]; // C'est un string, pas un objet
         
         // Marquer la rubrique courante en cours
         setRubriquesStatus(p => ({ ...p, [currentRubrique]: "in-progress" }));
@@ -931,10 +931,10 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
         
         // Récupérer le contenu spécifique de cette rubrique
         const rubriqueContent = rubriques[currentRubrique] || 
-          `**${rubriqueData.title}** pour ${passage}\n\nContenu en cours d'extraction...`;
+          `**${rubriqueTitle}** pour ${passage}\n\nContenu en cours d'extraction...`;
         
         // Ajouter le contenu au résultat accumulé
-        accumulatedContent += `\n\n## ${currentRubrique}. ${rubriqueData.title}\n\n${rubriqueContent}`;
+        accumulatedContent += `\n\n## ${currentRubrique}. ${rubriqueTitle}\n\n${rubriqueContent}`;
         
         // Marquer cette rubrique comme terminée
         setRubriquesStatus(p => ({ ...p, [currentRubrique]: "completed" }));
