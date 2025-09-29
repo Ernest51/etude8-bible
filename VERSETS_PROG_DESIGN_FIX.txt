@@ -1,0 +1,12 @@
+CORRECTION CRITIQUE - DESIGN MODERNE VERSETS
+Timestamp: 2025-09-29 17:45:00
+Problème: Design moderne (violet, bleu, orange) manquant sur versets
+Solution: Correction backend pour format exact + endpoint correct
+
+CORRECTIONS APPLIQUÉES:
+1. Backend: Format exact **VERSET [n]**, **TEXTE BIBLIQUE :**, **EXPLICATION THÉOLOGIQUE :**
+2. Frontend: Endpoint conditionnel local/preview
+3. CSS: Styles modernes déjà présents (violet #8b5cf6, bleu #0ea5e9, orange #f59e0b)
+
+Status: Design moderne devrait maintenant apparaître
+Hash: versets-design-fix-2025-09-29-174500
