@@ -1295,43 +1295,72 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
   const generateWithGemini = async () => {
     try {
       setIsLoading(true); 
-      setContent("Enrichissement théologique avec Gemini en cours...");
+      setContent("Enrichissement théologique avec votre Gemini gratuit en cours...");
       setRubriquesStatus(p => ({ ...p, [activeRubrique]: "in-progress" }));
 
       const passage = (selectedVerse === "--" || selectedVerse === "vide")
         ? `${selectedBook} ${selectedChapter}`
         : `${selectedBook} ${selectedChapter}:${selectedVerse}`;
 
-      // Enrichir théologiquement le contenu existant au lieu de le remplacer
+      // Enrichir théologiquement avec votre clé Gemini gratuite
       if (activeRubrique >= 1 && activeRubrique <= 28) {
         const rubriqueTitle = BASE_RUBRIQUES[activeRubrique];
         
         // Générer un enrichissement théologique avec longueur augmentée
         const enrichedLength = Math.min(2000, parseInt(selectedLength) + 500);
-        console.log(`[ENRICHISSEMENT GEMINI] Rubrique ${activeRubrique} - Longueur enrichie: ${enrichedLength} caractères`);
+        console.log(`[ENRICHISSEMENT GEMINI GRATUIT] Rubrique ${activeRubrique} - Longueur enrichie: ${enrichedLength} caractères`);
         
-        const enrichedContent = generateTheologicalEnrichment(activeRubrique, rubriqueTitle, passage, selectedBook, selectedChapter, enrichedLength);
+        // Appeler votre backend avec votre clé Gemini gratuite
+        const response = await fetch(`${API_BASE}/generate-verse-by-verse`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            passage: passage,
+            version: selectedVersion || 'LSG',
+            tokens: enrichedLength,
+            use_gemini: true,
+            enriched: true,
+            rubric_type: rubriqueTitle
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Erreur API: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("[GEMINI GRATUIT] Enrichissement reçu:", data.content ? data.content.length : 0, "caractères");
+
+        if (data.content) {
+          // Afficher le contenu enrichi avec votre Gemini gratuit
+          const finalContent = `# Étude Enrichie avec Gemini Gratuit - ${passage}\n\n## ${activeRubrique}. ${rubriqueTitle}\n\n${data.content}`;
+          setContent(formatContent(finalContent));
+          
+          // Sauvegarder le contenu enrichi
+          const contentKey = `${selectedBook}_${selectedChapter}_${activeRubrique}`;
+          setGeneratedRubriques(prev => ({
+            ...prev,
+            [contentKey]: formatContent(finalContent)
+          }));
+          
+          console.log("[SUCCESS] Enrichissement Gemini gratuit affiché correctement");
+        } else {
+          throw new Error("Pas de contenu reçu de votre Gemini gratuit");
+        }
         
-        // Afficher le contenu enrichi
-        const finalContent = `# Étude Enrichie - ${passage}\n\n## ${activeRubrique}. ${rubriqueTitle}\n\n${enrichedContent}`;
-        setContent(formatContent(finalContent));
-        
-        // Sauvegarder le contenu enrichi
-        const contentKey = `${selectedBook}_${selectedChapter}_${activeRubrique}`;
-        setGeneratedRubriques(prev => ({
-          ...prev,
-          [contentKey]: formatContent(finalContent)
-        }));
-        
+      } else if (activeRubrique === 0) {
+        // Pour la rubrique 0, utiliser VERSETS PROG qui utilise déjà votre Gemini
+        setContent("⚠️ Pour la rubrique 0, utilisez le bouton 'VERSETS PROG' qui utilise déjà votre Gemini gratuit.");
       } else {
-        // Pour la rubrique 0, ne pas interférer avec VERSETS PROG
-        setContent("⚠️ L'enrichissement Gemini n'est disponible que pour les rubriques 1-28. Utilisez 'VERSETS PROG' pour la rubrique 0.");
+        setContent("⚠️ Rubrique non supportée pour l'enrichissement Gemini.");
       }
 
       setRubriquesStatus(p => ({ ...p, [activeRubrique]: "completed" }));
     } catch (err) {
-      console.error("Erreur enrichissement Gemini:", err);
-      setContent(`Erreur enrichissement: ${err.message}`);
+      console.error("Erreur enrichissement Gemini gratuit:", err);
+      setContent(`Erreur enrichissement avec votre Gemini gratuit: ${err.message}`);
       setRubriquesStatus(p => ({ ...p, [activeRubrique]: "error" }));
     } finally { 
       setIsLoading(false); 
