@@ -1,0 +1,32 @@
+SOLUTION FINALE POUR VERSET PAR VERSET - 2025-09-29 05:03
+
+🔍 DIAGNOSTIC COMPLET :
+
+1. ❌ PROBLÈME IDENTIFIÉ : API Railway génère du contenu factice
+   - curl Railway API : "Texte du verset 1 (Genèse 1:1)" (générique)
+   - Contenu factice : "Analyse du verset 1 deGenèse 1. Contexte: création/poésie/p."
+
+2. ✅ SOLUTION TROUVÉE : Backend local fonctionne parfaitement
+   - curl localhost:8001 : "Au commencement Dieu créa les cieux et la terre" (VRAI)
+   - Explications théologiques détaillées et substantielles
+   - 5 versets complets avec vrai contenu biblique
+
+3. 🔧 CORRECTION APPLIQUÉE :
+   - URL forcée vers backend local pour Rubrique 0
+   - Code : backendLocalUrl = window.location.hostname === "localhost" ? "http://localhost:8001" : "https://verse-insight.preview.emergentagent.com"
+
+4. ✅ BACKEND LOCAL CONFIRMÉ OPÉRATIONNEL :
+   - Logs : "POST /api/generate-verse-by-verse HTTP/1.1" 200 OK
+   - Génération : 5 versets avec explications théologiques
+   - CORS : OPTIONS 200 OK
+
+5. ⚠️ PROBLÈME FRONTEND : 
+   - Backend retourne contenu correct mais frontend reste sur "Génération en cours..."
+   - Possibilité : Problème dans postProcessMarkdown ou formatContent
+
+🚀 POUR VERCEL :
+- URL backend : https://verse-insight.preview.emergentagent.com/api/generate-verse-by-verse
+- VERIFIER que ce backend a l'endpoint et retourne du VRAI contenu biblique
+- SI NON : Utiliser un autre backend ou réparer verse-insight backend
+
+📤 FICHIER SYNCHRONISÉ : /app/src/App.js (avec correction URL)
