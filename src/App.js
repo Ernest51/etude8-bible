@@ -1236,7 +1236,8 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       // 🔹 UTILISER L'API RAILWAY pour génération verset par verset SANS LIMITATION
       console.log("[VERSETS PROG] Utilisation API Railway pour génération séquentielle complète");
       
-      const apiUrl = `${API_BASE}/generate-verse-by-verse`;
+      // CORRECTION: Utiliser directement l'API Railway pour verset par verset
+      const apiUrl = `https://etude8-bible-api-production.up.railway.app/api/generate-verse-by-verse`;
       
       const response = await fetch(apiUrl, {
         method: 'POST',
