@@ -1052,7 +1052,15 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       
       // Afficher le contenu final
       const contentFinal = `# Étude - ${passage}\n\n## ${rubriqueNum}. ${rubriqueTitle}\n\n${rubriqueContent}`;
-      setContent(formatContent(contentFinal));
+      const formattedContent = formatContent(contentFinal);
+      setContent(formattedContent);
+      
+      // Sauvegarder dans l'état pour persistance
+      const contentKey = `${selectedBook}_${selectedChapter}_${rubriqueNum}`;
+      setGeneratedRubriques(prev => ({
+        ...prev,
+        [contentKey]: formattedContent
+      }));
       
       // Marquer comme terminé
       setRubriquesStatus(p => ({ ...p, [rubriqueNum]: "completed" }));
