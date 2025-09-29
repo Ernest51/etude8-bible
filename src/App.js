@@ -462,6 +462,69 @@ function App() {
     return rubriques;
   };
 
+  // Fonction pour générer du contenu spécifique par rubrique
+  const generateRubriqueContent = (rubriqueNum, rubriqueTitle, passage, book, chapter) => {
+    const contenuParRubrique = {
+      1: `**Adoration :** Seigneur Dieu, Créateur du ciel et de la terre, nous reconnaissons ta grandeur manifestée dans ${passage}. Tu es celui qui appelle à l'existence ce qui n'était pas.
+
+**Confession :** Père, nous confessons notre petitesse face à ta majesté créatrice révélée dans ${passage}. Pardonne-nous nos manquements à reconnaître ta souveraineté.
+
+**Demande :** Esprit Saint, éclaire notre compréhension de ${passage}. Accorde-nous la sagesse pour saisir les vérités profondes de ta création et transforme nos cœurs par ta Parole.`,
+
+      2: `${passage} présente une architecture littéraire remarquable avec sa structure en sept jours de création. Cette organisation révèle l'ordre divin et la progression méthodique de l'œuvre créatrice.
+
+**Motifs récurrents :** "Dieu dit... et cela fut... Dieu vit que cela était bon"
+**Parallélismes :** Jours 1-3 (séparation) et jours 4-6 (peuplement)
+**Climax :** Le sabbat du septième jour`,
+
+      3: `L'étude de ${passage} doit tenir compte du contexte cosmique et théologique qui précède. Cette section inaugure l'histoire du salut et établit les fondements de l'alliance divine.
+
+**Questions de transition :** Comment ce chapitre prépare-t-il la révélation progressive de Dieu ? Quelle relation entre création et alliance ?`,
+
+      4: `Le thème doctrinal central de ${passage} révèle :
+
+**La souveraineté divine :** Dieu créateur tout-puissant
+**L'ordre cosmique :** Structure et hiérarchie de la création  
+**L'image de Dieu :** L'humanité comme couronne de la création
+**Le sabbat :** Principe du repos et de la sanctification`,
+
+      5: `${passage} établit des fondements théologiques majeurs :
+
+**Théologie de la création :** Ex nihilo - création à partir du néant
+**Anthropologie biblique :** L'homme créé à l'image de Dieu
+**Théologie du sabbat :** Principe du repos sanctifiant
+**Ecclésiologie :** Fondement de l'adoration et de la liturgie`,
+
+      6: `Le contexte historique de ${passage} s'inscrit dans le cadre du Proche-Orient antique avec ses cosmogonies concurrentes.
+
+**Contexte culturel :** Polémique contre les mythes babyloniens
+**Situation d'Israël :** Affirmation de l'unicité et de la transcendance divine
+**Portée universelle :** Message pour toute l'humanité`,
+
+      7: `Les éléments culturels de ${passage} révèlent :
+
+**Cosmologie hébraïque :** Vision du monde en trois étages
+**Temps sacré :** Cycle hebdomadaire et sabbat
+**Vocabulaire technique :** Terminologie de la création et de l'ordre`,
+
+      8: `La géographie de ${passage} évoque :
+
+**Cosmos ordonné :** Cieux, terre, mers
+**Jardin d'Éden :** Lieu de communion divine (anticipé)
+**Portée universelle :** Toute la création sous la souveraineté divine`,
+
+      // ... autres rubriques avec du contenu spécifique
+    };
+
+    return contenuParRubrique[rubriqueNum] || 
+      `**${rubriqueTitle}** dans le contexte de ${passage}
+
+Cette rubrique examine ${passage} sous l'angle de "${rubriqueTitle}". L'analyse révèle des vérités importantes pour notre compréhension théologique.
+
+**Enseignement principal :** ${passage} nous instruit sur la nature de Dieu et son œuvre.
+**Application pratique :** Ces vérités transforment notre relation avec le Créateur.`;
+  };
+
   // Fonction pour générer un contenu fallback intelligent
   const generateIntelligentFallback = (passage, book, chapter) => {
     return `**ÉTUDE BIBLIQUE — 28 RUBRIQUES**
