@@ -1,0 +1,15 @@
+COPIE COMPLÈTE FICHIERS VERCEL - FINALE
+Timestamp: 2025-09-29 17:15:00
+Fichiers copiés vers /app/src/ :
+✅ App.js - avec API dual-study-bible.preview.emergentagent.com (vrai contenu biblique)  
+✅ App.css - avec styles modernes et bouton concordance
+✅ .env - avec URL backend corrigée
+✅ index.js et index.css - synchronisés
+
+Corrections incluses:
+- API Railway → API locale pour contenu réel
+- Bouton BIBLE DE CONCORDANCE visible  
+- Toutes les fonctionnalités verset par verset
+
+Status: Prêt pour déploiement Vercel final
+Hash: copie-complete-finale-2025-09-29-171500
