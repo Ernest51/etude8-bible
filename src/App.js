@@ -736,10 +736,70 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
     setIsLoading(false);
   };
 
-  const handleRubriqueSelect = (id) => {
+  const handleRubriqueSelect = async (id) => {
     setActiveRubrique(id);
-    if (rubriquesStatus[id] === "completed") setContent(`Contenu de la rubrique ${id}: ${getRubTitle(id)}`);
-    else setContent("");
+    
+    // Si la rubrique est déjà générée, afficher son contenu
+    if (rubriquesStatus[id] === "completed") {
+      // Récupérer le contenu sauvegardé ou régénérer
+      const savedContent = localStorage.getItem(`rubrique_${id}_${selectedBook}_${selectedChapter}`);
+      if (savedContent) {
+        setContent(savedContent);
+      } else {
+        setContent(`Contenu de la rubrique ${id}: ${getRubTitle(id)}`);
+      }
+    } else if (id >= 1 && id <= 28) {
+      // Générer la rubrique à la demande pour les rubriques 1-28
+      await generateRubriqueOnDemand(id);
+    } else {
+      setContent("");
+    }
+  };
+
+  // Fonction pour générer une rubrique à la demande
+  const generateRubriqueOnDemand = async (rubriqueNum) => {
+    if (rubriqueNum === 0) return; // Rubrique 0 utilise VERSETS PROG
+    
+    const rubriqueTitle = BASE_RUBRIQUES[rubriqueNum];
+    const passage = (selectedVerse === "--" || selectedVerse === "vide")
+      ? `${selectedBook || 'Genèse'} ${selectedChapter || '1'}`
+      : `${selectedBook || 'Genèse'} ${selectedChapter || '1'}:${selectedVerse}`;
+    
+    try {
+      console.log(`[GÉNÉRATION À LA DEMANDE] Rubrique ${rubriqueNum}: ${rubriqueTitle}`);
+      
+      setIsLoading(true);
+      setRubriquesStatus(p => ({ ...p, [rubriqueNum]: "in-progress" }));
+      
+      // Afficher le contenu en cours de génération
+      const contentEnCours = `# Étude - ${passage}\n\n## ${rubriqueNum}. ${rubriqueTitle}\n\n🔄 Génération intelligente en cours...`;
+      setContent(formatContent(contentEnCours));
+      
+      // Générer le contenu intelligent pour cette rubrique
+      const rubriqueContent = generateRubriqueContent(rubriqueNum, rubriqueTitle, passage, selectedBook, selectedChapter);
+      
+      // Délai pour effet visuel
+      await wait(1000);
+      
+      // Afficher le contenu final
+      const contentFinal = `# Étude - ${passage}\n\n## ${rubriqueNum}. ${rubriqueTitle}\n\n${rubriqueContent}`;
+      setContent(formatContent(contentFinal));
+      
+      // Sauvegarder le contenu localement
+      localStorage.setItem(`rubrique_${rubriqueNum}_${selectedBook}_${selectedChapter}`, formatContent(contentFinal));
+      
+      // Marquer comme terminé
+      setRubriquesStatus(p => ({ ...p, [rubriqueNum]: "completed" }));
+      
+      console.log(`[RUBRIQUE ${rubriqueNum} GÉNÉRÉE] ${rubriqueContent.length} caractères`);
+      
+    } catch (error) {
+      console.error(`[ERREUR GÉNÉRATION RUBRIQUE ${rubriqueNum}]`, error);
+      setRubriquesStatus(p => ({ ...p, [rubriqueNum]: "error" }));
+      setContent(`# Erreur\n\nErreur lors de la génération de la rubrique ${rubriqueNum}: ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Palette (reprend ta logique initiale)
