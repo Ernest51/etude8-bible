@@ -1,0 +1,25 @@
+RESTAURATION SAUVEGARDE FONCTIONNELLE - COULEURS VERSETS
+Timestamp: 2025-09-29 19:25:00
+
+DÉCOUVERTE CLÉS:
+✅ La sauvegarde fonctionnelle utilisait EXACTEMENT les mêmes transformations HTML
+✅ HTML généré: <p><h2 class='verset-header'>...</h2></p> (identique à maintenant)
+✅ Le CSS de la sauvegarde utilise des sélecteurs adaptés: .texte-biblique-label + p
+
+PROBLÈME IDENTIFIÉ:
+❌ J'ai modifié le CSS en cours de route
+❌ Les nouveaux sélecteurs CSS ne matchaient plus le HTML généré  
+❌ Les couleurs modernes étaient perdues dans les modifications CSS
+
+RESTAURATION EFFECTUÉE:
+✅ formatContent: Version originale simple restaurée (split/map/join)
+✅ App_STYLES.css: Sauvegarde fonctionnelle restaurée
+✅ Sélecteurs CSS: .versets-prog-content .texte-biblique-label + p
+✅ Styles avec animations et couleurs: violet #8b5cf6, bleu #0ea5e9, orange #f59e0b
+
+FICHIERS RESTAURÉS:
+- /app/BACKUP_20250929/App_STYLES.css → /app/src/App.css (Vercel)
+- /app/BACKUP_20250929/App_STYLES.css → /app/frontend/src/App.css (Local)
+- formatContent restauré à la version originale fonctionnelle
+
+Status: Couleurs modernes versets devraient maintenant apparaître correctement
