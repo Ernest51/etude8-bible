@@ -1233,12 +1233,12 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       const passage = `${book} ${chapter}`;
       console.log("[VERSETS PROG] Génération progressive pour:", passage);
 
-      // 🔹 UTILISER L'API RAILWAY pour génération verset par verset SANS LIMITATION
-      console.log("[VERSETS PROG] Utilisation API Railway pour génération séquentielle complète");
+      // 🔹 UTILISER L'API LOCALE qui fonctionne au lieu de Railway générique
+      console.log("[VERSETS PROG] Utilisation API locale fonctionnelle pour génération séquentielle complète");
       
-      // CORRECTION: Utiliser l'API Railway qui fonctionne pour verset par verset (rubrique 0)  
-      const versetAPIUrl = "https://etude8-bible-api-production.up.railway.app/api/generate-verse-by-verse";
-      console.log("[VERSETS PROG] URL API Railway utilisé:", versetAPIUrl);
+      // CORRECTION: Utiliser l'API locale qui retourne le vrai contenu biblique  
+      const versetAPIUrl = "https://dual-study-bible.preview.emergentagent.com/api/generate-verse-by-verse";
+      console.log("[VERSETS PROG] URL API locale utilisée:", versetAPIUrl);
       const apiUrl = versetAPIUrl;
       
       const response = await fetch(apiUrl, {
