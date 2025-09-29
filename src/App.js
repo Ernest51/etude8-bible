@@ -1784,7 +1784,7 @@ ${contextualEnrichment}
                   )}
                 </div>
               ) : (
-                <div className="welcome-section">
+                <div className="welcome-section desktop-only">
                   <h1>🙏 Bienvenue dans votre Espace d'Étude</h1>
                   <p>Cet outil vous accompagne dans une méditation biblique structurée et claire.</p>
                   <p><strong>Nouveau:</strong> Le bouton "Versets Prog" génère progressivement tous les versets avec un traitement uniforme!</p>
