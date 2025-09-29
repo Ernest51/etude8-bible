@@ -13,7 +13,7 @@ SOLUTION FINALE POUR VERSET PAR VERSET - 2025-09-29 05:03
 
 3. 🔧 CORRECTION APPLIQUÉE :
    - URL forcée vers backend local pour Rubrique 0
-   - Code : backendLocalUrl = window.location.hostname === "localhost" ? "http://localhost:8001" : "https://verse-insight.preview.emergentagent.com"
+   - Code : backendLocalUrl = window.location.hostname === "localhost" ? "http://localhost:8001" : "https://dual-study-bible.preview.emergentagent.com"
 
 4. ✅ BACKEND LOCAL CONFIRMÉ OPÉRATIONNEL :
    - Logs : "POST /api/generate-verse-by-verse HTTP/1.1" 200 OK
@@ -25,7 +25,7 @@ SOLUTION FINALE POUR VERSET PAR VERSET - 2025-09-29 05:03
    - Possibilité : Problème dans postProcessMarkdown ou formatContent
 
 🚀 POUR VERCEL :
-- URL backend : https://verse-insight.preview.emergentagent.com/api/generate-verse-by-verse
+- URL backend : https://dual-study-bible.preview.emergentagent.com/api/generate-verse-by-verse
 - VERIFIER que ce backend a l'endpoint et retourne du VRAI contenu biblique
 - SI NON : Utiliser un autre backend ou réparer verse-insight backend
 
