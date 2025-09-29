@@ -544,55 +544,7 @@ strong {
     0 15px 40px rgba(6, 182, 212, 0.35),
     0 8px 20px rgba(0, 0, 0, 0.1);
 }
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(46,204,113,0.3);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.btn-chat:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 10px 30px rgba(46,204,113,0.4);
-}
-
-.btn-chat:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(255,107,107,0.4);
-}
-
-.btn-notes {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: white;
-}
-
-.btn-notes:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(245,158,11,0.4);
-}
-
-.btn-concordance {
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-  color: white;
-}
-
-.btn-concordance:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(139,92,246,0.4);
-}
-
-.btn-quick {
-  background: linear-gradient(135deg, #3742fa, #5f27cd);
-  color: white;
-}
-
-.btn-quick:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(55,66,250,0.4);
-}
+/* Anciens styles supprimés - remplacés par le design harmonisé ci-dessus */
 
 /* Effet de brillance pour tous les boutons */
 .btn-validate::before, .btn-read::before, .btn-chat::before, .btn-quick::before, .btn-notes::before, .btn-concordance::before {
