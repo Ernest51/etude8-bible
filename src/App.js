@@ -1804,17 +1804,14 @@ ${contextualEnrichment}
               <textarea
                 className="notes-textarea"
                 value={personalNotes}
-                onChange={(e) => setPersonalNotes(e.target.value)}
-                placeholder="Écrivez vos notes personnelles ici... Elles seront sauvegardées automatiquement et ne seront jamais effacées."
+                onChange={handleNotesChange}
+                placeholder="Écrivez vos notes personnelles ici... Elles sont sauvegardées automatiquement à chaque modification ✨"
                 rows={15}
               />
             </div>
             <div className="notes-modal-footer">
-              <button className="btn-save-notes" onClick={() => handleSaveNotes(personalNotes)}>
-                💾 Sauvegarder
-              </button>
-              <button className="btn-cancel-notes" onClick={() => setShowNotesModal(false)}>
-                Annuler
+              <button className="btn-close-notes" onClick={() => setShowNotesModal(false)}>
+                ✅ Fermer (Notes Sauvegardées)
               </button>
             </div>
           </div>
