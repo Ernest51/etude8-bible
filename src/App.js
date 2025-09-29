@@ -931,6 +931,13 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
     setShowNotesModal(false);
   };
 
+  const handleNotesChange = (e) => {
+    const newNotes = e.target.value;
+    setPersonalNotes(newNotes);
+    // Sauvegarde automatique à chaque modification
+    localStorage.setItem('bible-study-notes', JSON.stringify(newNotes));
+  };
+
   const handleCloseNotes = () => {
     setShowNotesModal(false);
   };
