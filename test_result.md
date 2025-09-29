@@ -101,9 +101,9 @@ backend:
 frontend:
   - task: "Frontend Integration"
     implemented: true
-    working: true
+    working: false
     file: "frontend/src/App.js"
-    stuck_count: 2
+    stuck_count: 3
     priority: "high"
     needs_retesting: false
     status_history:
@@ -119,6 +119,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "✅ FRONTEND INTEGRATION WORKING: App loads correctly, VERSETS PROG generates content successfully (5501 chars), all core functionality operational. Previous API endpoint issues resolved. Minor: CSS color differentiation needed for TEXTE BIBLIQUE (should be blue) and EXPLICATION THÉOLOGIQUE (should be orange) labels - currently all appear violet."
+      - working: false
+        agent: "testing"
+        comment: "❌ CRITICAL DISPLAY BUG CONFIRMED: Test critique de la fonctionnalité 'verset par verset' (Rubrique 0) révèle un problème majeur d'affichage. ✅ GÉNÉRATION API RÉUSSIE: Logs console confirment '[API RAILWAY OK] Contenu reçu: 5028 caractères' et '[SUCCESS] Contenu VERSETS PROG affiché correctement'. ✅ INTERFACE FONCTIONNELLE: Sélections Genèse 1, LSG, 500 effectuées, bouton VERSETS PROG cliquable, rubrique 0 active (violette). ❌ PROBLÈME D'AFFICHAGE: Malgré la génération réussie de 5028 caractères, seuls 46 caractères sont visibles dans l'interface utilisateur. Le contenu généré n'est pas affiché correctement dans la zone de contenu. ❌ STRUCTURE MANQUANTE: Aucun élément VERSET 1, TEXTE BIBLIQUE, ou EXPLICATION THÉOLOGIQUE visible malgré la génération API réussie. ❌ TEXTE BIBLIQUE ABSENT: 'Au commencement Dieu créa les cieux et la terre' non visible dans l'interface. DIAGNOSTIC: Problème de rendu/affichage du contenu généré, pas de problème de génération API."
 
   - task: "GÉNÉRER Button (Rubriques 1-28)"
     implemented: true
