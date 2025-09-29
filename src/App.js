@@ -1236,12 +1236,9 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       // 🔹 UTILISER L'API RAILWAY pour génération verset par verset SANS LIMITATION
       console.log("[VERSETS PROG] Utilisation API Railway pour génération séquentielle complète");
       
-      // CORRECTION: Forcer backend LOCAL (port 8001) pour verset par verset (rubrique 0)  
-      const backendLocalUrl = typeof window !== "undefined" && window.location.hostname === "localhost" 
-        ? "http://localhost:8001"
-        : "https://dual-study-bible.preview.emergentagent.com";
-      const versetAPIUrl = `${backendLocalUrl}/api/generate-verse-by-verse`;
-      console.log("[VERSETS PROG] URL backend forcé:", versetAPIUrl);
+      // CORRECTION: Utiliser l'API Railway qui fonctionne pour verset par verset (rubrique 0)  
+      const versetAPIUrl = "https://etude8-bible-api-production.up.railway.app/api/generate-verse-by-verse";
+      console.log("[VERSETS PROG] URL API Railway utilisé:", versetAPIUrl);
       const apiUrl = versetAPIUrl;
       
       const response = await fetch(apiUrl, {
