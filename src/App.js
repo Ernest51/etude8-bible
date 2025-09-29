@@ -1676,7 +1676,7 @@ ${contextualEnrichment}
             <button className="btn-read" onClick={openYouVersion}>Lire la Bible</button>
             <button className="btn-chat" onClick={() => window.open('https://chatgpt.com/', '_blank')}>ChatGPT</button>
             <button className="btn-notes" onClick={handleNotesClick}>📝 Prise de Note</button>
-            <button className="btn-concordance" onClick={handleConcordanceClick}>📖 Bible de Concordance</button>
+            <button className="btn-concordance" onClick={handleConcordanceClick}>📖 BIBLE DE CONCORDANCE</button>
           </div>
 
           {/* Boutons d'action */}
@@ -1790,7 +1790,7 @@ ${contextualEnrichment}
         <div className="concordance-modal-overlay" onClick={() => setShowConcordanceModal(false)}>
           <div className="concordance-modal" onClick={(e) => e.stopPropagation()}>
             <div className="concordance-modal-header">
-              <h3>📖 Bible de Concordance</h3>
+              <h3>📖 BIBLE DE CONCORDANCE</h3>
               <button className="concordance-close-btn" onClick={() => setShowConcordanceModal(false)}>×</button>
             </div>
             
