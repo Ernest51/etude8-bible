@@ -1062,7 +1062,7 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       if (data.content) {
         const currentContent = content;
         const newContent = postProcessMarkdown(data.content);
-        const formattedNewContent = formatContent(newContent, 'verse-by-verse');
+        const formattedNewContent = formatContent(newContent, 'versets-prog');
         
         // Ajouter le nouveau contenu au contenu existant
         setContent(currentContent + '\n\n' + formattedNewContent);
@@ -1279,7 +1279,7 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       
       // Affichage immédiat du contenu optimisé avec boutons Gemini
       const finalContent = postProcessMarkdown(fullContent);
-      setContent(formatContent(finalContent, 'verse-by-verse'));
+      setContent(formatContent(finalContent, 'versets-prog'));
       setProgressPercent(100);
       setRubriquesStatus(p => ({ ...p, 0: "completed" }));
       setIsVersetsProgContent(true); // IMPORTANT : activer l'état VERSETS PROG
