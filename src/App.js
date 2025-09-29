@@ -1233,12 +1233,15 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       const passage = `${book} ${chapter}`;
       console.log("[VERSETS PROG] Génération progressive pour:", passage);
 
-      // 🔹 UTILISER VOTRE BACKEND LOCAL avec votre clé Gemini GRATUITE
-      console.log("[VERSETS PROG] Utilisation de votre backend local avec clé Gemini gratuite");
+      // 🔹 UTILISER VOTRE BACKEND avec votre clé Gemini GRATUITE
+      console.log("[VERSETS PROG] Utilisation de votre backend avec clé Gemini gratuite");
       
-      // CORRECTION: Utiliser votre backend local qui utilise votre clé Gemini gratuite
-      const versetAPIUrl = "http://localhost:8001/api/generate-verse-by-verse";
-      console.log("[VERSETS PROG] URL backend local utilisée:", versetAPIUrl);
+      // CORRECTION: Utiliser le bon endpoint selon l'environnement
+      const isLocal = window.location.hostname === 'localhost';
+      const versetAPIUrl = isLocal 
+        ? "http://localhost:8001/api/generate-verse-by-verse"  // Local avec votre Gemini
+        : "https://dual-study-bible.preview.emergentagent.com/api/generate-verse-by-verse";  // Preview avec votre Gemini
+      console.log("[VERSETS PROG] URL backend utilisée:", versetAPIUrl);
       const apiUrl = versetAPIUrl;
       
       const response = await fetch(apiUrl, {
