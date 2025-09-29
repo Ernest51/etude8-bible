@@ -1,4 +1,7 @@
-Force deploy - Concordance update + Backend URL fix - 2025-09-29 04:30
-- Fixed backend URL consistency
-- Added Bible de Concordance button with full functionality
-- Updated Vercel configuration
+Force deploy - SYSTÈME DUAL FONCTIONNEL - 2025-09-29 04:37
+✅ Rubrique 0 "Étude verset par verset" → bouton VERSETS PROG OPÉRATIONNEL
+✅ Rubriques 1-28 "Études thématiques" → bouton GÉNÉRER OPÉRATIONNEL  
+✅ Cohabitation des deux systèmes testée et validée
+✅ Bible de Concordance intégrée avec interface moderne
+✅ Design glassmorphism et animations appliqués
+- Prêt pour test utilisateur sur Vercel
