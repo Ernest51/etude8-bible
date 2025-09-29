@@ -1218,9 +1218,9 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
         const data = await response.json();
         console.log(`[API SUCCESS RUBRIQUE ${rubriqueNum}]`, data.content ? data.content.length : 0, "caractères");
         
-        // Parser pour extraire SEULEMENT cette rubrique
-        const rubriques = parseRubriquesContent(data.content || "");
-        rubriqueContent = rubriques[rubriqueNum];
+        // FORCER L'UTILISATION DU CONTENU INTELLIGENT LOCAL AU LIEU DE L'API
+        console.log(`[FORCE LOCAL CONTENT] Génération locale pour qualité théologique maximale`);
+        rubriqueContent = generateRubriqueContent(rubriqueNum, rubriqueTitle, passage, selectedBook, selectedChapter);
         
       } catch (apiError) {
         console.warn(`[API BLOQUÉE RUBRIQUE ${rubriqueNum}] ${apiError.message}`);
@@ -1230,7 +1230,7 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       
       setProgressPercent(80);
       
-      // Si pas de contenu spécifique, utiliser le générateur intelligent
+      // S'assurer que le contenu est toujours intelligent et théologique
       if (!rubriqueContent || rubriqueContent.length < 50) {
         rubriqueContent = generateRubriqueContent(rubriqueNum, rubriqueTitle, passage, selectedBook, selectedChapter);
       }
