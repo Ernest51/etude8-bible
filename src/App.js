@@ -463,67 +463,87 @@ function App() {
     return rubriques;
   };
 
-  // Fonction pour générer du contenu spécifique par rubrique
+  // Configuration des longueurs par rubrique
+  const getRubriqueLength = (rubriqueNum) => {
+    const lengthConfig = {
+      1: 500,   // Prière d'ouverture
+      2: 500,   // Structure littéraire
+      3: 500,   // Questions du chapitre précédent
+      4: 500,   // Thème doctrinal
+      5: 1500,  // Fondements théologiques
+      6: 1500,  // Contexte historique
+      7: 1500,  // Contexte culturel
+      8: 1500,  // Contexte géographique
+      9: 1500,  // Analyse lexicale
+      10: 1500, // Parallèles bibliques
+      11: 1500, // Prophétie et accomplissement
+      12: 1500, // Personnages
+      13: 1500, // Structure rhétorique
+      14: 1500, // Théologie trinitaire
+      15: 2000, // Christ au centre
+      16: 2000, // Évangile et grâce
+      17: 2000, // Application personnelle
+      18: 2000, // Application communautaire
+      19: 2000, // Prière de réponse
+      20: 2000, // Questions d'étude
+      21: 2000, // Points de vigilance
+      22: 2000, // Objections et réponses
+      23: 2000, // Perspective missionnelle
+      24: 2000, // Éthique chrétienne
+      25: 2000, // Louange / liturgie
+      26: 2000, // Méditation guidée
+      27: 2000, // Mémoire / versets clés
+      28: 2000  // Plan d'action
+    };
+    return lengthConfig[rubriqueNum] || 500;
+  };
+
+  // Fonction pour générer du contenu narratif théologique spécifique
   const generateRubriqueContent = (rubriqueNum, rubriqueTitle, passage, book, chapter) => {
+    const targetLength = getRubriqueLength(rubriqueNum);
+    
     const contenuParRubrique = {
-      1: `**Adoration :** Seigneur Dieu, Créateur du ciel et de la terre, nous reconnaissons ta grandeur manifestée dans ${passage}. Tu es celui qui appelle à l'existence ce qui n'était pas.
-
-**Confession :** Père, nous confessons notre petitesse face à ta majesté créatrice révélée dans ${passage}. Pardonne-nous nos manquements à reconnaître ta souveraineté.
-
-**Demande :** Esprit Saint, éclaire notre compréhension de ${passage}. Accorde-nous la sagesse pour saisir les vérités profondes de ta création et transforme nos cœurs par ta Parole.`,
-
-      2: `${passage} présente une architecture littéraire remarquable avec sa structure en sept jours de création. Cette organisation révèle l'ordre divin et la progression méthodique de l'œuvre créatrice.
-
-**Motifs récurrents :** "Dieu dit... et cela fut... Dieu vit que cela était bon"
-**Parallélismes :** Jours 1-3 (séparation) et jours 4-6 (peuplement)
-**Climax :** Le sabbat du septième jour`,
-
-      3: `L'étude de ${passage} doit tenir compte du contexte cosmique et théologique qui précède. Cette section inaugure l'histoire du salut et établit les fondements de l'alliance divine.
-
-**Questions de transition :** Comment ce chapitre prépare-t-il la révélation progressive de Dieu ? Quelle relation entre création et alliance ?`,
-
-      4: `Le thème doctrinal central de ${passage} révèle :
-
-**La souveraineté divine :** Dieu créateur tout-puissant
-**L'ordre cosmique :** Structure et hiérarchie de la création  
-**L'image de Dieu :** L'humanité comme couronne de la création
-**Le sabbat :** Principe du repos et de la sanctification`,
-
-      5: `${passage} établit des fondements théologiques majeurs :
-
-**Théologie de la création :** Ex nihilo - création à partir du néant
-**Anthropologie biblique :** L'homme créé à l'image de Dieu
-**Théologie du sabbat :** Principe du repos sanctifiant
-**Ecclésiologie :** Fondement de l'adoration et de la liturgie`,
-
-      6: `Le contexte historique de ${passage} s'inscrit dans le cadre du Proche-Orient antique avec ses cosmogonies concurrentes.
-
-**Contexte culturel :** Polémique contre les mythes babyloniens
-**Situation d'Israël :** Affirmation de l'unicité et de la transcendance divine
-**Portée universelle :** Message pour toute l'humanité`,
-
-      7: `Les éléments culturels de ${passage} révèlent :
-
-**Cosmologie hébraïque :** Vision du monde en trois étages
-**Temps sacré :** Cycle hebdomadaire et sabbat
-**Vocabulaire technique :** Terminologie de la création et de l'ordre`,
-
-      8: `La géographie de ${passage} évoque :
-
-**Cosmos ordonné :** Cieux, terre, mers
-**Jardin d'Éden :** Lieu de communion divine (anticipé)
-**Portée universelle :** Toute la création sous la souveraineté divine`,
-
-      // ... autres rubriques avec du contenu spécifique
+      1: generatePrayerContent(passage, targetLength),
+      2: generateStructureContent(passage, book, chapter, targetLength),
+      3: generatePreviousChapterContent(passage, book, chapter, targetLength),
+      4: generateDoctrinalThemeContent(passage, book, chapter, targetLength),
+      5: generateTheologicalFoundationsContent(passage, book, chapter, targetLength),
+      6: generateHistoricalContextContent(passage, book, chapter, targetLength),
+      7: generateCulturalContextContent(passage, book, chapter, targetLength),
+      8: generateGeographicalContextContent(passage, book, chapter, targetLength),
+      9: generateLexicalAnalysisContent(passage, book, chapter, targetLength),
+      10: generateBiblicalParallelsContent(passage, book, chapter, targetLength),
+      11: generateProphecyContent(passage, book, chapter, targetLength),
+      12: generateCharactersContent(passage, book, chapter, targetLength),
+      13: generateRhetoricalStructureContent(passage, book, chapter, targetLength),
+      14: generateTrinityTheologyContent(passage, book, chapter, targetLength),
+      15: generateChristCenteredContent(passage, book, chapter, targetLength),
+      16: generateGospelGraceContent(passage, book, chapter, targetLength),
+      17: generatePersonalApplicationContent(passage, book, chapter, targetLength),
+      18: generateCommunityApplicationContent(passage, book, chapter, targetLength),
+      19: generateResponsePrayerContent(passage, book, chapter, targetLength),
+      20: generateStudyQuestionsContent(passage, book, chapter, targetLength),
+      21: generateVigilancePointsContent(passage, book, chapter, targetLength),
+      22: generateObjectionsResponsesContent(passage, book, chapter, targetLength),
+      23: generateMissionalPerspectiveContent(passage, book, chapter, targetLength),
+      24: generateChristianEthicsContent(passage, book, chapter, targetLength),
+      25: generateWorshipLiturgyContent(passage, book, chapter, targetLength),
+      26: generateGuidedMeditationContent(passage, book, chapter, targetLength),
+      27: generateMemoryVersesContent(passage, book, chapter, targetLength),
+      28: generateActionPlanContent(passage, book, chapter, targetLength)
     };
 
     return contenuParRubrique[rubriqueNum] || 
-      `**${rubriqueTitle}** dans le contexte de ${passage}
+      generateDefaultContent(rubriqueTitle, passage, book, chapter, targetLength);
+  };
 
-Cette rubrique examine ${passage} sous l'angle de "${rubriqueTitle}". L'analyse révèle des vérités importantes pour notre compréhension théologique.
+  // Fonction pour la prière d'ouverture (500 caractères)
+  const generatePrayerContent = (passage, targetLength) => {
+    return `**Adoration :** Seigneur Dieu, Créateur du ciel et de la terre, nous reconnaissons ta grandeur manifestée dans ${passage}. Tu es celui qui appelle à l'existence ce qui n'était pas. Ta parole est puissante et efficace.
 
-**Enseignement principal :** ${passage} nous instruit sur la nature de Dieu et son œuvre.
-**Application pratique :** Ces vérités transforment notre relation avec le Créateur.`;
+**Confession :** Père, nous confessons notre petitesse face à ta majesté créatrice révélée dans ${passage}. Pardonne-nous nos manquements à reconnaître ta souveraineté absolue sur toute chose.
+
+**Demande :** Esprit Saint, éclaire notre compréhension de ${passage}. Accorde-nous la sagesse pour saisir les vérités profondes de ta création.`;
   };
 
   // Fonction pour générer un contenu fallback intelligent
