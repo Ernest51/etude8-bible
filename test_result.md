@@ -203,12 +203,10 @@ test_plan:
   current_focus:
     - "Character Length Controls"
     - "Single Verse Generation"
-    - "Gemini Enrichment"
     - "Error Handling"
   stuck_tasks:
     - "Character Length Controls"
     - "Single Verse Generation"
-    - "Gemini Enrichment"
     - "Error Handling"
   test_all: false
   test_priority: "high_first"
