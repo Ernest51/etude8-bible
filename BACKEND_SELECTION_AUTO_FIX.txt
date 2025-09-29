@@ -1,0 +1,19 @@
+CORRECTION BACKEND - GÉNÉRATION AUTOMATIQUE APRÈS SÉLECTION
+Timestamp: 2025-09-29 18:10:00
+
+PROBLÈME RÉSOLU:
+- Backend demandait des références au lieu de générer automatiquement
+- Devait générer après sélection utilisateur (livre, chapitre, verset)
+
+CORRECTION APPLIQUÉE:
+- Prompt modifié pour générer DIRECTEMENT après sélection
+- Plus de questions posées à l'utilisateur
+- Génération basée sur les paramètres reçus (passage, version, tokens)
+
+TEST VALIDÉ:
+✅ Matthieu 5:3 → Génère VERSET 3 avec texte et explication
+✅ Psaume 23 → Génère VERSET 1, 2, 3 automatiquement
+✅ Format CSS correct maintenu
+✅ Utilise votre clé Gemini gratuite
+
+Status: Backend génère maintenant automatiquement après sélection utilisateur
