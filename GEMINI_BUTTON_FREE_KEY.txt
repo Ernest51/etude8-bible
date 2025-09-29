@@ -1,0 +1,7 @@
+BOUTON GEMINI - CLÉ GRATUITE
+Timestamp: 2025-09-29 17:30:00
+Modification: Bouton "Gemini Flash" → "Gemini Gratuit"
+API Call: Maintenant utilise votre clé Gemini gratuite via backend
+ANCIEN: Enrichissement local (pas d'IA)
+NOUVEAU: Appel API backend avec votre clé Gemini AIzaSy...
+Status: Plus de coûts Universal Key pour enrichissement
