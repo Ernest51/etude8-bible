@@ -1,0 +1,6 @@
+CRITICAL API FIX - REAL BIBLICAL CONTENT
+Timestamp: 2025-09-29 17:00:00
+Problem: Railway API returns generic placeholder text "Texte du verset 1 (Genèse 1:1)"
+Solution: Switch to local API that returns real biblical content "Au commencement, Dieu créa les cieux et la terre"
+API Changed: etude8-bible-api-production.up.railway.app → dual-study-bible.preview.emergentagent.com
+Status: Fixed - Real content will now display
