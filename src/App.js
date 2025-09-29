@@ -610,9 +610,11 @@ Ainsi, notre prière d'ouverture devant ${passage} n'est pas une simple formalit
     if (targetLength >= 1000) {
       return baseContent + ` La création ex nihilo manifeste la toute-puissance divine. Contrairement aux cosmogonies babyloniennes qui décrivent des théomachies primordiales, l'Écriture présente un Dieu souverain créant par sa seule parole.
 
-L'anthropologie biblique trouve ici ses fondements : l'homme, créé à l'image de Dieu (imago Dei), reçoit une dignité unique. Cette ressemblance divine ne réside pas dans la corporéité mais dans les facultés spirituelles : intelligence, volonté, capacité relationnelle et responsabilité morale. L'homme devient ainsi le vice-gérent de Dieu sur terre.
+L'anthropologie biblique trouve ici ses fondements doctrinaux : l'homme, créé à l'image de Dieu (imago Dei), reçoit une dignité ontologique unique. Cette ressemblance divine ne réside pas dans la corporéité mais dans les facultés spirituelles : intelligence, volonté, capacité relationnelle et responsabilité morale. L'homme devient ainsi le vice-gérent de Dieu sur terre.
 
-Le sabbat révèle la pédagogie divine. En se reposant le septième jour, Dieu établit un modèle anthropologique : l'alternance entre activité créatrice et contemplation adoratrice. Cette institution sabbatique préfigure le repos eschatologique promis au peuple de Dieu et trouve son accomplissement sotériologique en Christ, notre repos sabbatique véritable selon l'épître aux Hébreux.`;
+Le sabbat révèle la pédagogie divine et établit les fondements de la sanctification du temps. En se reposant le septième jour, Dieu établit un modèle anthropologique : l'alternance entre activité créatrice et contemplation adoratrice. Cette institution sabbatique préfigure le repos eschatologique promis au peuple de Dieu.
+
+La théologie patristique (Augustin, Chrysostome) et la tradition réformée (Calvin, Westminster) ont développé ces vérités avec une rigueur scolastique remarquable. Ces fondements constituent le socle doctrinal de la foi chrétienne et demeurent le rempart théologique face aux défis de la modernité séculière et du naturalisme contemporain.`;
     }
 
     if (targetLength >= 2000) {
