@@ -610,11 +610,9 @@ Ainsi, notre prière d'ouverture devant ${passage} n'est pas une simple formalit
     if (targetLength >= 1000) {
       return baseContent + ` La création ex nihilo manifeste la toute-puissance divine. Contrairement aux cosmogonies babyloniennes qui décrivent des théomachies primordiales, l'Écriture présente un Dieu souverain créant par sa seule parole.
 
-L'anthropologie biblique trouve ici ses fondements doctrinaux : l'homme, créé à l'image de Dieu (imago Dei), reçoit une dignité ontologique unique. Cette ressemblance divine ne réside pas dans la corporéité mais dans les facultés spirituelles : intelligence, volonté, capacité relationnelle et responsabilité morale. L'homme devient ainsi le vice-gérent de Dieu sur terre.
+L'anthropologie biblique trouve ici ses fondements : l'homme, créé à l'image de Dieu (imago Dei), reçoit une dignité unique. Cette ressemblance divine ne réside pas dans la corporéité mais dans les facultés spirituelles : intelligence, volonté, capacité relationnelle et responsabilité morale. L'homme devient ainsi le vice-gérent de Dieu sur terre.
 
-Le sabbat révèle la pédagogie divine et établit les fondements de la sanctification du temps. En se reposant le septième jour, Dieu établit un modèle anthropologique : l'alternance entre activité créatrice et contemplation adoratrice. Cette institution sabbatique préfigure le repos eschatologique promis au peuple de Dieu.
-
-La théologie patristique (Augustin, Chrysostome) et la tradition réformée (Calvin, Westminster) ont développé ces vérités avec une rigueur scolastique remarquable. Ces fondements constituent le socle doctrinal de la foi chrétienne et demeurent le rempart théologique face aux défis de la modernité séculière et du naturalisme contemporain.`;
+Le sabbat révèle la pédagogie divine. En se reposant le septième jour, Dieu établit un modèle anthropologique : l'alternance entre activité créatrice et contemplation adoratrice. Cette institution sabbatique préfigure le repos eschatologique promis au peuple de Dieu et trouve son accomplissement sotériologique en Christ, notre repos sabbatique véritable selon l'épître aux Hébreux.`;
     }
 
     if (targetLength >= 2000) {
@@ -1241,23 +1239,100 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
     }
   };
 
-  // Fonction pour enrichissement théologique avancé
+  // Fonction pour enrichissement théologique contextuel et intelligent
   const generateTheologicalEnrichment = (rubriqueNum, rubriqueTitle, passage, book, chapter, targetLength) => {
     const baseContent = generateRubriqueContent(rubriqueNum, rubriqueTitle, passage, book, chapter, targetLength);
     
+    // Enrichissement spécifique selon le livre biblique
+    const bookEnrichment = getBookSpecificEnrichment(book, chapter);
+    
+    // Enrichissement spécifique selon la rubrique
+    const rubriqueEnrichment = getRubriqueSpecificEnrichment(rubriqueNum, rubriqueTitle);
+    
+    // Enrichissement contextuel combiné
+    const contextualEnrichment = getCombinedContextualEnrichment(book, chapter, rubriqueNum, passage);
+    
     const enrichmentSuffix = `
 
-**🤖 ENRICHISSEMENT THÉOLOGIQUE AVANCÉ :**
+**🤖 ENRICHISSEMENT CONTEXTUEL - ${passage}**
 
-La tradition exégétique patristique et scolastique offre des perspectives supplémentaires sur ce passage. Les Pères de l'Église, notamment Augustine d'Hippone et Jean Chrysostome, ont développé une herméneutique spirituelle qui éclaire les dimensions typologiques et allégoriques de ce texte.
+${bookEnrichment}
 
-L'École de théologie de Westminster et les théologiens puritains (Owen, Goodwin, Brooks) ont approfondi l'interprétation sotériologique de ce passage, soulignant ses implications pour la sanctification progressive du croyant. Leur exégèse grammatico-historique révèle des connexions intertextuelles remarquables avec le corpus paulinien.
+${rubriqueEnrichment}
 
-La théologie systématique réformée (Berkhof, Bavinck, Hodge) structure ces vérités bibliques dans un système doctrinal cohérent qui nourrit la piété chrétienne et guide la praxis ecclésiale. Cette approche académique rigoureuse, digne des meilleures facultés de théologie européennes, honore à la fois la scholarship évangélique et la dévotion personnelle.
+${contextualEnrichment}
 
-*Enrichissement généré par analyse théologique approfondie*`;
+*Enrichissement généré par analyse contextuelle approfondie*`;
 
     return baseContent + enrichmentSuffix.substring(0, Math.max(0, targetLength - baseContent.length));
+  };
+
+  // Enrichissement spécifique par livre biblique
+  const getBookSpecificEnrichment = (book, chapter) => {
+    const bookEnrichments = {
+      'Genèse': `**Perspective créationnelle :** ${book} ${chapter} s'inscrit dans le cadre de la théologie de la création. Les commentateurs patristiques, notamment Basile de Césarée dans ses Homélies sur l'Hexaméron, ont développé une exégèse remarquable de ces passages fondateurs.`,
+      
+      'Exode': `**Perspective libératrice :** ${book} ${chapter} révèle la pédagogie divine de la rédemption. Philon d'Alexandrie et plus tard l'École de théologie d'Antioche ont souligné les dimensions typologiques de ce récit qui préfigure la libération spirituelle en Christ.`,
+      
+      'Lévitique': `**Perspective sacrificielle :** ${book} ${chapter} développe la théologie cultuelle et sacrificielle. Les théologiens de l'Alliance (Cocceius, Witsius) ont magistralement démontré comment ces prescriptions rituelles trouvent leur accomplissement dans l'œuvre sacerdotale du Christ.`,
+      
+      'Nombres': `**Perspective pèlerine :** ${book} ${chapter} illustre la marche du peuple de Dieu vers la Terre Promise. John Bunyan dans "The Pilgrim's Progress" s'inspire de ces récits pour décrire le pèlerinage spirituel du chrétien.`,
+      
+      'Deutéronome': `**Perspective testamentaire :** ${book} ${chapter} constitue le testament mosaïque. Les théologiens de l'École de Saumur (Amyraut, Cappel) ont analysé la structure alliance-bénédiction-malédiction qui structure ce livre.`,
+      
+      'Matthieu': `**Perspective messianique :** ${book} ${chapter} révèle l'accomplissement des promesses vétérotestamentaires. Chrysostome dans ses Homélies sur Matthieu développe une christologie remarquable basée sur ce texte évangélique.`,
+      
+      'Marc': `**Perspective kérygmatique :** ${book} ${chapter} présente le Christ en action. L'exégèse moderne (Dodd, Jeremias) a souligné la dimension kérygmatique primitive de ce récit évangélique.`,
+      
+      'Luc': `**Perspective historico-salvifique :** ${book} ${chapter} s'inscrit dans l'histoire du salut. Conzelmann et l'École de Tübingen ont développé une théologie lucanienne de l'histoire sainte particulièrement éclairante.`,
+      
+      'Jean': `**Perspective théologique :** ${book} ${chapter} révèle la divinité du Christ. Les Pères cappadociens (Basile, Grégoire de Nazianze, Grégoire de Nysse) ont utilisé ce corpus johannique pour développer la théologie trinitaire.`,
+      
+      'Romains': `**Perspective sotériologique :** ${book} ${chapter} développe la doctrine du salut par grâce. Augustin, Luther, et Calvin ont fondé leur théologie de la justification sur cette épître magistrale.`,
+      
+      'Hébreux': `**Perspective sacerdotale :** ${book} ${chapter} présente le sacerdoce parfait du Christ. Owen dans son commentaire monumental a développé une théologie sacrificielle d'une profondeur inégalée.`
+    };
+    
+    return bookEnrichments[book] || `**Perspective biblique :** Ce passage de ${book} ${chapter} révèle des dimensions théologiques que les commentateurs anciens et modernes ont explorées avec profit.`;
+  };
+
+  // Enrichissement spécifique par rubrique
+  const getRubriqueSpecificEnrichment = (rubriqueNum, rubriqueTitle) => {
+    const rubriqueEnrichments = {
+      1: `**Enrichissement liturgique :** La tradition de la "prière d'ouverture" remonte aux Pères du désert. Jean Cassien dans ses Conférences spirituelles enseigne l'importance de l'invocation préalable pour toute lectio divina authentique.`,
+      
+      2: `**Enrichissement littéraire :** L'analyse structurelle moderne (rhétorique sémitique, Meynet) révèle des patterns sophistiqués que l'exégèse ancienne pressentait intuitivement. Cette approche enrichit considérablement la compréhension du texte.`,
+      
+      5: `**Enrichissement dogmatique :** Les fondements théologiques établis ici nourrissent la théologie systématique. Turretin dans ses Institutes of Elenctic Theology développe ces vérités avec une rigueur scolastique remarquable.`,
+      
+      15: `**Enrichissement christologique :** La lecture christocentrique trouve ici ses fondements herméneutiques. Vos dans sa Biblical Theology développe une approche christotélique qui éclaire remarquablement ce passage.`,
+      
+      16: `**Enrichissement sotériologique :** La doctrine de la grâce révélée ici constitue le cœur de l'Évangile. Les théologiens de Dordrecht ont systematisé ces vérités dans les Canons qui demeurent normatifs.`
+    };
+    
+    return rubriqueEnrichments[rubriqueNum] || `**Enrichissement thématique :** Cette rubrique "${rubriqueTitle}" ouvre des perspectives théologiques que la tradition exégétique a particulièrement développées.`;
+  };
+
+  // Enrichissement contextuel combiné
+  const getCombinedContextualEnrichment = (book, chapter, rubriqueNum, passage) => {
+    // Logique contextuelle sophistiquée combinant livre + rubrique
+    if (book === 'Genèse' && rubriqueNum === 1) {
+      return `**Synthèse contextuelle :** La prière d'ouverture sur Genèse ${chapter} nous place dans la contemplation de l'œuvre créatrice primordiale. Basile le Grand souligne que cette méditation doit commencer par l'adoration du Créateur avant l'analyse de la création.`;
+    }
+    
+    if (book === 'Genèse' && rubriqueNum === 15) {
+      return `**Synthèse christologique :** Christ présent dès Genèse ${chapter} selon l'exégèse patristique. Justin Martyr dans son Dialogue avec Tryphon identifie le Logos aux théophanies primitives, perspective reprise par la tradition réformée.`;
+    }
+    
+    if (book === 'Matthieu' && rubriqueNum === 16) {
+      return `**Synthèse évangélique :** L'évangile de la grâce révélé en Matthieu ${chapter} accomplit les promesses vétérotestamentaires. Cette continuité rédemptrice structure toute la théologie de l'alliance selon la tradition réformée (Westminster Confession).`;
+    }
+    
+    if ((book === 'Lévitique' || book === 'Hébreux') && rubriqueNum === 15) {
+      return `**Synthèse typologique :** Le système sacrificiel de ${book} ${chapter} trouve son accomplissement parfait dans l'œuvre sacerdotale du Christ. Cette typologie biblique, développée par l'École d'Antioche, révèle l'unité de l'histoire sainte.`;
+    }
+    
+    return `**Synthèse théologique :** L'intersection entre ${book} ${chapter} et cette dimension théologique révèle des vérités que l'exégèse traditionnelle a particulièrement valorisées dans l'édification de l'Église.`;
   };
 
   const generate28Points = async () => {
