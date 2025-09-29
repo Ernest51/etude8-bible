@@ -546,6 +546,171 @@ function App() {
 **Demande :** Esprit Saint, éclaire notre compréhension de ${passage}. Accorde-nous la sagesse pour saisir les vérités profondes de ta création.`;
   };
 
+  // Fonction pour structure littéraire (500 caractères)
+  const generateStructureContent = (passage, book, chapter, targetLength) => {
+    return `L'architecture littéraire de ${passage} révèle l'ordre divin dans la création. Cette structure en sept jours manifeste la perfection divine : trois jours de séparation (lumière/ténèbres, eaux/eaux, terre/mer) suivis de trois jours de peuplement (luminaires, animaux aquatiques et volants, animaux terrestres et l'homme). Le septième jour couronne l'œuvre par le repos divin, établissant le principe du sabbat. Cette progression méthodique "Dieu dit... et cela fut... Dieu vit que cela était bon" démontre la souveraineté divine.`;
+  };
+
+  // Fonction pour questions du chapitre précédent (500 caractères)
+  const generatePreviousChapterContent = (passage, book, chapter, targetLength) => {
+    if (chapter === "1") {
+      return `${passage} ouvre le récit biblique sans prologue humain, plongeant directement dans l'acte créateur divin. Cette ouverture majestueuse établit Dieu comme l'acteur principal de l'histoire. L'absence de contexte préalable souligne l'éternité et la primauté divines. Cette introduction théologique prépare tout le développement biblique ultérieur, posant les fondements de l'alliance, de la révélation progressive et du plan de salut qui se déploieront dans toute l'Écriture.`;
+    }
+    return `L'étude de ${passage} s'inscrit dans la continuité du récit biblique. Les événements précédents éclairent la compréhension de ce passage et préparent les développements théologiques qui suivront.`;
+  };
+
+  // Fonction pour thème doctrinal (500 caractères)
+  const generateDoctrinalThemeContent = (passage, book, chapter, targetLength) => {
+    return `Le thème doctrinal central de ${passage} proclame la souveraineté créatrice de Dieu. Trois vérités fondamentales émergent : l'existence éternelle de Dieu avant toute création, sa parole efficace qui appelle à l'existence ce qui n'était pas, et sa bonne volonté envers son œuvre. L'homme, créé à l'image divine, reçoit la dignité unique de représentant de Dieu sur terre. Le sabbat établit le rythme divin entre travail et repos, révélant la nature même de Dieu dans l'alternance activité/contemplation.`;
+  };
+
+  // Fonction pour fondements théologiques (1500 caractères) - Plus narratif et théologique
+  const generateTheologicalFoundationsContent = (passage, book, chapter, targetLength) => {
+    return `La narration de ${passage} établit les piliers théologiques de la foi chrétienne avec une profondeur doctrinale remarquable. L'Écriture nous enseigne ici que Dieu, dans sa trinité éternelle, précède toute réalité créée. "Au commencement était Dieu" – cette déclaration fondamentale révèle l'antériorité divine sur le temps et l'espace.
+
+La création ex nihilo (à partir du néant) manifeste la toute-puissance divine. Contrairement aux cosmogonies païennes qui décrivent des divinités luttant contre le chaos préexistant, l'Écriture présente un Dieu souverain qui, par sa seule parole, fait surgir l'univers entier. Cette doctrine fondamentale distingue radicalement la foi biblique de toute philosophie naturaliste ou panthéiste.
+
+L'anthropologie biblique trouve ici ses racines : l'homme, créé à l'image de Dieu (imago Dei), reçoit une dignité unique dans la création. Cette ressemblance divine ne réside pas dans la corporéité mais dans les facultés spirituelles : intelligence, volonté, capacité relationnelle et responsabilité morale. L'homme devient ainsi le vice-gérent de Dieu sur terre.
+
+Le sabbat révèle la nature contemplative de Dieu. En se reposant le septième jour, Dieu établit un modèle pour l'humanité : l'alternance entre action créatrice et contemplation adoratrice. Cette institution préfigure le repos éternel promis au peuple de Dieu et trouve son accomplissement en Christ, notre repos sabbatique véritable.
+
+Ces fondements théologiques nourrissent la foi chrétienne depuis des millénaires et demeurent inébranlables face aux défis contemporains.`;
+  };
+
+  // Fonction pour contexte historique (1500 caractères) - Plus narratif et théologique
+  const generateHistoricalContextContent = (passage, book, chapter, targetLength) => {
+    return `L'étude du contexte historique de ${passage} nous plonge dans l'univers du Proche-Orient ancien, où les cosmogonies babyloniennes et égyptiennes dominaient la pensée religieuse. Dans ce milieu culturel saturé de mythologies, la révélation biblique émerge comme une voix prophétique unique et révolutionnaire.
+
+Les récits babyloniens comme l'Enuma Elish présentent la création comme le résultat de conflits titanesques entre divinités primordiales. Marduk vainc Tiamat, déesse du chaos, et de son cadavre forme le cosmos. Ces mythes reflètent une vision cyclique du temps et une compréhension polythéiste du divin. La révélation mosaïque s'oppose radicalement à ces conceptions.
+
+L'Écriture proclame un Dieu unique, éternel, qui crée par sa parole sans opposition ni combat. Cette vérité révélée corrige les erreurs théologiques de l'environnement culturel israélite. Le peuple de Dieu reçoit ainsi une compréhension purifiée de la divinité, libérée des superstitions et des craintes liées aux forces naturelles divinisées.
+
+L'historicité du récit, débattue dans les cercles académiques contemporains, ne diminue en rien sa portée théologique. Que l'on adopte une lecture littérale ou littéraire, l'enseignement doctrinal demeure inchangé : Dieu est le créateur souverain, l'homme porte son image, et la création révèle sa gloire.
+
+Cette perspective historique enrichit notre compréhension et renforce notre foi en la véracité de la révélation divine face aux idéologies contemporaines qui tentent de réduire l'homme à un simple produit du hasard évolutif.`;
+  };
+
+  // Fonction pour Christ au centre (2000 caractères) - Très théologique et narratif
+  const generateChristCenteredContent = (passage, book, chapter, targetLength) => {
+    return `La lecture christocentrique de ${passage} révèle la présence du Fils éternel dès l'œuvre créatrice. L'Écriture nous enseigne que "toutes choses ont été faites par lui, et rien de ce qui a été fait n'a été fait sans lui" (Jean 1:3). Cette vérité transforme radicalement notre compréhension de la création.
+
+Le Logos divin, second membre de la Trinité sainte, participe activement à l'acte créateur. Quand Dieu dit "Que la lumière soit", c'est la Parole éternelle qui s'exprime. Cette lumière primordiale préfigure Christ, "lumière du monde" qui viendra éclairer les ténèbres spirituelles de l'humanité déchue.
+
+L'expression "Faisons l'homme à notre image" (Genèse 1:26) révèle la consultation trinitaire. Le Père, le Fils et le Saint-Esprit concourent à la création de l'homme. Cette image divine imprimée en Adam trouve son archétype parfait en Jésus-Christ, "image du Dieu invisible" (Colossiens 1:15). L'homme déchu sera restauré à cette image par l'œuvre rédemptrice du Fils incarné.
+
+Le sabbat créationnel annonce prophétiquement le repos que Christ procurera à son peuple. "Venez à moi, vous tous qui êtes fatigués et chargés, et je vous donnerai du repos" (Matthieu 11:28). Le sabbat temporel s'accomplit dans le repos éternel que le Sauveur assure à tous ceux qui croient en lui.
+
+La domination accordée à l'homme sur la création préfigure la royauté universelle du Fils de l'homme. Christ, second Adam, restaurera cette domination perdue par la chute et l'exercera parfaitement dans son royaume millénaire et éternel.
+
+Cette lecture christologique de la création enrichit notre adoration et affermit notre espérance en celui qui est "l'Alpha et l'Oméga, le commencement et la fin".`;
+  };
+
+  // Fonction pour évangile et grâce (2000 caractères) - Très théologique et narratif
+  const generateGospelGraceContent = (passage, book, chapter, targetLength) => {
+    return `Dans la magnificence de ${passage}, l'évangile de la grâce divine se dessine déjà en filigrane. Bien que l'humanité n'ait pas encore chuté, la prescience divine connaît déjà le plan rédempteur qui se déploiera à travers l'histoire sainte.
+
+La création ex nihilo manifeste la grâce première de Dieu. Rien ne l'obligeait à créer ; aucun besoin ne le contraignait à donner l'existence à l'univers. Cette création gratuite révèle la nature généreuse et aimante du Créateur. Cette gratuité originelle préfigure la grâce salvatrice qui sera manifestée en Jésus-Christ.
+
+La bénédiction divine sur l'humanité - "Dieu les bénit" - constitue la première effusion de grâce sur les créatures portant son image. Cette bénédiction créationnelle anticipe la bénédiction rédemptrice qui coulera du sacrifice de l'Agneau immolé dès la fondation du monde.
+
+L'établissement du sabbat révèle la pédagogie divine. Dieu enseigne à l'homme le rythme de la grâce : six jours de labeur suivis d'un jour de repos et de communion. Ce principe éducatif prépare l'humanité à comprendre que le salut ne s'obtient pas par les œuvres mais par la grâce, au moyen de la foi.
+
+L'environnement édénique - implicite dans ce chapitre et explicité au suivant - manifeste la bonté gratuite de Dieu envers ses créatures. Cette bonté originelle témoigne du désir divin de communion avec l'humanité, désir qui trouvera son accomplissement parfait dans l'incarnation du Fils.
+
+Même la capacité humaine de répondre à Dieu, de le connaître et de l'adorer, constitue un don de la grâce divine. L'imago Dei n'est pas un mérite humain mais un cadeau du Créateur aimant.
+
+Cette perspective évangélique de la création nourrit notre gratitude et nous prépare à mieux saisir la grandeur de la grâce salvatrice manifestée en Christ Jésus notre Seigneur.`;
+  };
+
+  // Fonctions génériques pour les autres rubriques
+  const generateCulturalContextContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Contexte culturel", passage, book, chapter, targetLength);
+  };
+  const generateGeographicalContextContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Contexte géographique", passage, book, chapter, targetLength);
+  };
+  const generateLexicalAnalysisContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Analyse lexicale", passage, book, chapter, targetLength);
+  };
+  const generateBiblicalParallelsContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Parallèles bibliques", passage, book, chapter, targetLength);
+  };
+  const generateProphecyContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Prophétie et accomplissement", passage, book, chapter, targetLength);
+  };
+  const generateCharactersContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Personnages", passage, book, chapter, targetLength);
+  };
+  const generateRhetoricalStructureContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Structure rhétorique", passage, book, chapter, targetLength);
+  };
+  const generateTrinityTheologyContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Théologie trinitaire", passage, book, chapter, targetLength);
+  };
+  const generatePersonalApplicationContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Application personnelle", passage, book, chapter, targetLength);
+  };
+  const generateCommunityApplicationContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Application communautaire", passage, book, chapter, targetLength);
+  };
+  const generateResponsePrayerContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Prière de réponse", passage, book, chapter, targetLength);
+  };
+  const generateStudyQuestionsContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Questions d'étude", passage, book, chapter, targetLength);
+  };
+  const generateVigilancePointsContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Points de vigilance", passage, book, chapter, targetLength);
+  };
+  const generateObjectionsResponsesContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Objections et réponses", passage, book, chapter, targetLength);
+  };
+  const generateMissionalPerspectiveContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Perspective missionnelle", passage, book, chapter, targetLength);
+  };
+  const generateChristianEthicsContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Éthique chrétienne", passage, book, chapter, targetLength);
+  };
+  const generateWorshipLiturgyContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Louange / liturgie", passage, book, chapter, targetLength);
+  };
+  const generateGuidedMeditationContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Méditation guidée", passage, book, chapter, targetLength);
+  };
+  const generateMemoryVersesContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Mémoire / versets clés", passage, book, chapter, targetLength);
+  };
+  const generateActionPlanContent = (passage, book, chapter, targetLength) => {
+    return generateDefaultContent("Plan d'action", passage, book, chapter, targetLength);
+  };
+
+  // Fonction pour générer du contenu par défaut selon la longueur
+  const generateDefaultContent = (rubriqueTitle, passage, book, chapter, targetLength) => {
+    const baseContent = `**${rubriqueTitle}** dans le contexte de ${passage}
+
+Cette rubrique examine ${passage} sous l'angle de "${rubriqueTitle}". L'analyse révèle des vérités importantes pour notre compréhension théologique et notre marche chrétienne selon la sainte doctrine.
+
+**Enseignement biblique :** ${passage} nous instruit sur la nature de Dieu et son œuvre dans l'histoire du salut.
+**Application pratique :** Ces vérités transforment notre relation avec le Créateur et notre vision du monde.`;
+
+    // Étendre le contenu selon la longueur cible
+    if (targetLength >= 1500) {
+      return baseContent + `
+
+La narration scripturaire nous invite à une méditation approfondie sur les implications de ce passage. L'Esprit Saint, par sa grâce illuminatrice, nous révèle les richesses cachées de la Parole divine. Cette section de l'Écriture s'inscrit dans le grand dessein rédempteur de Dieu, préparant la venue du Messie et l'établissement de son royaume éternel.
+
+Dans la tradition réformée, nous reconnaissons l'autorité suprême de l'Écriture comme règle de foi et de vie. Ce passage contribue à édifier l'Église dans la connaissance de Dieu et dans la sanctification progressive des croyants.
+
+**Dimension théologique :** L'étude de ${passage} enrichit notre compréhension de la nature divine et de ses attributs selon la révélation biblique.
+**Portée sotériologique :** Ce texte contribue à notre compréhension du salut par grâce seule, par la foi seule, en Christ seul.
+**Perspective eschatologique :** Les vérités révélées ici éclairent notre espérance en la consommation du royaume de Dieu et en la restauration de toutes choses.
+
+La sagesse divine se manifeste dans chaque détail de ce texte, invitant le peuple de Dieu à une adoration plus profonde et à une obéissance plus fidèle.`;
+    }
+
+    return baseContent;
+  };
+
   // Fonction pour générer un contenu fallback intelligent
   const generateIntelligentFallback = (passage, book, chapter) => {
     return `**ÉTUDE BIBLIQUE — 28 RUBRIQUES**
