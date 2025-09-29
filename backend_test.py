@@ -28,7 +28,7 @@ import re
 from datetime import datetime
 
 # Configuration - Use the REACT_APP_BACKEND_URL from frontend/.env
-BACKEND_URL = "https://biblestudy-ai-1.preview.emergentagent.com"
+BACKEND_URL = "https://verse-insight.preview.emergentagent.com"
 TIMEOUT = 120  # Increased timeout for content generation
 
 def log_test(test_name, status, details=""):

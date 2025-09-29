@@ -3,7 +3,7 @@
   "outputDirectory": "build",
   "installCommand": "yarn install",
   "env": {
-    "REACT_APP_BACKEND_URL": "https://biblestudy-ai-1.preview.emergentagent.com",
+    "REACT_APP_BACKEND_URL": "https://verse-insight.preview.emergentagent.com",
     "DISABLE_ESLINT_PLUGIN": "true",
     "CI": "false"
   }
