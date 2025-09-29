@@ -1,0 +1,5 @@
+DEPLOY TRIGGER - API FIX - 2025-09-29 04:48
+CORRECTION CRITIQUE : URL API pour verset par verset
+- Ligne 1240 : const apiUrl = `https://etude8-bible-api-production.up.railway.app/api/generate-verse-by-verse`;
+- Test local réussi : 4750 caractères générés
+- Correction "Failed to fetch" appliquée
