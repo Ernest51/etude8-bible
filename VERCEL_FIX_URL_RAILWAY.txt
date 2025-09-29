@@ -1,0 +1,5 @@
+VERCEL DEPLOYMENT FIX - URL RAILWAY CORRECTION
+Timestamp: 2025-09-29 16:30:00
+Issue: Hardcoded backend URL preventing verset par verset functionality on Vercel
+Fix: Changed from hardcoded localhost/preview URL to Railway API URL
+Status: Deployed
