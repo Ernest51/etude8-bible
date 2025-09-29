@@ -1593,10 +1593,14 @@ ${contextualEnrichment}
     
     // Formatage avec contexte pour VERSETS PROG
     let formattedText = text
-      // D'abord transformer les labels spécifiques AVANT la transformation générale **text**
+      // D'abord transformer les labels spécifiques - REGEX ÉLARGIES pour matcher différents formats
       .replace(/^\*\*VERSET (\d+)\*\*$/gim, "<h2 class='verset-header'>📖 VERSET $1</h2>")
+      .replace(/^VERSE\s*T(\d+)$/gim, "<h2 class='verset-header'>📖 VERSET $1</h2>")  // Format preview
+      .replace(/^VERSET\s*(\d+)$/gim, "<h2 class='verset-header'>📖 VERSET $1</h2>")    // Format alternatif
       .replace(/^\*\*TEXTE BIBLIQUE\s*:\*\*$/gim, "<h4 class='texte-biblique-label'>📜 TEXTE BIBLIQUE :</h4>")
+      .replace(/^TEXTE BIBLIQUE\s*:?$/gim, "<h4 class='texte-biblique-label'>📜 TEXTE BIBLIQUE :</h4>")  // Format preview
       .replace(/^\*\*EXPLICATION THÉOLOGIQUE\s*:\*\*$/gim, "<h4 class='explication-label'>🎓 EXPLICATION THÉOLOGIQUE :</h4>")
+      .replace(/^EXPLICATION THÉOLOGIQUE\s*:?$/gim, "<h4 class='explication-label'>🎓 EXPLICATION THÉOLOGIQUE :</h4>")  // Format preview
       // Puis transformer les autres éléments en gras génériques
       .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
       .replace(/^\# (.*$)/gim, "<h1>$1</h1>")
