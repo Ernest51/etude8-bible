@@ -963,7 +963,8 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       const contentEnCours = `# Étude - ${passage}\n\n## ${rubriqueNum}. ${rubriqueTitle}\n\n🔄 Génération intelligente en cours...`;
       setContent(formatContent(contentEnCours));
       
-      // Générer le contenu intelligent pour cette rubrique
+      // Générer le contenu intelligent théologique local (qualité maximale)
+      console.log(`[GÉNÉRATION LOCALE FORCÉE] Rubrique ${rubriqueNum} avec contenu théologique sophistiqué`);
       const rubriqueContent = generateRubriqueContent(rubriqueNum, rubriqueTitle, passage, selectedBook, selectedChapter);
       
       // Délai pour effet visuel
