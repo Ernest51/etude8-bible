@@ -1,0 +1,25 @@
+VERCEL DEPLOYMENT - VALEURS PAR DÉFAUT CORRIGÉES
+Timestamp: 2025-09-29 19:05:00
+
+PROBLÈME RÉSOLU:
+❌ Application démarrait avec sélecteurs vides ("--")
+❌ Message "Aucune sélection n'a été faite"
+❌ Aucune génération de contenu = pas de couleurs visibles
+
+CORRECTION APPLIQUÉE:
+✅ selectedBook: "--" → "Genèse"
+✅ selectedChapter: "--" → "1" 
+✅ Application démarre maintenant avec Genèse 1 pré-sélectionné
+
+RÉSULTAT VALIDÉ:
+🎯 Contenu généré automatiquement (VERSE T1, T2 visibles)
+📖 Texte biblique affiché: "Au commencement, Dieu créa les cieux et la terre"
+🎓 Explications théologiques substantielles affichées
+⚡ VERSETS PROG fonctionne avec sélection par défaut
+
+ÉTAPE SUIVANTE:
+🟣 Couleurs modernes à ajuster (regex formatContent)
+🔵 Classes CSS verset-header, texte-biblique-label, explication-label
+🟠 Format affiché actuellement: "VERSE T1" vs attendu avec couleurs
+
+Status: Génération de contenu résolue, couleurs en cours d'ajustement
