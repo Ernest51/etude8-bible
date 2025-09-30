@@ -1250,13 +1250,13 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
         [contentKey]: fullContent
       }));
       
-      // Si on est sur la rubrique 0, naviguer vers la page dédiée
-      if (activeRubrique === 0) {
-        const bookInfo = `${selectedBook || 'Genèse'} ${selectedChapter || '1'}${selectedVerse !== "--" ? ":" + selectedVerse : ""}`;
-        setTimeout(() => {
-          navigateToVersets(fullContent, bookInfo);
-        }, 500); // Petit délai pour l'effet visuel
-      }
+      // Naviguer automatiquement vers la page dédiée "Verset par Verset"
+      const bookInfo = `${selectedBook || 'Genèse'} ${selectedChapter || '1'}${selectedVerse !== "--" ? ":" + selectedVerse : ""}`;
+      console.log("[NAVIGATION] Préparation navigation vers page Verset par Verset:", bookInfo);
+      setTimeout(() => {
+        console.log("[NAVIGATION] Navigation vers la page dédiée Verset par Verset");
+        navigateToVersets(fullContent, bookInfo);
+      }, 500); // Petit délai pour l'effet visuel
       
     } catch (err) {
       console.error("Erreur génération VERSETS PROG:", err);
