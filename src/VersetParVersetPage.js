@@ -215,49 +215,53 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
     };
   }, [currentBatch, allVersetsBatches]);
   
-  // Fonction pour formater le contenu avec les bonnes couleurs ET boutons Gemini intégrés
+  // Fonction pour formater SEULEMENT le contenu (sans boutons)
   const formatVersetContent = (content) => {
     if (!content) return '';
     
-    let formattedContent = content;
-    
-    // Étape 1 : Formater les headers de base
-    formattedContent = formattedContent
+    let formattedContent = content
       // VERSET en violet
       .replace(/\*\*(VERSET\s+\d+)\*\*/g, '<div class="verset-header">$1</div>')
       .replace(/(VERSET\s+\d+)/g, '<div class="verset-header">$1</div>')
       
       // TEXTE BIBLIQUE en bleu  
       .replace(/\*\*(TEXTE BIBLIQUE\s*:?)\*\*/g, '<div class="texte-biblique-label">$1</div>')
-      .replace(/(TEXTE BIBLIQUE\s*:?)/g, '<div class="texte-biblique-label">$1</div>');
-    
-    // Étape 2 : EXPLICATION THÉOLOGIQUE avec bouton Gemini intégré à droite
-    // Pattern pour capturer VERSET X + contenu + EXPLICATION THÉOLOGIQUE
-    const versetExplicationPattern = /(VERSET\s+(\d+)[\s\S]*?)(\*\*(EXPLICATION THÉOLOGIQUE\s*:?)\*\*|\b(EXPLICATION THÉOLOGIQUE\s*:?))/gi;
-    
-    formattedContent = formattedContent.replace(versetExplicationPattern, (match, precedingContent, versetNumber, fullExplication, boldExplication, normalExplication) => {
-      const explicationText = boldExplication || normalExplication || 'EXPLICATION THÉOLOGIQUE :';
+      .replace(/(TEXTE BIBLIQUE\s*:?)/g, '<div class="texte-biblique-label">$1</div>')
       
-      return precedingContent + `
-        <div class="explication-header-with-button">
-          <div class="explication-label">${explicationText}</div>
-          <button 
-            class="btn-gemini-inline" 
-            onclick="window.enrichirVerset(${versetNumber})"
-            data-verset="${versetNumber}"
-            id="gemini-btn-${versetNumber}"
-          >
-            🤖 Gemini
-          </button>
-        </div>`;
-    });
-    
-    // Étape 3 : Gérer les paragraphes
-    formattedContent = formattedContent
+      // EXPLICATION THÉOLOGIQUE en orange - SIMPLE
+      .replace(/\*\*(EXPLICATION THÉOLOGIQUE\s*:?)\*\*/g, '<div class="explication-label">$1</div>')
+      .replace(/(EXPLICATION THÉOLOGIQUE\s*:?)/g, '<div class="explication-label">$1</div>')
+      
+      // Paragraphes
       .replace(/\n\n/g, '</p><p>')
       .replace(/\n/g, '<br/>');
     
     return `<div class="verset-content"><p>${formattedContent}</p></div>`;
+  };
+
+  // Fonction pour analyser et segmenter le contenu par versets
+  const parseContentByVersets = (content) => {
+    if (!content) return [];
+    
+    const versets = [];
+    const versetPattern = /(VERSET\s+(\d+)[\s\S]*?)(?=VERSET\s+\d+|$)/gi;
+    
+    let match;
+    while ((match = versetPattern.exec(content)) !== null) {
+      const versetNumber = parseInt(match[2]);
+      const versetContent = match[1].trim();
+      
+      // Séparer les différentes parties
+      const parts = {
+        number: versetNumber,
+        fullContent: versetContent,
+        hasExplicationTheologique: versetContent.includes('EXPLICATION THÉOLOGIQUE')
+      };
+      
+      versets.push(parts);
+    }
+    
+    return versets;
   };
 
   // Fonction pour extraire les numéros de versets du contenu
