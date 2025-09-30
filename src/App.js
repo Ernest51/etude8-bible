@@ -1225,6 +1225,21 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       setIsVersetsProgContent(true); // IMPORTANT : activer l'état VERSETS PROG
       console.log("[SUCCESS] Contenu VERSETS PROG affiché correctement");
       
+      // Sauvegarder le contenu dans generatedRubriques pour la navigation
+      const contentKey = `${selectedBook || 'Genèse'}_${selectedChapter || '1'}_0`;
+      setGeneratedRubriques(prev => ({
+        ...prev,
+        [contentKey]: fullContent
+      }));
+      
+      // Si on est sur la rubrique 0, naviguer vers la page dédiée
+      if (activeRubrique === 0) {
+        const bookInfo = `${selectedBook || 'Genèse'} ${selectedChapter || '1'}${selectedVerse !== "--" ? ":" + selectedVerse : ""}`;
+        setTimeout(() => {
+          navigateToVersets(fullContent, bookInfo);
+        }, 500); // Petit délai pour l'effet visuel
+      }
+      
     } catch (err) {
       console.error("Erreur génération VERSETS PROG:", err);
       setContent(`Erreur lors de la génération progressive: ${err.message}`);
