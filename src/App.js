@@ -1181,14 +1181,6 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
   const generateVerseByVerseProgressive = async () => {
     console.log("[DEBUG] generateVerseByVerseProgressive function called!");
     
-    // TEST: Naviguer immédiatement vers la page dédiée pour test
-    const bookInfo = `${selectedBook || 'Genèse'} ${selectedChapter || '1'}${selectedVerse !== "--" ? ":" + selectedVerse : ""}`;
-    console.log("[TEST] Navigation immédiate vers page Verset par Verset:", bookInfo);
-    navigateToVersets("Contenu de test", bookInfo);
-    
-    // Retourner immédiatement pour le test
-    return;
-    
     try {
       setIsLoading(true); setIsProgressiveLoading(true);
       setContent(""); setProgressPercent(0);
@@ -1233,6 +1225,22 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       
       const data = await response.json();
       console.log("[API RAILWAY OK] Contenu reçu:", data.content ? data.content.length : 0, "caractères");
+      
+      // Afficher des informations sur la source du contenu
+      const sourceInfo = data.source || "API";
+      const fromCache = data.from_cache || false;
+      const cost = data.cost || "Traitement";
+      
+      console.log(`[SOURCE] ${sourceInfo} ${fromCache ? '(Cache)' : '(Nouveau)'} - ${cost}`);
+      
+      // Afficher un message informatif selon la source
+      if (fromCache) {
+        console.log("📋 Contenu récupéré du cache - réponse instantanée");
+      } else if (sourceInfo.includes("Fallback") || sourceInfo.includes("théologique")) {
+        console.log("🔄 Quota Gemini atteint - utilisation du système de fallback intelligent");
+      } else if (sourceInfo.includes("Gemini")) {
+        console.log("🤖 Contenu généré par Gemini avec votre clé personnelle");
+      }
       
       // Utiliser le contenu de l'API (correction du bug d'affichage)
       if (!data.content) {
