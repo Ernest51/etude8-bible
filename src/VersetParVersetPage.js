@@ -1,6 +1,104 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const VersetParVersetPage = ({ onGoBack, content, bookInfo }) => {
+  const [currentBatch, setCurrentBatch] = useState(1); // Batch actuel (1, 2, 3...)
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [allVersetsBatches, setAllVersetsBatches] = useState({}); // Stocke tous les batches chargés
+  const [totalVersetsExpected, setTotalVersetsExpected] = useState(null);
+
+  useEffect(() => {
+    // Quand le contenu arrive, le stocker comme batch 1
+    if (content) {
+      setAllVersetsBatches(prev => ({
+        ...prev,
+        1: content
+      }));
+      setCurrentBatch(1);
+    }
+  }, [content]);
+
+  // Fonction pour charger le batch suivant (versets 6-10, 11-15, etc.)
+  const loadNextBatch = async () => {
+    if (isLoadingMore) return;
+    
+    const nextBatch = currentBatch + 1;
+    
+    // Si on a déjà ce batch en cache, l'afficher directement
+    if (allVersetsBatches[nextBatch]) {
+      setCurrentBatch(nextBatch);
+      return;
+    }
+    
+    setIsLoadingMore(true);
+    
+    try {
+      // Calculer le range de versets à demander
+      const startVerse = (nextBatch - 1) * 5 + 1; // Batch 2 = versets 6-10, etc.
+      const endVerse = startVerse + 4;
+      
+      // Extraire le livre et chapitre du bookInfo
+      const bookChapter = bookInfo?.split(':')[0] || 'Genèse 1';
+      const requestPassage = `${bookChapter}:${startVerse}-${endVerse}`;
+      
+      console.log(`[PAGINATION] Chargement batch ${nextBatch}: ${requestPassage}`);
+      
+      // Appeler l'API pour les versets suivants
+      const isLocal = window.location.hostname === 'localhost';
+      const apiUrl = isLocal 
+        ? "http://localhost:8001/api/generate-verse-by-verse"
+        : "https://biblestudy-ai-3.preview.emergentagent.com/api/generate-verse-by-verse";
+      
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          passage: requestPassage,
+          version: 'LSG',
+          tokens: 500,
+          use_gemini: true,
+          enriched: true
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Erreur API: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.content) {
+        // Stocker le nouveau batch
+        setAllVersetsBatches(prev => ({
+          ...prev,
+          [nextBatch]: data.content
+        }));
+        setCurrentBatch(nextBatch);
+        console.log(`[PAGINATION] Batch ${nextBatch} chargé avec succès`);
+      } else {
+        throw new Error('Pas de contenu reçu');
+      }
+      
+    } catch (error) {
+      console.error(`[PAGINATION] Erreur chargement batch ${nextBatch}:`, error);
+      // Optionnel : afficher une erreur à l'utilisateur
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
+
+  // Fonction pour naviguer vers un batch précédent
+  const goToPreviousBatch = () => {
+    if (currentBatch > 1) {
+      setCurrentBatch(currentBatch - 1);
+    }
+  };
+
+  // Obtenir le contenu du batch actuel
+  const getCurrentBatchContent = () => {
+    return allVersetsBatches[currentBatch] || '';
+  };
   
   // Fonction pour formater le contenu avec les bonnes couleurs
   const formatVersetContent = (content) => {
