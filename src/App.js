@@ -1527,8 +1527,8 @@ ${contextualEnrichment}
       const contentEnCours = `# Étude - ${passage}\n\n## ${rubriqueNum}. ${rubriqueTitle}\n\n🔄 Génération intelligente en cours...`;
       setContent(formatContent(contentEnCours));
       
-      // Appel API pour CETTE rubrique uniquement
-      const apiUrl = "https://etude28-bible-api-production.up.railway.app/api/generate-study";
+      // Appel API LOCAL pour CETTE rubrique avec notre système Gemini intelligent
+      const apiUrl = `${API_BASE}/generate-study`;
       
       let rubriqueContent;
       
@@ -1541,10 +1541,11 @@ ${contextualEnrichment}
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            book: selectedBook || 'Genèse',
-            chapter: selectedChapter || '1',
             passage: passage,
-            rubrique: rubriqueNum // Demander cette rubrique spécifiquement
+            version: selectedVersion || 'LSG',
+            tokens: selectedLength || 1000,
+            selected_rubriques: [rubriqueNum], // Cette rubrique spécifiquement
+            use_gemini: true
           })
         });
         
