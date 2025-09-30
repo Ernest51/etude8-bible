@@ -947,6 +947,14 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
     setCurrentPage('notes');
   };
 
+  const navigateToRubrique = (rubriqueNumber, content = '') => {
+    setCurrentRubriqueNumber(rubriqueNumber);
+    setCurrentRubriqueContent(content);
+    const bookInfo = `${selectedBook || 'Genèse'} ${selectedChapter || '1'}${selectedVerse !== "--" ? ":" + selectedVerse : ""}`;
+    setCurrentBookInfo(bookInfo);
+    setCurrentPage('rubrique');
+  };
+
   const navigateToMain = () => {
     setCurrentPage('main');
   };
