@@ -214,7 +214,7 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
     if (!content) return [];
     
     const sections = [];
-    const versetPattern = /(VERSET\s+(\d+)[\s\S]*?)(?=VERSET\s+\d+|$)/gi;
+    const versetPattern = /(\*\*VERSET\s+(\d+)\*\*[\s\S]*?)(?=\*\*VERSET\s+\d+|$)/gi;
     
     let match;
     while ((match = versetPattern.exec(content)) !== null) {
@@ -222,7 +222,7 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
       const versetContent = match[1].trim();
       
       // Séparer le contenu en parties
-      const parts = versetContent.split(/(TEXTE BIBLIQUE\s*:?|EXPLICATION THÉOLOGIQUE\s*:?)/i);
+      const parts = versetContent.split(/(\*\*TEXTE BIBLIQUE\s*:\*\*|\*\*EXPLICATION THÉOLOGIQUE\s*:\*\*)/i);
       
       let versetTitle = '';
       let texteContent = '';
@@ -231,12 +231,12 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
       for (let i = 0; i < parts.length; i++) {
         const part = parts[i].trim();
         
-        if (part.includes('VERSET')) {
+        if (part.includes('**VERSET')) {
           versetTitle = cleanMarkdownFormatting(part);
         } else if (part.match(/TEXTE BIBLIQUE/i)) {
           texteContent = cleanMarkdownFormatting(parts[i + 1]?.trim() || '');
           i++; // Skip next part as we've consumed it
-        } else if (part.match(/EXPLICATION THÉOLOGIQUE/i)) {
+        } else if (part.match(/\*\*EXPLICATION THÉOLOGIQUE/i)) {
           explicationContent = cleanMarkdownFormatting(parts[i + 1]?.trim() || '');
           i++; // Skip next part as we've consumed it
         }
@@ -257,7 +257,7 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
   const extractVersetNumbers = (content) => {
     if (!content) return [];
     
-    const versetPattern = /VERSET\s+(\d+)/gi;
+    const versetPattern = /\*\*VERSET\s+(\d+)\*\*/gi;
     const matches = [];
     let match;
     
