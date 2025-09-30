@@ -10,7 +10,7 @@ import json
 from datetime import datetime
 
 # Configuration - Use the REACT_APP_BACKEND_URL from frontend/.env
-BACKEND_URL = "https://biblestudy-ai-3.preview.emergentagent.com"
+BACKEND_URL = "https://theologystudy.preview.emergentagent.com"
 TIMEOUT = 30
 
 def log_test(test_name, status, details=""):

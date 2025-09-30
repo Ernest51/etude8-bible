@@ -26,7 +26,7 @@ from datetime import datetime
 
 # Railway API Configuration
 RAILWAY_API_URL = "https://etude8-bible-api-production.up.railway.app"
-LOCAL_API_URL = "https://biblestudy-ai-3.preview.emergentagent.com"
+LOCAL_API_URL = "https://theologystudy.preview.emergentagent.com"
 TIMEOUT = 120
 
 def log_test(test_name, status, details=""):

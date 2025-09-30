@@ -15,7 +15,7 @@ import re
 from datetime import datetime
 
 # Configuration
-BACKEND_URL = "https://biblestudy-ai-3.preview.emergentagent.com"
+BACKEND_URL = "https://theologystudy.preview.emergentagent.com"
 TIMEOUT = 60
 
 def log_test(test_name, status, details=""):
