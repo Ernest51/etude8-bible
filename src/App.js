@@ -1730,7 +1730,7 @@ ${contextualEnrichment}
                   {lastStudy ? `📖 ${lastStudy.book} ${lastStudy.chapter}${lastStudy.verse !== "--" ? ":" + lastStudy.verse : ""}` : "📖 Dernière étude"}
                 </button>
                 <button className={`btn-gemini ${isLoading ? "loading" : ""}`} onClick={generateWithGemini} disabled={isLoading}>🤖 Gemini Gratuit</button>
-                <button className="btn-versets-prog" onClick={generateVerseByVerseProgressive} disabled={isLoading} title="Analyse progressive enrichie - traitement uniforme des versets">⚡ Versets Prog</button>
+                <button className="btn-versets-prog" onClick={generateVerseByVerseProgressive} title="Analyse progressive enrichie - traitement uniforme des versets">⚡ Versets Prog</button>
                 <button className="btn-generate" onClick={generate28Points} disabled={isLoading}>Générer</button>
               </div>
             </div>
