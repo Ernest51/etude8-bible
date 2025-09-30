@@ -5,6 +5,7 @@ const VersetParVersetPage = ({ onGoBack, content, bookInfo }) => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [allVersetsBatches, setAllVersetsBatches] = useState({}); // Stocke tous les batches chargés
   const [totalVersetsExpected, setTotalVersetsExpected] = useState(null);
+  const [enrichingVersets, setEnrichingVersets] = useState({}); // Track quels versets sont en cours d'enrichissement
 
   useEffect(() => {
     // Quand le contenu arrive, le stocker comme batch 1
@@ -16,6 +17,81 @@ const VersetParVersetPage = ({ onGoBack, content, bookInfo }) => {
       setCurrentBatch(1);
     }
   }, [content]);
+
+  // Fonction pour enrichir une explication théologique spécifique avec Gemini
+  const enrichirExplicationGemini = async (versetNumber, currentExplication, versetText) => {
+    const enrichKey = `${currentBatch}-${versetNumber}`;
+    
+    if (enrichingVersets[enrichKey]) return; // Déjà en cours
+    
+    setEnrichingVersets(prev => ({...prev, [enrichKey]: true}));
+    
+    try {
+      console.log(`[GEMINI ENRICHISSEMENT] Enrichissement verset ${versetNumber} batch ${currentBatch}`);
+      
+      const isLocal = window.location.hostname === 'localhost';
+      const apiUrl = isLocal 
+        ? "http://localhost:8001/api/generate-verse-by-verse"
+        : "https://biblestudy-ai-3.preview.emergentagent.com/api/generate-verse-by-verse";
+      
+      const prompt = `ENRICHISSEMENT THÉOLOGIQUE APPROFONDI
+
+Verset biblique : "${versetText}"
+Explication actuelle : "${currentExplication}"
+
+MISSION : Enrichir et approfondir cette explication théologique avec 200-300 mots supplémentaires.
+
+AJOUTE :
+- Contexte historique et culturel
+- Liens avec d'autres passages bibliques
+- Implications doctrinales profondes
+- Applications pratiques modernes
+- Perspectives herméneutiques
+
+CONSERVE le texte original ET enrichis-le substantiellement.
+
+GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          passage: `Enrichissement théologique`,
+          version: 'LSG',
+          tokens: 300,
+          use_gemini: true,
+          enriched: true,
+          custom_prompt: prompt
+        })
+      });
+      
+      if (!response.ok) throw new Error(`Erreur API: ${response.status}`);
+      
+      const data = await response.json();
+      
+      if (data.content) {
+        // Remplacer l'explication dans le batch actuel
+        const currentBatchContent = allVersetsBatches[currentBatch];
+        const versetPattern = new RegExp(`(VERSET ${versetNumber}[\\s\\S]*?EXPLICATION THÉOLOGIQUE[\\s\\S]*?:)([\\s\\S]*?)(?=VERSET|$)`, 'i');
+        
+        const enrichedExplication = data.content.replace(/.*EXPLICATION THÉOLOGIQUE.*?:/i, '').trim();
+        const enrichedContent = currentBatchContent.replace(versetPattern, `$1\n${enrichedExplication}\n`);
+        
+        // Mettre à jour le batch avec le contenu enrichi
+        setAllVersetsBatches(prev => ({
+          ...prev,
+          [currentBatch]: enrichedContent
+        }));
+        
+        console.log(`[GEMINI ENRICHISSEMENT] Verset ${versetNumber} enrichi avec succès`);
+      }
+      
+    } catch (error) {
+      console.error(`[GEMINI ENRICHISSEMENT] Erreur verset ${versetNumber}:`, error);
+    } finally {
+      setEnrichingVersets(prev => ({...prev, [enrichKey]: false}));
+    }
+  };
 
   // Fonction pour charger le batch suivant (versets 6-10, 11-15, etc.)
   const loadNextBatch = async () => {
