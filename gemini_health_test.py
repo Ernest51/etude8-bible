@@ -120,8 +120,8 @@ def test_verse_generation():
                 print_result(False, f"Contenu théologique insuffisant. Termes trouvés: {found_terms}")
                 return False
             
-            # Vérifier qu'il n'y a pas d'erreurs d'API
-            error_indicators = ["erreur", "error", "failed", "échec", "non disponible"]
+            # Vérifier qu'il n'y a pas d'erreurs d'API (messages d'erreur explicites)
+            error_indicators = ["erreur gemini", "error", "failed", "échec", "non disponible", "pas de réponse"]
             has_errors = any(indicator.lower() in content.lower() for indicator in error_indicators)
             
             if not has_errors:
