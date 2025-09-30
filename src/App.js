@@ -1555,13 +1555,17 @@ ${contextualEnrichment}
         
         const data = await response.json();
         console.log(`[API SUCCESS RUBRIQUE ${rubriqueNum}]`, data.content ? data.content.length : 0, "caractères");
+        console.log(`[API DATA]`, data); // Debug pour voir le contenu exact
         
         // Parser pour extraire SEULEMENT cette rubrique
         const rubriques = parseRubriquesContent(data.content || "");
+        console.log(`[PARSING] Rubriques extraites:`, rubriques.length, "rubriques trouvées");
         rubriqueContent = rubriques[rubriqueNum];
+        console.log(`[PARSING] Contenu rubrique ${rubriqueNum}:`, rubriqueContent ? rubriqueContent.slice(0, 100) + "..." : "VIDE");
         
       } catch (apiError) {
-        console.warn(`[API BLOQUÉE RUBRIQUE ${rubriqueNum}] ${apiError.message}`);
+        console.error(`[API ÉCHEC RUBRIQUE ${rubriqueNum}] ${apiError.message}`, apiError);
+        console.warn(`[FALLBACK] Utilisation generateRubriqueContent pour rubrique ${rubriqueNum}`);
         // Fallback avec contenu intelligent spécifique
         rubriqueContent = generateRubriqueContent(rubriqueNum, rubriqueTitle, passage, selectedBook, selectedChapter, parseInt(selectedLength));
       }
