@@ -365,10 +365,84 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
             fontSize: 'clamp(15px, 4vw, 16px)',
             marginBottom: '20px'
           }}>
+            {/* Contenu formaté */}
             <div 
               dangerouslySetInnerHTML={{ __html: formatVersetContent(getCurrentBatchContent()) }}
               style={{ color: '#374151' }}
             />
+            
+            {/* Boutons Gemini créés en JSX (après le contenu) */}
+            {extractVersetNumbers(getCurrentBatchContent()).map(versetNumber => (
+              <div key={versetNumber} className="gemini-enrichment-section" style={{
+                textAlign: 'center',
+                margin: '20px 0 30px 0',
+                padding: '16px',
+                background: 'rgba(139, 92, 246, 0.05)',
+                borderRadius: '12px',
+                border: '2px solid rgba(139, 92, 246, 0.1)'
+              }}>
+                <button 
+                  onClick={() => handleEnrichirVerset(versetNumber)}
+                  disabled={enrichingVersets[`${currentBatch}-${versetNumber}`]}
+                  style={{
+                    background: enrichingVersets[`${currentBatch}-${versetNumber}`]
+                      ? 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)'
+                      : 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                    color: 'white',
+                    border: 'none',
+                    padding: 'clamp(10px, 3vw, 14px) clamp(16px, 4vw, 24px)',
+                    borderRadius: '10px',
+                    fontSize: 'clamp(13px, 3.5vw, 15px)',
+                    fontWeight: '600',
+                    cursor: enrichingVersets[`${currentBatch}-${versetNumber}`] ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 16px rgba(139, 92, 246, 0.25)',
+                    width: '100%',
+                    maxWidth: '320px',
+                    opacity: enrichingVersets[`${currentBatch}-${versetNumber}`] ? 0.7 : 1
+                  }}
+                  onMouseOver={(e) => {
+                    if (!enrichingVersets[`${currentBatch}-${versetNumber}`]) {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 6px 24px rgba(139, 92, 246, 0.35)';
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    if (!enrichingVersets[`${currentBatch}-${versetNumber}`]) {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 4px 16px rgba(139, 92, 246, 0.25)';
+                    }
+                  }}
+                >
+                  {enrichingVersets[`${currentBatch}-${versetNumber}`] 
+                    ? '⏳ Enrichissement...' 
+                    : '🤖 Gemini gratuit - Enrichir cette explication'
+                  }
+                </button>
+                
+                {enrichingVersets[`${currentBatch}-${versetNumber}`] && (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '10px',
+                    marginTop: '12px',
+                    color: '#6b7280',
+                    fontSize: 'clamp(12px, 3vw, 14px)'
+                  }}>
+                    <div style={{
+                      width: '16px',
+                      height: '16px',
+                      border: '2px solid #e5e7eb',
+                      borderTop: '2px solid #8b5cf6',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
+                    Enrichissement en cours avec Gemini...
+                  </div>
+                )}
+              </div>
+            ))}
             
             {/* Boutons de navigation */}
             <div style={{
