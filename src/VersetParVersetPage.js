@@ -470,7 +470,7 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
               📖 Batch {currentBatch} • Versets {(currentBatch - 1) * 5 + 1} à {currentBatch * 5}
             </div>
             
-            {/* Styles CSS intégrés pour les couleurs */}
+            {/* Styles CSS intégrés pour les couleurs ET boutons Gemini intégrés */}
             <style>
               {`
                 .verset-header {
@@ -500,6 +500,15 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
                   letter-spacing: 0.5px;
                 }
                 
+                /* Container pour EXPLICATION THÉOLOGIQUE + bouton Gemini */
+                .explication-header-with-button {
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
+                  gap: clamp(10px, 3vw, 15px);
+                  margin: clamp(20px, 5vw, 24px) 0 clamp(12px, 3vw, 16px) 0;
+                }
+                
                 .explication-label {
                   background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
                   color: white;
@@ -507,10 +516,38 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
                   font-weight: 700;
                   padding: clamp(10px, 3vw, 12px) clamp(16px, 4vw, 20px);
                   border-radius: 10px;
-                  margin: clamp(20px, 5vw, 24px) 0 clamp(12px, 3vw, 16px) 0;
                   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
                   text-transform: uppercase;
                   letter-spacing: 0.5px;
+                  flex: 1;
+                  margin: 0;
+                }
+                
+                /* Bouton Gemini intégré à droite */
+                .btn-gemini-inline {
+                  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+                  color: white;
+                  border: none;
+                  padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 16px);
+                  border-radius: 8px;
+                  font-size: clamp(12px, 3vw, 14px);
+                  font-weight: 600;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  box-shadow: 0 3px 12px rgba(139, 92, 246, 0.25);
+                  min-width: clamp(60px, 15vw, 80px);
+                  flex-shrink: 0;
+                }
+                
+                .btn-gemini-inline:hover:not(:disabled) {
+                  transform: translateY(-1px);
+                  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.35);
+                }
+                
+                .btn-gemini-inline:disabled {
+                  opacity: 0.7;
+                  cursor: not-allowed;
+                  transform: none;
                 }
                 
                 .verset-content p {
@@ -523,12 +560,6 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
                   line-height: 1.7;
                 }
                 
-                /* Animation spin pour les loadings */
-                @keyframes spin {
-                  0% { transform: rotate(0deg); }
-                  100% { transform: rotate(360deg); }
-                }
-                
                 /* Responsive mobile - lecture optimisée */
                 @media (max-width: 768px) {
                   .verset-header {
@@ -536,10 +567,20 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
                     border-radius: 8px;
                   }
                   
-                  .texte-biblique-label,
-                  .explication-label {
+                  .texte-biblique-label {
                     margin: 16px 0 12px 0;
                     border-radius: 8px;
+                  }
+                  
+                  .explication-header-with-button {
+                    flex-direction: column;
+                    gap: 12px;
+                    align-items: stretch;
+                  }
+                  
+                  .btn-gemini-inline {
+                    align-self: center;
+                    min-width: 120px;
                   }
                   
                   .verset-content p {
@@ -559,6 +600,11 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
                   .explication-label {
                     font-size: 0.95rem;
                     padding: 8px 14px;
+                  }
+                  
+                  .btn-gemini-inline {
+                    font-size: 11px;
+                    padding: 6px 10px;
                   }
                 }
               `}
