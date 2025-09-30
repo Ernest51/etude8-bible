@@ -171,6 +171,11 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
     }
   };
 
+  // Obtenir le contenu du batch actuel
+  const getCurrentBatchContent = () => {
+    return allVersetsBatches[currentBatch] || '';
+  };
+
   // Exposer la fonction d'enrichissement globalement pour les boutons HTML
   useEffect(() => {
     window.enrichVersetGemini = async (versetNumber) => {
