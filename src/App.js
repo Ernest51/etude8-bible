@@ -1033,9 +1033,16 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
         const bookInfo = `${selectedBook || 'Genèse'} ${selectedChapter || '1'}${selectedVerse !== "--" ? ":" + selectedVerse : ""}`;
         navigateToVersets(generatedRubriques[contentKey], bookInfo);
       }
-      // Si rubrique 1-28, naviguer vers la page rubrique dédiée
+      // Si rubrique 1-28, générer ET naviguer vers la page rubrique dédiée
       else if (id >= 1 && id <= 28) {
-        navigateToRubrique(id, generatedRubriques[contentKey]);
+        // Générer d'abord si nécessaire
+        if (rubriquesStatus[id] !== "completed" || !generatedRubriques[contentKey]) {
+          console.log(`[GÉNÉRATION REQUISE] Rubrique ${id} non générée`);
+          await generateRubriqueOnDemand(id);
+        }
+        // Naviguer vers la page de rubrique avec le contenu
+        const finalContent = generatedRubriques[contentKey] || '';
+        navigateToRubrique(id, finalContent);
       }
       else {
         setContent(generatedRubriques[contentKey]);
