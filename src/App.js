@@ -5,6 +5,7 @@ import "./rubriques.css";
 import RubriquesInline from "./RubriquesInline";
 import BibleConcordancePage from "./BibleConcordancePage";
 import VersetParVersetPage from "./VersetParVersetPage";
+import NotesPage from "./NotesPage";
 
 /* =========================
    Configuration et Helpers
