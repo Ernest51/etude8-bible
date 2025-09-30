@@ -296,6 +296,13 @@ function App() {
   useEffect(() => {
     setTimeout(() => { changePalette(); setCurrentTheme(0); }, 100);
   }, []);
+  // Test immédiat de sauvegarde quand sélection change
+  useEffect(() => {
+    if (selectedBook !== "--" && selectedChapter !== "--") {
+      console.log("[TEST SAUVEGARDE] Sélection valide détectée:", selectedBook, selectedChapter);
+      saveCurrentStudy();
+    }
+  }, [selectedBook, selectedChapter]);
 
   const saveCurrentStudy = () => {
     console.log("[DEBUG SAUVEGARDE] Tentative sauvegarde:", {
