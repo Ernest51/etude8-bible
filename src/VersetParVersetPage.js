@@ -176,50 +176,31 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
     return allVersetsBatches[currentBatch] || '';
   };
 
-  // Exposer la fonction d'enrichissement globalement pour les boutons HTML intégrés
-  useEffect(() => {
-    window.enrichirVerset = async (versetNumber) => {
-      console.log(`[GEMINI] Enrichissement verset ${versetNumber}`);
+  // Fonction pour gérer l'enrichissement d'un verset via React (pas via HTML onclick)
+  const handleEnrichirVerset = async (versetNumber) => {
+    console.log(`[GEMINI] Clic enrichissement verset ${versetNumber}`);
+    
+    // Extraire le texte du verset et l'explication actuelle
+    const currentContent = getCurrentBatchContent();
+    const versetRegex = new RegExp(`VERSET ${versetNumber}[\\s\\S]*?TEXTE BIBLIQUE[\\s\\S]*?:([\\s\\S]*?)EXPLICATION THÉOLOGIQUE[\\s\\S]*?:([\\s\\S]*?)(?=VERSET|$)`, 'i');
+    const match = currentContent.match(versetRegex);
+    
+    if (match) {
+      const versetText = match[1].trim();
+      const currentExplication = match[2].trim();
       
-      const buttonEl = document.getElementById(`gemini-btn-${versetNumber}`);
-      
-      if (buttonEl) {
-        buttonEl.textContent = '⏳';
-        buttonEl.disabled = true;
-        buttonEl.style.opacity = '0.7';
-      }
-      
-      // Extraire le texte du verset et l'explication actuelle
-      const currentContent = getCurrentBatchContent();
-      const versetRegex = new RegExp(`VERSET ${versetNumber}[\\s\\S]*?TEXTE BIBLIQUE[\\s\\S]*?:([\\s\\S]*?)EXPLICATION THÉOLOGIQUE[\\s\\S]*?:([\\s\\S]*?)(?=VERSET|$)`, 'i');
-      const match = currentContent.match(versetRegex);
-      
-      if (match) {
-        const versetText = match[1].trim();
-        const currentExplication = match[2].trim();
-        
-        await enrichirExplicationGemini(versetNumber, currentExplication, versetText);
-      }
-      
-      // Mettre à jour le bouton
-      if (buttonEl) {
-        buttonEl.textContent = '✅';
-        buttonEl.disabled = false;
-        buttonEl.style.opacity = '1';
-        buttonEl.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-      }
-    };
-
-    return () => {
-      delete window.enrichirVerset;
-    };
-  }, [currentBatch, allVersetsBatches]);
+      await enrichirExplicationGemini(versetNumber, currentExplication, versetText);
+    }
+  };
   
-  // Fonction pour formater SEULEMENT le contenu (sans boutons)
+  // Fonction pour formater le contenu avec les bonnes couleurs SANS boutons (boutons ajoutés séparément)
   const formatVersetContent = (content) => {
     if (!content) return '';
     
-    let formattedContent = content
+    let formattedContent = content;
+    
+    // Étape 1 : Formater les headers avec couleurs
+    formattedContent = formattedContent
       // VERSET en violet
       .replace(/\*\*(VERSET\s+\d+)\*\*/g, '<div class="verset-header">$1</div>')
       .replace(/(VERSET\s+\d+)/g, '<div class="verset-header">$1</div>')
@@ -228,40 +209,16 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
       .replace(/\*\*(TEXTE BIBLIQUE\s*:?)\*\*/g, '<div class="texte-biblique-label">$1</div>')
       .replace(/(TEXTE BIBLIQUE\s*:?)/g, '<div class="texte-biblique-label">$1</div>')
       
-      // EXPLICATION THÉOLOGIQUE en orange - SIMPLE
+      // EXPLICATION THÉOLOGIQUE en orange
       .replace(/\*\*(EXPLICATION THÉOLOGIQUE\s*:?)\*\*/g, '<div class="explication-label">$1</div>')
-      .replace(/(EXPLICATION THÉOLOGIQUE\s*:?)/g, '<div class="explication-label">$1</div>')
-      
-      // Paragraphes
+      .replace(/(EXPLICATION THÉOLOGIQUE\s*:?)/g, '<div class="explication-label">$1</div>');
+    
+    // Étape 2 : Gérer les paragraphes
+    formattedContent = formattedContent
       .replace(/\n\n/g, '</p><p>')
       .replace(/\n/g, '<br/>');
     
     return `<div class="verset-content"><p>${formattedContent}</p></div>`;
-  };
-
-  // Fonction pour analyser et segmenter le contenu par versets
-  const parseContentByVersets = (content) => {
-    if (!content) return [];
-    
-    const versets = [];
-    const versetPattern = /(VERSET\s+(\d+)[\s\S]*?)(?=VERSET\s+\d+|$)/gi;
-    
-    let match;
-    while ((match = versetPattern.exec(content)) !== null) {
-      const versetNumber = parseInt(match[2]);
-      const versetContent = match[1].trim();
-      
-      // Séparer les différentes parties
-      const parts = {
-        number: versetNumber,
-        fullContent: versetContent,
-        hasExplicationTheologique: versetContent.includes('EXPLICATION THÉOLOGIQUE')
-      };
-      
-      versets.push(parts);
-    }
-    
-    return versets;
   };
 
   // Fonction pour extraire les numéros de versets du contenu
@@ -383,11 +340,84 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
             fontSize: 'clamp(15px, 4vw, 16px)',
             marginBottom: '20px'
           }}>
-            {/* Contenu formaté avec boutons Gemini intégrés */}
+            {/* Contenu formaté */}
             <div 
               dangerouslySetInnerHTML={{ __html: formatVersetContent(getCurrentBatchContent()) }}
               style={{ color: '#374151' }}
             />
+            
+            {/* Boutons Gemini créés en JSX (après le contenu) */}
+            {extractVersetNumbers(getCurrentBatchContent()).map(versetNumber => (
+              <div key={versetNumber} className="gemini-enrichment-section" style={{
+                textAlign: 'center',
+                margin: '20px 0 30px 0',
+                padding: '16px',
+                background: 'rgba(139, 92, 246, 0.05)',
+                borderRadius: '12px',
+                border: '2px solid rgba(139, 92, 246, 0.1)'
+              }}>
+                <button 
+                  onClick={() => handleEnrichirVerset(versetNumber)}
+                  disabled={enrichingVersets[`${currentBatch}-${versetNumber}`]}
+                  style={{
+                    background: enrichingVersets[`${currentBatch}-${versetNumber}`]
+                      ? 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)'
+                      : 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                    color: 'white',
+                    border: 'none',
+                    padding: 'clamp(10px, 3vw, 14px) clamp(16px, 4vw, 24px)',
+                    borderRadius: '10px',
+                    fontSize: 'clamp(13px, 3.5vw, 15px)',
+                    fontWeight: '600',
+                    cursor: enrichingVersets[`${currentBatch}-${versetNumber}`] ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 16px rgba(139, 92, 246, 0.25)',
+                    width: '100%',
+                    maxWidth: '320px',
+                    opacity: enrichingVersets[`${currentBatch}-${versetNumber}`] ? 0.7 : 1
+                  }}
+                  onMouseOver={(e) => {
+                    if (!enrichingVersets[`${currentBatch}-${versetNumber}`]) {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 6px 24px rgba(139, 92, 246, 0.35)';
+                    }
+                  }}
+                  onMouseOut={(e) => {
+                    if (!enrichingVersets[`${currentBatch}-${versetNumber}`]) {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 4px 16px rgba(139, 92, 246, 0.25)';
+                    }
+                  }}
+                >
+                  {enrichingVersets[`${currentBatch}-${versetNumber}`] 
+                    ? '⏳ Enrichissement...' 
+                    : '🤖 Gemini gratuit - Enrichir cette explication'
+                  }
+                </button>
+                
+                {enrichingVersets[`${currentBatch}-${versetNumber}`] && (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '10px',
+                    marginTop: '12px',
+                    color: '#6b7280',
+                    fontSize: 'clamp(12px, 3vw, 14px)'
+                  }}>
+                    <div style={{
+                      width: '16px',
+                      height: '16px',
+                      border: '2px solid #e5e7eb',
+                      borderTop: '2px solid #8b5cf6',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
+                    Enrichissement en cours avec Gemini...
+                  </div>
+                )}
+              </div>
+            ))}
             
             {/* Boutons de navigation */}
             <div style={{
@@ -474,7 +504,7 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
               📖 Batch {currentBatch} • Versets {(currentBatch - 1) * 5 + 1} à {currentBatch * 5}
             </div>
             
-            {/* Styles CSS intégrés pour les couleurs ET boutons Gemini intégrés */}
+            {/* Styles CSS intégrés pour les couleurs */}
             <style>
               {`
                 .verset-header {
@@ -504,15 +534,6 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
                   letter-spacing: 0.5px;
                 }
                 
-                /* Container pour EXPLICATION THÉOLOGIQUE + bouton Gemini */
-                .explication-header-with-button {
-                  display: flex;
-                  align-items: center;
-                  justify-content: space-between;
-                  gap: clamp(10px, 3vw, 15px);
-                  margin: clamp(20px, 5vw, 24px) 0 clamp(12px, 3vw, 16px) 0;
-                }
-                
                 .explication-label {
                   background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
                   color: white;
@@ -520,38 +541,10 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
                   font-weight: 700;
                   padding: clamp(10px, 3vw, 12px) clamp(16px, 4vw, 20px);
                   border-radius: 10px;
+                  margin: clamp(20px, 5vw, 24px) 0 clamp(12px, 3vw, 16px) 0;
                   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
                   text-transform: uppercase;
                   letter-spacing: 0.5px;
-                  flex: 1;
-                  margin: 0;
-                }
-                
-                /* Bouton Gemini intégré à droite */
-                .btn-gemini-inline {
-                  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-                  color: white;
-                  border: none;
-                  padding: clamp(8px, 2vw, 10px) clamp(12px, 3vw, 16px);
-                  border-radius: 8px;
-                  font-size: clamp(12px, 3vw, 14px);
-                  font-weight: 600;
-                  cursor: pointer;
-                  transition: all 0.3s ease;
-                  box-shadow: 0 3px 12px rgba(139, 92, 246, 0.25);
-                  min-width: clamp(60px, 15vw, 80px);
-                  flex-shrink: 0;
-                }
-                
-                .btn-gemini-inline:hover:not(:disabled) {
-                  transform: translateY(-1px);
-                  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.35);
-                }
-                
-                .btn-gemini-inline:disabled {
-                  opacity: 0.7;
-                  cursor: not-allowed;
-                  transform: none;
                 }
                 
                 .verset-content p {
@@ -564,6 +557,12 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
                   line-height: 1.7;
                 }
                 
+                /* Animation spin pour les loadings */
+                @keyframes spin {
+                  0% { transform: rotate(0deg); }
+                  100% { transform: rotate(360deg); }
+                }
+                
                 /* Responsive mobile - lecture optimisée */
                 @media (max-width: 768px) {
                   .verset-header {
@@ -571,20 +570,10 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
                     border-radius: 8px;
                   }
                   
-                  .texte-biblique-label {
+                  .texte-biblique-label,
+                  .explication-label {
                     margin: 16px 0 12px 0;
                     border-radius: 8px;
-                  }
-                  
-                  .explication-header-with-button {
-                    flex-direction: column;
-                    gap: 12px;
-                    align-items: stretch;
-                  }
-                  
-                  .btn-gemini-inline {
-                    align-self: center;
-                    min-width: 120px;
                   }
                   
                   .verset-content p {
@@ -604,11 +593,6 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
                   .explication-label {
                     font-size: 0.95rem;
                     padding: 8px 14px;
-                  }
-                  
-                  .btn-gemini-inline {
-                    font-size: 11px;
-                    padding: 6px 10px;
                   }
                 }
               `}
