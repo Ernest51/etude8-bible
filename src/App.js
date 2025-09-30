@@ -213,9 +213,11 @@ function App() {
   // const [showNotesModal, setShowNotesModal] = useState(false)
 
   // État pour la navigation
-  const [currentPage, setCurrentPage] = useState('main'); // 'main', 'concordance', 'versets', ou 'notes'
+  const [currentPage, setCurrentPage] = useState('main'); // 'main', 'concordance', 'versets', 'notes', ou 'rubrique'
   const [versetPageContent, setVersetPageContent] = useState('');
   const [currentBookInfo, setCurrentBookInfo] = useState('');
+  const [currentRubriqueNumber, setCurrentRubriqueNumber] = useState(1);
+  const [currentRubriqueContent, setCurrentRubriqueContent] = useState('');
 
   // Thèmes
   const colorThemes = [
