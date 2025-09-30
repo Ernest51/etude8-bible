@@ -1179,6 +1179,16 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
   ========================= */
 
   const generateVerseByVerseProgressive = async () => {
+    console.log("[DEBUG] generateVerseByVerseProgressive function called!");
+    
+    // TEST: Naviguer immédiatement vers la page dédiée pour test
+    const bookInfo = `${selectedBook || 'Genèse'} ${selectedChapter || '1'}${selectedVerse !== "--" ? ":" + selectedVerse : ""}`;
+    console.log("[TEST] Navigation immédiate vers page Verset par Verset:", bookInfo);
+    navigateToVersets("Contenu de test", bookInfo);
+    
+    // Retourner immédiatement pour le test
+    return;
+    
     try {
       setIsLoading(true); setIsProgressiveLoading(true);
       setContent(""); setProgressPercent(0);
