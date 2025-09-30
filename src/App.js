@@ -955,6 +955,10 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
     setCurrentPage('versets');
   };
 
+  const navigateToNotes = () => {
+    setCurrentPage('notes');
+  };
+
   const navigateToMain = () => {
     setCurrentPage('main');
   };
