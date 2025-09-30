@@ -1642,6 +1642,20 @@ ${contextualEnrichment}
         />
       ) : currentPage === 'notes' ? (
         <NotesPage onGoBack={navigateToMain} />
+      ) : currentPage === 'rubrique' ? (
+        <RubriquePage 
+          onGoBack={navigateToMain}
+          rubriqueNumber={currentRubriqueNumber}
+          rubriqueTitle={getRubTitle(currentRubriqueNumber)}
+          content={currentRubriqueContent}
+          bookInfo={currentBookInfo}
+          onNavigateToRubrique={(newRubriqueNumber) => {
+            // Navigation entre rubriques depuis la page de rubrique
+            const contentKey = `${selectedBook}_${selectedChapter}_${newRubriqueNumber}`;
+            const content = generatedRubriques[contentKey] || '';
+            navigateToRubrique(newRubriqueNumber, content);
+          }}
+        />
       ) : (
         <>
           {/* Header avec texte défilant */}
