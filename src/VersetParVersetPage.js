@@ -247,7 +247,7 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
         <div class="gemini-enrichment-section">
           <button 
             class="btn-gemini-enrich" 
-            onclick="window.enrichVersetGemini(${versetNumber})"
+            onclick="enrichVersetGemini(${versetNumber})"
             data-verset="${versetNumber}"
           >
             🤖 Gemini gratuit - Enrichir cette explication
