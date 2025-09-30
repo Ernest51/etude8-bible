@@ -22,6 +22,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ POST /api/generate-verse-by-verse working with basic parameters (Genèse 1, 500 tokens, Gemini). Returns proper verse-by-verse structure with VERSET, TEXTE BIBLIQUE, and EXPLICATION THÉOLOGIQUE sections. Content quality is good with theological terms."
+      - working: true
+        agent: "testing"
+        comment: "✅ REVIEW REQUEST VALIDATION COMPLETED: Focused test of /api/generate-verse-by-verse with exact payload {'passage':'Genèse 1','version':'LSG','tokens':500,'use_gemini':true,'enriched':true} SUCCESSFUL. ✅ API Response: HTTP 200, 4103 characters generated in 8.11 seconds. ✅ French Theological Content: 10 theological terms detected (dieu, création, commencement, théologique, biblique, verset, créa, cieux, terre, divin). ✅ Structure Validation: 7 verse sections, 5 biblical text sections, 5 theological explanations found. ✅ Backend Logs: No errors detected, successful API processing confirmed. ✅ Content Preview: 'Au commencement, Dieu créa les cieux et la terre' with proper theological analysis. CONCLUSION: Backend API is functioning correctly - the 'VERSETS PROG' button issue is NOT caused by backend problems. Issue is likely in frontend JavaScript, API call handling, or response processing."
 
   - task: "Character Length Controls"
     implemented: true
