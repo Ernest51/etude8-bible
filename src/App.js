@@ -1026,7 +1026,14 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
     // Si la rubrique est déjà générée, afficher son contenu sauvegardé
     if (rubriquesStatus[id] === "completed" && generatedRubriques[contentKey]) {
       console.log(`[AFFICHAGE RUBRIQUE ${id}] Contenu sauvegardé trouvé`);
-      setContent(generatedRubriques[contentKey]);
+      
+      // Si rubrique 0 et qu'il y a du contenu verset par verset, naviguer vers la page dédiée
+      if (id === 0 && (generatedRubriques[contentKey].includes('VERSET') || generatedRubriques[contentKey].includes('TEXTE BIBLIQUE'))) {
+        const bookInfo = `${selectedBook || 'Genèse'} ${selectedChapter || '1'}${selectedVerse !== "--" ? ":" + selectedVerse : ""}`;
+        navigateToVersets(generatedRubriques[contentKey], bookInfo);
+      } else {
+        setContent(generatedRubriques[contentKey]);
+      }
     } else if (id >= 1 && id <= 28) {
       // Générer la rubrique à la demande pour les rubriques 1-28
       console.log(`[GÉNÉRATION REQUISE] Rubrique ${id} non trouvée dans le cache`);
