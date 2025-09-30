@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import "./App.css";
 import "./rubriques.css";
 import RubriquesInline from "./RubriquesInline";
+import BibleConcordancePage from "./BibleConcordancePage";
 
 /* =========================
    Configuration et Helpers
@@ -211,11 +212,8 @@ function App() {
   });
   const [showNotesModal, setShowNotesModal] = useState(false);
 
-  // États pour la concordance biblique
-  const [showConcordanceModal, setShowConcordanceModal] = useState(false);
-  const [concordanceSearchTerm, setConcordanceSearchTerm] = useState("");
-  const [concordanceResults, setConcordanceResults] = useState([]);
-  const [isConcordanceLoading, setIsConcordanceLoading] = useState(false);
+  // État pour la navigation
+  const [currentPage, setCurrentPage] = useState('main'); // 'main' ou 'concordance'
 
   // Thèmes
   const colorThemes = [
@@ -942,94 +940,13 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
     setShowNotesModal(false);
   };
 
-  // Fonctions pour la concordance biblique
-  const handleConcordanceClick = () => {
-    setShowConcordanceModal(true);
-    setConcordanceSearchTerm("");
-    setConcordanceResults([]);
+  // Fonctions pour la navigation
+  const navigateToConcordance = () => {
+    setCurrentPage('concordance');
   };
 
-  const searchBibleConcordance = async (searchTerm) => {
-    if (!searchTerm || searchTerm.trim().length < 2) {
-      setConcordanceResults([]);
-      return;
-    }
-
-    setIsConcordanceLoading(true);
-    
-    try {
-      console.log(`[CONCORDANCE] Recherche pour: "${searchTerm}"`);
-      
-      // Simuler une recherche dans la Bible (vous pouvez remplacer par une vraie API)
-      const mockResults = generateConcordanceResults(searchTerm.trim());
-      
-      // Délai pour effet visuel
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      setConcordanceResults(mockResults);
-      console.log(`[CONCORDANCE] ${mockResults.length} résultats trouvés`);
-      
-    } catch (error) {
-      console.error("[CONCORDANCE] Erreur de recherche:", error);
-      setConcordanceResults([]);
-    } finally {
-      setIsConcordanceLoading(false);
-    }
-  };
-
-  const generateConcordanceResults = (term) => {
-    // Base de données simulée de versets populaires
-    const biblicalVerses = [
-      { book: "Jean", chapter: 3, verse: 16, text: "Car Dieu a tant aimé le monde qu'il a donné son Fils unique, afin que quiconque croit en lui ne périsse point, mais qu'il ait la vie éternelle." },
-      { book: "Psaumes", chapter: 23, verse: 1, text: "L'Éternel est mon berger: je ne manquerai de rien." },
-      { book: "Romains", chapter: 8, verse: 28, text: "Nous savons, du reste, que toutes choses concourent au bien de ceux qui aiment Dieu, de ceux qui sont appelés selon son dessein." },
-      { book: "Philippiens", chapter: 4, verse: 13, text: "Je puis tout par celui qui me fortifie." },
-      { book: "Matthieu", chapter: 28, verse: 20, text: "Et voici, je suis avec vous tous les jours, jusqu'à la fin du monde." },
-      { book: "1 Corinthiens", chapter: 13, verse: 4, text: "La charité est patiente, elle est pleine de bonté; la charité n'est point envieuse; la charité ne se vante point, elle ne s'enfle point d'orgueil." },
-      { book: "Jérémie", chapter: 29, verse: 11, text: "Car je connais les projets que j'ai formés sur vous, dit l'Éternel, projets de paix et non de malheur, afin de vous donner un avenir et de l'espérance." },
-      { book: "Ésaïe", chapter: 41, verse: 10, text: "Ne crains rien, car je suis avec toi; ne promène pas des regards inquiets, car je suis ton Dieu; je te fortifie, je viens à ton secours, je te soutiens de ma droite triomphante." },
-      { book: "Psaumes", chapter: 119, verse: 105, text: "Ta parole est une lampe à mes pieds, et une lumière sur mon sentier." },
-      { book: "Proverbes", chapter: 3, verse: 5, text: "Confie-toi en l'Éternel de tout ton cœur, et ne t'appuie pas sur ta sagesse." }
-    ];
-
-    // Recherche basique par terme
-    const results = biblicalVerses.filter(verse => 
-      verse.text.toLowerCase().includes(term.toLowerCase()) ||
-      verse.book.toLowerCase().includes(term.toLowerCase())
-    );
-
-    // Ajouter des résultats génériques si le terme est commun
-    const commonTerms = {
-      "dieu": [
-        { book: "Genèse", chapter: 1, verse: 1, text: "Au commencement, Dieu créa les cieux et la terre." },
-        { book: "Psaumes", chapter: 46, verse: 1, text: "Dieu est pour nous un refuge et un appui, un secours qui ne manque jamais dans la détresse." }
-      ],
-      "amour": [
-        { book: "1 Jean", chapter: 4, verse: 8, text: "Celui qui n'aime pas n'a pas connu Dieu, car Dieu est amour." },
-        { book: "1 Corinthiens", chapter: 13, verse: 13, text: "Maintenant donc ces trois choses demeurent: la foi, l'espérance, la charité; mais la plus grande de ces choses, c'est la charité." }
-      ],
-      "paix": [
-        { book: "Jean", chapter: 14, verse: 27, text: "Je vous laisse la paix, je vous donne ma paix. Je ne vous donne pas comme le monde donne. Que votre cœur ne se trouble point, et ne s'alarme point." },
-        { book: "Philippiens", chapter: 4, verse: 7, text: "Et la paix de Dieu, qui surpasse toute intelligence, gardera vos cœurs et vos pensées en Jésus-Christ." }
-      ],
-      "joie": [
-        { book: "Psaumes", chapter: 16, verse: 11, text: "Tu me feras connaître le sentier de la vie; il y a d'abondantes joies devant ta face, des délices éternelles à ta droite." },
-        { book: "Galates", chapter: 5, verse: 22, text: "Mais le fruit de l'Esprit, c'est l'amour, la joie, la paix, la patience, la bonté, la bénignité, la fidélité." }
-      ]
-    };
-
-    if (commonTerms[term.toLowerCase()]) {
-      results.push(...commonTerms[term.toLowerCase()]);
-    }
-
-    return results.slice(0, 10); // Limiter à 10 résultats
-  };
-
-  const openYouVersionConcordance = () => {
-    const searchUrl = concordanceSearchTerm 
-      ? `https://www.bible.com/search/bible?q=${encodeURIComponent(concordanceSearchTerm)}`
-      : 'https://www.bible.com/';
-    window.open(searchUrl, '_blank');
+  const navigateToMain = () => {
+    setCurrentPage('main');
   };
 
   const continueVerses = async () => {
@@ -1673,248 +1590,169 @@ ${contextualEnrichment}
 
   return (
     <div className="App">
-      {/* Header avec texte défilant */}
-      <header className="header-banner">
-        <div className="scroll-text">
-          ✨ MÉDITATION BIBLIQUE ✨ ÉTUDE SPIRITUELLE ✨ SAGESSE DIVINE ✨ MÉDITATION THÉOLOGIQUE ✨ CONTEMPLATION SACRÉE ✨ RÉFLEXION INSPIRÉE ✨
-        </div>
-      </header>
-
-      {/* Indicateur de progression centré */}
-      <div className="progress-container">
-        <div className="progress-pill">
-          {progressPercent}%
-          {isProgressiveLoading && progressiveStats && (
-            <span className="progressive-indicator">
-              ⚡ {progressiveStats.speed} - {progressiveStats.current_batch} ({progressiveStats.processed}/{progressiveStats.total})
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Interface principale */}
-      <div className="main-container">
-        {/* Section de recherche */}
-        <div className="search-section">
-          <div className="search-input">
-            <input
-              type="text"
-              placeholder="Rechercher (ex : Marc 5:1, 1 Jean 2, Genèse 1:1-5)"
-              className="search-field"
-              value={searchQuery}
-              onChange={handleSearchChange}
-            />
-          </div>
-
-          <div className="controls-row">
-            <SelectPill label="Livre" value={selectedBook} options={["--", ...BOOKS]} onChange={handleBookChange} />
-            <SelectPill label="Chapitre" value={selectedChapter} options={availableChapters} onChange={handleChapterChange} />
-            <SelectPill label="Verset" value={selectedVerse} options={["--", ...Array.from({ length: 50 }, (_, i) => i + 1)]} onChange={handleVerseChange} />
-            <SelectPill label="Version" value={selectedVersion} options={["LSG", "Darby", "NEG"]} onChange={handleVersionChange} />
-            <button className="btn-validate" disabled={isLoading}>Valider</button>
-            <SelectPill label="Longueur" value={selectedLength} options={[300, 500, 1000, 2000]} onChange={handleLengthChange} />
-            <button className="btn-read" onClick={openYouVersion}>Lire la Bible</button>
-            <button className="btn-chat" onClick={() => window.open('https://chatgpt.com/', '_blank')}>ChatGPT</button>
-            <button className="btn-notes" onClick={handleNotesClick}>📝 Prise de Note</button>
-            <button className="btn-concordance" onClick={handleConcordanceClick}>📖 BIBLE DE CONCORDANCE</button>
-          </div>
-
-          {/* Boutons d'action */}
-          <div className="action-buttons">
-            <button className="btn-reset" onClick={handleReset}>🔄 Reset</button>
-            <button className="btn-palette" onClick={changePalette}>🎨 {colorThemes[currentTheme].name}</button>
-            <button className="btn-last-study" onClick={restoreLastStudy} disabled={!lastStudy}
-              title={lastStudy ? `Restaurer: ${lastStudy.book} ${lastStudy.chapter}${lastStudy.verse !== "--" ? ":" + lastStudy.verse : ""}` : "Aucune étude sauvegardée"}>
-              {lastStudy ? `📖 ${lastStudy.book} ${lastStudy.chapter}${lastStudy.verse !== "--" ? ":" + lastStudy.verse : ""}` : "📖 Dernière étude"}
-            </button>
-            <button className={`btn-gemini ${isLoading ? "loading" : ""}`} onClick={generateWithGemini} disabled={isLoading}>🤖 Gemini Gratuit</button>
-            <button className="btn-versets-prog" onClick={generateVerseByVerseProgressive} disabled={isLoading} title="Analyse progressive enrichie - traitement uniforme des versets">⚡ Versets Prog</button>
-            <button className="btn-generate" onClick={generate28Points} disabled={isLoading}>Générer</button>
-          </div>
-        </div>
-
-        {/* Layout 2 colonnes */}
-        <div className="three-column-layout" style={{ gridTemplateColumns: "300px 1fr" }}>
-          {/* Colonne gauche - Rubriques */}
-          <div className="left-column">
-            <h3>Rubriques (29)</h3>
-            <RubriquesInline items={rubriquesItems} activeId={activeRubrique} onSelect={handleRubriqueSelect} rubriquesStatus={rubriquesStatus} />
-          </div>
-
-          {/* Colonne centrale - Contenu */}
-          <div className="center-column">
-            <div className="content-header">
-              <h2>{`${activeRubrique}. ${getRubTitle(activeRubrique)}`}</h2>
-              <div className="nav-buttons">
-                <button onClick={() => handleRubriqueSelect(Math.max(0, activeRubrique - 1))} disabled={activeRubrique === 0}>◀ Précédent</button>
-                <button onClick={() => handleRubriqueSelect(Math.min(BASE_RUBRIQUES.length - 1, activeRubrique + 1))} disabled={activeRubrique === BASE_RUBRIQUES.length - 1}>Suivant ▶</button>
-              </div>
+      {currentPage === 'concordance' ? (
+        <BibleConcordancePage onGoBack={navigateToMain} />
+      ) : (
+        <>
+          {/* Header avec texte défilant */}
+          <header className="header-banner">
+            <div className="scroll-text">
+              ✨ MÉDITATION BIBLIQUE ✨ ÉTUDE SPIRITUELLE ✨ SAGESSE DIVINE ✨ MÉDITATION THÉOLOGIQUE ✨ CONTEMPLATION SACRÉE ✨ RÉFLEXION INSPIRÉE ✨
             </div>
+          </header>
 
-            <div className="content-area">
-              {isLoading ? (
-                <div className="loading-container">
-                  <div className="loading-spinner"></div>
-                  <p>Génération en cours...</p>
-                  {progressiveStats && (
-                    <div className="progressive-stats">
-                      <p>📊 Versets traités: {progressiveStats.processed}/{progressiveStats.total}</p>
-                      <p>🎯 Batch actuel: {progressiveStats.current_batch}</p>
-                      <p>⚡ Mode: {progressiveStats.speed}</p>
-                    </div>
-                  )}
-                </div>
-              ) : content ? (
-                <div>
-                  <div className="content-text" dangerouslySetInnerHTML={{ __html: formatContent(content, isVersetsProgContent ? 'versets-prog' : 'default') }} />
-                  {(isVersetsProgContent || content.includes('VERSET')) && canContinueVerses && (
-                    <div className="continue-verses-section">
-                      <button 
-                        className="btn-continue-verses" 
-                        onClick={continueVerses} 
-                        disabled={isLoading}
-                        title={`Générer les versets ${currentVerseCount + 1} à ${currentVerseCount + 5}`}
-                      >
-                        📖 Continuer les versets ({currentVerseCount + 1}-{currentVerseCount + 5})
-                      </button>
-                      <p className="continue-verses-info">
-                        Versets actuels : 1-{currentVerseCount} • Cliquez pour continuer la lecture
-                      </p>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="welcome-section desktop-only">
-                  <h1>🙏 Bienvenue dans votre Espace d'Étude</h1>
-                  <p>Cet outil vous accompagne dans une méditation biblique structurée et claire.</p>
-                  <p><strong>Nouveau:</strong> Le bouton "Versets Prog" génère progressivement tous les versets avec un traitement uniforme!</p>
-                </div>
+          {/* Indicateur de progression centré */}
+          <div className="progress-container">
+            <div className="progress-pill">
+              {progressPercent}%
+              {isProgressiveLoading && progressiveStats && (
+                <span className="progressive-indicator">
+                  ⚡ {progressiveStats.speed} - {progressiveStats.current_batch} ({progressiveStats.processed}/{progressiveStats.total})
+                </span>
               )}
             </div>
           </div>
 
-        </div>
-      </div>
+          {/* Interface principale */}
+          <div className="main-container">
+            {/* Section de recherche */}
+            <div className="search-section">
+              <div className="search-input">
+                <input
+                  type="text"
+                  placeholder="Rechercher (ex : Marc 5:1, 1 Jean 2, Genèse 1:1-5)"
+                  className="search-field"
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                />
+              </div>
 
-      {/* Modal pour les notes persistantes */}
-      {showNotesModal && (
-        <div className="notes-modal-overlay" onClick={() => setShowNotesModal(false)}>
-          <div className="notes-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="notes-modal-header">
-              <h3>📝 Mes Notes Personnelles</h3>
-              <button className="notes-close-btn" onClick={() => setShowNotesModal(false)}>×</button>
-            </div>
-            <div className="notes-modal-body">
-              <textarea
-                className="notes-textarea"
-                value={personalNotes}
-                onChange={handleNotesChange}
-                placeholder="Écrivez vos notes personnelles ici... Elles sont sauvegardées automatiquement à chaque modification ✨"
-                rows={15}
-              />
-            </div>
-            <div className="notes-modal-footer">
-              <button className="btn-close-notes" onClick={() => setShowNotesModal(false)}>
-                ✅ Fermer (Notes Sauvegardées)
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+              <div className="controls-row">
+                <SelectPill label="Livre" value={selectedBook} options={["--", ...BOOKS]} onChange={handleBookChange} />
+                <SelectPill label="Chapitre" value={selectedChapter} options={availableChapters} onChange={handleChapterChange} />
+                <SelectPill label="Verset" value={selectedVerse} options={["--", ...Array.from({ length: 50 }, (_, i) => i + 1)]} onChange={handleVerseChange} />
+                <SelectPill label="Version" value={selectedVersion} options={["LSG", "Darby", "NEG"]} onChange={handleVersionChange} />
+                <button className="btn-validate" disabled={isLoading}>Valider</button>
+                <SelectPill label="Longueur" value={selectedLength} options={[300, 500, 1000, 2000]} onChange={handleLengthChange} />
+                <button className="btn-read" onClick={openYouVersion}>Lire la Bible</button>
+                <button className="btn-chat" onClick={() => window.open('https://chatgpt.com/', '_blank')}>ChatGPT</button>
+                <button className="btn-notes" onClick={handleNotesClick}>📝 Prise de Note</button>
+                <button className="btn-concordance" onClick={navigateToConcordance}>📖 BIBLE DE CONCORDANCE</button>
+              </div>
 
-      {/* Modal pour la concordance biblique */}
-      {showConcordanceModal && (
-        <div className="concordance-modal-overlay" onClick={() => setShowConcordanceModal(false)}>
-          <div className="concordance-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="concordance-modal-header">
-              <h3>📖 BIBLE DE CONCORDANCE</h3>
-              <button className="concordance-close-btn" onClick={() => setShowConcordanceModal(false)}>×</button>
+              {/* Boutons d'action */}
+              <div className="action-buttons">
+                <button className="btn-reset" onClick={handleReset}>🔄 Reset</button>
+                <button className="btn-palette" onClick={changePalette}>🎨 {colorThemes[currentTheme].name}</button>
+                <button className="btn-last-study" onClick={restoreLastStudy} disabled={!lastStudy}
+                  title={lastStudy ? `Restaurer: ${lastStudy.book} ${lastStudy.chapter}${lastStudy.verse !== "--" ? ":" + lastStudy.verse : ""}` : "Aucune étude sauvegardée"}>
+                  {lastStudy ? `📖 ${lastStudy.book} ${lastStudy.chapter}${lastStudy.verse !== "--" ? ":" + lastStudy.verse : ""}` : "📖 Dernière étude"}
+                </button>
+                <button className={`btn-gemini ${isLoading ? "loading" : ""}`} onClick={generateWithGemini} disabled={isLoading}>🤖 Gemini Gratuit</button>
+                <button className="btn-versets-prog" onClick={generateVerseByVerseProgressive} disabled={isLoading} title="Analyse progressive enrichie - traitement uniforme des versets">⚡ Versets Prog</button>
+                <button className="btn-generate" onClick={generate28Points} disabled={isLoading}>Générer</button>
+              </div>
             </div>
-            
-            <div className="concordance-modal-content">
-              <div className="concordance-search-section">
-                <div className="concordance-search-input">
-                  <input
-                    type="text"
-                    placeholder="Rechercher un mot ou concept (ex: amour, paix, Dieu, joie...)"
-                    className="concordance-search-field"
-                    value={concordanceSearchTerm}
-                    onChange={(e) => {
-                      setConcordanceSearchTerm(e.target.value);
-                      searchBibleConcordance(e.target.value);
-                    }}
-                    autoFocus
-                  />
-                  <button 
-                    className="concordance-youversion-btn" 
-                    onClick={openYouVersionConcordance}
-                    title="Ouvrir dans YouVersion"
-                  >
-                    🌐 YouVersion
-                  </button>
+
+            {/* Layout 2 colonnes */}
+            <div className="three-column-layout" style={{ gridTemplateColumns: "300px 1fr" }}>
+              {/* Colonne gauche - Rubriques */}
+              <div className="left-column">
+                <h3>Rubriques (29)</h3>
+                <RubriquesInline items={rubriquesItems} activeId={activeRubrique} onSelect={handleRubriqueSelect} rubriquesStatus={rubriquesStatus} />
+              </div>
+
+              {/* Colonne centrale - Contenu */}
+              <div className="center-column">
+                <div className="content-header">
+                  <h2>{`${activeRubrique}. ${getRubTitle(activeRubrique)}`}</h2>
+                  <div className="nav-buttons">
+                    <button onClick={() => handleRubriqueSelect(Math.max(0, activeRubrique - 1))} disabled={activeRubrique === 0}>◀ Précédent</button>
+                    <button onClick={() => handleRubriqueSelect(Math.min(BASE_RUBRIQUES.length - 1, activeRubrique + 1))} disabled={activeRubrique === BASE_RUBRIQUES.length - 1}>Suivant ▶</button>
+                  </div>
+                </div>
+
+                <div className="content-area">
+                  {isLoading ? (
+                    <div className="loading-container">
+                      <div className="loading-spinner"></div>
+                      <p>Génération en cours...</p>
+                      {progressiveStats && (
+                        <div className="progressive-stats">
+                          <p>📊 Versets traités: {progressiveStats.processed}/{progressiveStats.total}</p>
+                          <p>🎯 Batch actuel: {progressiveStats.current_batch}</p>
+                          <p>⚡ Mode: {progressiveStats.speed}</p>
+                        </div>
+                      )}
+                    </div>
+                  ) : content ? (
+                    <div>
+                      <div className="content-text" dangerouslySetInnerHTML={{ __html: formatContent(content, isVersetsProgContent ? 'versets-prog' : 'default') }} />
+                      {(isVersetsProgContent || content.includes('VERSET')) && canContinueVerses && (
+                        <div className="continue-verses-section">
+                          <button 
+                            className="btn-continue-verses" 
+                            onClick={continueVerses} 
+                            disabled={isLoading}
+                            title={`Générer les versets ${currentVerseCount + 1} à ${currentVerseCount + 5}`}
+                          >
+                            📖 Continuer les versets ({currentVerseCount + 1}-{currentVerseCount + 5})
+                          </button>
+                          <p className="continue-verses-info">
+                            Versets actuels : 1-{currentVerseCount} • Cliquez pour continuer la lecture
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="welcome-section desktop-only">
+                      <h1>🙏 Bienvenue dans votre Espace d'Étude</h1>
+                      <p>Cet outil vous accompagne dans une méditation biblique structurée et claire.</p>
+                      <p><strong>Nouveau:</strong> Le bouton "Versets Prog" génère progressivement tous les versets avec un traitement uniforme!</p>
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <div className="concordance-results-section">
-                {isConcordanceLoading ? (
-                  <div className="concordance-loading">
-                    <div className="loading-spinner"></div>
-                    <p>Recherche en cours...</p>
-                  </div>
-                ) : concordanceResults.length > 0 ? (
-                  <div className="concordance-results">
-                    <h4>📋 Résultats trouvés ({concordanceResults.length})</h4>
-                    <div className="concordance-verses-list">
-                      {concordanceResults.map((verse, index) => (
-                        <div key={index} className="concordance-verse-item">
-                          <div className="concordance-verse-reference">
-                            <strong>{verse.book} {verse.chapter}:{verse.verse}</strong>
-                          </div>
-                          <div className="concordance-verse-text">
-                            {verse.text}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : concordanceSearchTerm.length > 0 ? (
-                  <div className="concordance-no-results">
-                    <p>🔍 Aucun résultat trouvé pour "{concordanceSearchTerm}"</p>
-                    <p>Essayez avec des termes comme : amour, paix, Dieu, joie, espoir, foi</p>
-                  </div>
-                ) : (
-                  <div className="concordance-welcome">
-                    <h4>🙏 Bienvenue dans la Concordance Biblique</h4>
-                    <p>Recherchez des mots ou concepts dans la Bible pour découvrir tous les versets pertinents.</p>
-                    <div className="concordance-suggestions">
-                      <h5>💡 Suggestions de recherche :</h5>
-                      <div className="concordance-suggestion-tags">
-                        {["amour", "paix", "joie", "foi", "espoir", "grâce"].map(term => (
-                          <button 
-                            key={term}
-                            className="concordance-suggestion-tag"
-                            onClick={() => {
-                              setConcordanceSearchTerm(term);
-                              searchBibleConcordance(term);
-                            }}
-                          >
-                            {term}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="concordance-modal-footer">
-              <button className="concordance-close-footer-btn" onClick={() => setShowConcordanceModal(false)}>
-                Fermer
-              </button>
             </div>
           </div>
-        </div>
+
+          {/* Modal pour les notes persistantes */}
+          {showNotesModal && (
+            <div className="notes-modal-overlay" onClick={() => setShowNotesModal(false)}>
+              <div className="notes-modal" onClick={(e) => e.stopPropagation()}>
+                <div className="notes-modal-header">
+                  <h3>📝 Mes Notes d'Étude Biblique</h3>
+                  <button className="notes-close-btn" onClick={() => setShowNotesModal(false)}>×</button>
+                </div>
+                <div className="notes-modal-content">
+                  <textarea
+                    className="notes-textarea"
+                    value={personalNotes}
+                    onChange={handleNotesChange}
+                    placeholder="Écrivez vos réflexions, questions, et insights spirituels ici...
+
+Exemples :
+• Versets qui m'ont marqué
+• Questions pour approfondir
+• Applications personnelles
+• Prières inspirées par l'étude"
+                    rows={15}
+                  />
+                </div>
+                <div className="notes-modal-footer">
+                  <div className="notes-char-count">
+                    {personalNotes.length} caractères
+                  </div>
+                  <div className="notes-modal-actions">
+                    <button className="notes-save-btn" onClick={handleNotesSave}>💾 Sauvegarder</button>
+                    <button className="notes-close-footer-btn" onClick={() => setShowNotesModal(false)}>Fermer</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
