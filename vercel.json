@@ -3,7 +3,7 @@
   "outputDirectory": "build",
   "installCommand": "yarn install --force",
   "env": {
-    "REACT_APP_BACKEND_URL": "https://dual-study-bible.preview.emergentagent.com",
+    "REACT_APP_BACKEND_URL": "https://biblestudy-ai-3.preview.emergentagent.com",
     "DISABLE_ESLINT_PLUGIN": "true",
     "CI": "false"
   }
