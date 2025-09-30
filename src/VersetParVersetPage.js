@@ -462,7 +462,7 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
               📖 Batch {currentBatch} • Versets {(currentBatch - 1) * 5 + 1} à {currentBatch * 5}
             </div>
             
-            {/* Styles CSS intégrés pour les couleurs */}
+            {/* Styles CSS intégrés pour les couleurs ET boutons Gemini */}
             <style>
               {`
                 .verset-header {
@@ -505,6 +505,61 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
                   letter-spacing: 0.5px;
                 }
                 
+                /* Boutons Gemini pour enrichissement */
+                .gemini-enrichment-section {
+                  text-align: center;
+                  margin: 20px 0 30px 0;
+                  padding: 16px;
+                  background: rgba(139, 92, 246, 0.05);
+                  border-radius: 12px;
+                  border: 2px solid rgba(139, 92, 246, 0.1);
+                }
+                
+                .btn-gemini-enrich {
+                  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+                  color: white;
+                  border: none;
+                  padding: clamp(10px, 3vw, 14px) clamp(16px, 4vw, 24px);
+                  border-radius: 10px;
+                  font-size: clamp(13px, 3.5vw, 15px);
+                  font-weight: 600;
+                  cursor: pointer;
+                  transition: all 0.3s ease;
+                  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
+                  width: 100%;
+                  max-width: 320px;
+                }
+                
+                .btn-gemini-enrich:hover:not(:disabled) {
+                  transform: translateY(-2px);
+                  box-shadow: 0 6px 24px rgba(139, 92, 246, 0.35);
+                }
+                
+                .btn-gemini-enrich:disabled {
+                  opacity: 0.7;
+                  cursor: not-allowed;
+                  transform: none;
+                }
+                
+                .gemini-loading {
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 10px;
+                  margin-top: 12px;
+                  color: #6b7280;
+                  font-size: clamp(12px, 3vw, 14px);
+                }
+                
+                .loading-spinner-small {
+                  width: 16px;
+                  height: 16px;
+                  border: 2px solid #e5e7eb;
+                  border-top: 2px solid #8b5cf6;
+                  border-radius: 50%;
+                  animation: spin 1s linear infinite;
+                }
+                
                 .verset-content p {
                   margin-bottom: clamp(16px, 4vw, 18px);
                   line-height: 1.7;
@@ -513,6 +568,12 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
                 
                 .verset-content br {
                   line-height: 1.7;
+                }
+                
+                /* Animation spin */
+                @keyframes spin {
+                  0% { transform: rotate(0deg); }
+                  100% { transform: rotate(360deg); }
                 }
                 
                 /* Responsive mobile - lecture optimisée */
@@ -531,6 +592,16 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
                   .verset-content p {
                     margin-bottom: 14px;
                     text-align: left;
+                  }
+                  
+                  .gemini-enrichment-section {
+                    margin: 16px 0 24px 0;
+                    padding: 12px;
+                  }
+                  
+                  .btn-gemini-enrich {
+                    width: 100%;
+                    max-width: none;
                   }
                 }
                 
