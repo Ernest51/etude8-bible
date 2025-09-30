@@ -1746,41 +1746,7 @@ ${contextualEnrichment}
             </div>
           </div>
 
-          {/* Modal pour les notes persistantes */}
-          {showNotesModal && (
-            <div className="notes-modal-overlay" onClick={() => setShowNotesModal(false)}>
-              <div className="notes-modal" onClick={(e) => e.stopPropagation()}>
-                <div className="notes-modal-header">
-                  <h3>📝 Mes Notes d'Étude Biblique</h3>
-                  <button className="notes-close-btn" onClick={() => setShowNotesModal(false)}>×</button>
-                </div>
-                <div className="notes-modal-content">
-                  <textarea
-                    className="notes-textarea"
-                    value={personalNotes}
-                    onChange={handleNotesChange}
-                    placeholder="Écrivez vos réflexions, questions, et insights spirituels ici...
-
-Exemples :
-• Versets qui m'ont marqué
-• Questions pour approfondir
-• Applications personnelles
-• Prières inspirées par l'étude"
-                    rows={15}
-                  />
-                </div>
-                <div className="notes-modal-footer">
-                  <div className="notes-char-count">
-                    {personalNotes.length} caractères
-                  </div>
-                  <div className="notes-modal-actions">
-                    <button className="notes-save-btn" onClick={handleNotesSave}>💾 Sauvegarder</button>
-                    <button className="notes-close-footer-btn" onClick={() => setShowNotesModal(false)}>Fermer</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          {/* SUPPRIMÉ : Modal Notes - remplacée par page dédiée */}
         </>
       )}
     </div>
