@@ -210,7 +210,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Automatic Key Rotation System Testing"
+    - "28 Rubriques Gemini System Fix"
   stuck_tasks:
     - "Character Length Controls"
     - "Single Verse Generation"
