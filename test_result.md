@@ -210,7 +210,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Duplicate Issue Resolution Verification"
+    - "Automatic Key Rotation System Testing"
   stuck_tasks:
     - "Character Length Controls"
     - "Single Verse Generation"
