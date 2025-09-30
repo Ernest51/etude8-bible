@@ -176,12 +176,14 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
     return allVersetsBatches[currentBatch] || '';
   };
   
-  // Fonction pour formater le contenu avec les bonnes couleurs
+  // Fonction pour formater le contenu avec les bonnes couleurs ET boutons Gemini
   const formatVersetContent = (content) => {
     if (!content) return '';
     
-    // Remplacer les patterns par du HTML avec les bonnes couleurs
-    let formattedContent = content
+    let formattedContent = content;
+    
+    // Étape 1 : Formater les headers avec couleurs
+    formattedContent = formattedContent
       // VERSET en violet
       .replace(/\*\*(VERSET\s+\d+)\*\*/g, '<div class="verset-header">$1</div>')
       .replace(/(VERSET\s+\d+)/g, '<div class="verset-header">$1</div>')
@@ -192,9 +194,32 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
       
       // EXPLICATION THÉOLOGIQUE en orange
       .replace(/\*\*(EXPLICATION THÉOLOGIQUE\s*:?)\*\*/g, '<div class="explication-label">$1</div>')
-      .replace(/(EXPLICATION THÉOLOGIQUE\s*:?)/g, '<div class="explication-label">$1</div>')
-      
-      // Paragraphes
+      .replace(/(EXPLICATION THÉOLOGIQUE\s*:?)/g, '<div class="explication-label">$1</div>');
+    
+    // Étape 2 : Ajouter les boutons Gemini après chaque explication théologique
+    // Pattern pour identifier les versets avec leurs explications
+    const versetPattern = /(<div class="verset-header">VERSET (\d+)<\/div>[\s\S]*?<div class="explication-label">EXPLICATION THÉOLOGIQUE[\s\S]*?<\/div>[\s\S]*?)(?=<div class="verset-header">|$)/gi;
+    
+    formattedContent = formattedContent.replace(versetPattern, (match, versetContent, versetNumber) => {
+      return versetContent + `
+        <div class="gemini-enrichment-section">
+          <button 
+            class="btn-gemini-enrich" 
+            onclick="window.enrichVersetGemini(${versetNumber})"
+            data-verset="${versetNumber}"
+          >
+            🤖 Gemini gratuit - Enrichir cette explication
+          </button>
+          <div class="gemini-loading" id="gemini-loading-${versetNumber}" style="display: none;">
+            <span class="loading-spinner-small"></span>
+            Enrichissement en cours avec Gemini...
+          </div>
+        </div>
+      `;
+    });
+    
+    // Étape 3 : Gérer les paragraphes
+    formattedContent = formattedContent
       .replace(/\n\n/g, '</p><p>')
       .replace(/\n/g, '<br/>');
     
