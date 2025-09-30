@@ -927,9 +927,7 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
 
   // SUPPRIMÉ : showNotesModal et fonctions de modal - remplacées par page dédiée
 
-  const handleCloseNotes = () => {
-    setShowNotesModal(false);
-  };
+  // SUPPRIMÉ : handleCloseNotes - plus besoin avec page dédiée
 
   // Fonctions pour la navigation
   const navigateToConcordance = () => {
