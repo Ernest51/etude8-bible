@@ -176,22 +176,44 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
     return allVersetsBatches[currentBatch] || '';
   };
 
-  // Fonction pour gérer l'enrichissement d'un verset via React (pas via HTML onclick)
-  const handleEnrichirVerset = async (versetNumber) => {
-    console.log(`[GEMINI] Clic enrichissement verset ${versetNumber}`);
-    
-    // Extraire le texte du verset et l'explication actuelle
-    const currentContent = getCurrentBatchContent();
-    const versetRegex = new RegExp(`VERSET ${versetNumber}[\\s\\S]*?TEXTE BIBLIQUE[\\s\\S]*?:([\\s\\S]*?)EXPLICATION THÉOLOGIQUE[\\s\\S]*?:([\\s\\S]*?)(?=VERSET|$)`, 'i');
-    const match = currentContent.match(versetRegex);
-    
-    if (match) {
-      const versetText = match[1].trim();
-      const currentExplication = match[2].trim();
+  // Exposer la fonction d'enrichissement globalement pour les boutons HTML intégrés
+  useEffect(() => {
+    window.enrichirVerset = async (versetNumber) => {
+      console.log(`[GEMINI] Enrichissement verset ${versetNumber}`);
       
-      await enrichirExplicationGemini(versetNumber, currentExplication, versetText);
-    }
-  };
+      const buttonEl = document.getElementById(`gemini-btn-${versetNumber}`);
+      
+      if (buttonEl) {
+        buttonEl.textContent = '⏳';
+        buttonEl.disabled = true;
+        buttonEl.style.opacity = '0.7';
+      }
+      
+      // Extraire le texte du verset et l'explication actuelle
+      const currentContent = getCurrentBatchContent();
+      const versetRegex = new RegExp(`VERSET ${versetNumber}[\\s\\S]*?TEXTE BIBLIQUE[\\s\\S]*?:([\\s\\S]*?)EXPLICATION THÉOLOGIQUE[\\s\\S]*?:([\\s\\S]*?)(?=VERSET|$)`, 'i');
+      const match = currentContent.match(versetRegex);
+      
+      if (match) {
+        const versetText = match[1].trim();
+        const currentExplication = match[2].trim();
+        
+        await enrichirExplicationGemini(versetNumber, currentExplication, versetText);
+      }
+      
+      // Mettre à jour le bouton
+      if (buttonEl) {
+        buttonEl.textContent = '✅';
+        buttonEl.disabled = false;
+        buttonEl.style.opacity = '1';
+        buttonEl.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+      }
+    };
+
+    return () => {
+      delete window.enrichirVerset;
+    };
+  }, [currentBatch, allVersetsBatches]);
   
   // Fonction pour formater le contenu avec les bonnes couleurs ET boutons Gemini intégrés
   const formatVersetContent = (content) => {
