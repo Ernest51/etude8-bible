@@ -1623,6 +1623,12 @@ ${contextualEnrichment}
     <div className="App">
       {currentPage === 'concordance' ? (
         <BibleConcordancePage onGoBack={navigateToMain} />
+      ) : currentPage === 'versets' ? (
+        <VersetParVersetPage 
+          onGoBack={navigateToMain} 
+          content={versetPageContent}
+          bookInfo={currentBookInfo}
+        />
       ) : (
         <>
           {/* Header avec texte défilant */}
