@@ -327,35 +327,35 @@ const BibleConcordancePage = ({ onGoBack }) => {
   };
 
   return (
-    <div className="bible-concordance-page">
+    <div style={styles.bibleConcordancePage}>
       {/* En-tête avec navigation */}
-      <div className="concordance-header">
-        <button className="back-button" onClick={onGoBack}>
+      <div style={styles.concordanceHeader}>
+        <button style={styles.backButton} onClick={onGoBack}>
           ← Retour à l'Étude
         </button>
-        <h1 className="concordance-title">
+        <h1 style={styles.concordanceTitle}>
           📖 Bible de Concordance
         </h1>
-        <div className="concordance-subtitle">
+        <div style={styles.concordanceSubtitle}>
           Explorez la richesse des Écritures par mots-clés
         </div>
       </div>
 
       {/* Section de recherche */}
-      <div className="concordance-search-section">
-        <form onSubmit={handleSearchSubmit} className="search-form">
-          <div className="search-input-container">
+      <div style={styles.concordanceSearchSection}>
+        <form onSubmit={handleSearchSubmit} style={styles.searchForm}>
+          <div style={styles.searchInputContainer}>
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Rechercher un mot ou concept dans la Bible..."
-              className="search-input"
+              style={styles.searchInput}
               autoFocus
             />
             <button 
               type="submit" 
-              className="search-button"
+              style={styles.searchButton}
               disabled={isLoading || searchTerm.trim().length < 2}
             >
               {isLoading ? "⏳" : "🔍"} Rechercher
@@ -364,14 +364,24 @@ const BibleConcordancePage = ({ onGoBack }) => {
         </form>
 
         {/* Boutons de suggestion */}
-        <div className="suggestions-section">
-          <h3 className="suggestions-title">💡 Suggestions de recherche :</h3>
-          <div className="suggestion-buttons">
+        <div style={styles.suggestionsSection}>
+          <h3 style={styles.suggestionsTitle}>💡 Suggestions de recherche :</h3>
+          <div style={styles.suggestionButtons}>
             {["amour", "paix", "joie", "foi", "espoir", "grâce", "Dieu", "Jésus", "salut", "prière"].map(term => (
               <button 
                 key={term}
-                className="suggestion-button"
+                style={styles.suggestionButton}
                 onClick={() => handleSuggestionClick(term)}
+                onMouseOver={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)';
+                  e.target.style.color = 'white';
+                  e.target.style.transform = 'translateY(-2px)';
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.background = 'white';
+                  e.target.style.color = '#7c3aed';
+                  e.target.style.transform = 'translateY(0)';
+                }}
               >
                 {term}
               </button>
@@ -380,11 +390,19 @@ const BibleConcordancePage = ({ onGoBack }) => {
         </div>
 
         {/* Lien externe YouVersion */}
-        <div className="external-link-section">
+        <div style={{textAlign: 'center'}}>
           <button
-            className="youversion-button"
+            style={styles.youversionButton}
             onClick={openYouVersionConcordance}
             title="Ouvrir dans YouVersion pour plus de résultats"
+            onMouseOver={(e) => {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 6px 24px rgba(5, 150, 105, 0.35)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 4px 16px rgba(5, 150, 105, 0.25)';
+            }}
           >
             🌐 Rechercher aussi sur YouVersion
           </button>
@@ -392,31 +410,51 @@ const BibleConcordancePage = ({ onGoBack }) => {
       </div>
 
       {/* Section des résultats */}
-      <div className="results-section">
+      <div style={styles.resultsSection}>
         {isLoading ? (
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
-            <p className="loading-text">Recherche en cours dans les Écritures...</p>
+          <div style={styles.loadingContainer}>
+            <div style={{...styles.loadingSpinner, animation: 'spin 1s linear infinite'}}></div>
+            <p style={{color: '#64748b', fontSize: '16px', fontWeight: '500'}}>Recherche en cours dans les Écritures...</p>
+            <style>
+              {`@keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+              }`}
+            </style>
           </div>
         ) : results.length > 0 ? (
-          <div className="results-container">
-            <div className="results-header">
-              <h2 className="results-title">
+          <div>
+            <div style={{textAlign: 'center', marginBottom: '32px', padding: '24px', background: 'white', borderRadius: '16px', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)'}}>
+              <h2 style={{fontSize: '1.8rem', fontWeight: '700', color: '#1e293b', margin: '0 0 8px 0'}}>
                 📋 Résultats trouvés ({results.length})
               </h2>
-              <p className="results-subtitle">
+              <p style={{color: '#64748b', fontSize: '16px', margin: '0', fontWeight: '500'}}>
                 Versets contenant "{searchTerm}"
               </p>
             </div>
             
-            <div className="verses-grid">
+            <div style={styles.versesGrid}>
               {results.map((verse, index) => (
-                <div key={index} className="verse-card">
-                  <div className="verse-reference">
+                <div 
+                  key={index} 
+                  style={{
+                    ...styles.verseCard,
+                    borderLeft: '4px solid #8b5cf6'
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.08), 0 1px 0 rgba(255, 255, 255, 0.5)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.05), 0 1px 0 rgba(255, 255, 255, 0.5)';
+                  }}
+                >
+                  <div style={styles.verseReference}>
                     <strong>{verse.book} {verse.chapter}:{verse.verse}</strong>
                   </div>
                   <div 
-                    className="verse-text"
+                    style={styles.verseText}
                     dangerouslySetInnerHTML={{ 
                       __html: highlightSearchTerm(verse.text, searchTerm) 
                     }}
@@ -426,38 +464,38 @@ const BibleConcordancePage = ({ onGoBack }) => {
             </div>
           </div>
         ) : searchTerm.length > 0 ? (
-          <div className="no-results">
-            <h3 className="no-results-title">🔍 Aucun résultat trouvé</h3>
-            <p className="no-results-text">
+          <div style={{textAlign: 'center', padding: '60px 20px', background: 'white', borderRadius: '16px', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)'}}>
+            <h3 style={{fontSize: '1.5rem', color: '#64748b', margin: '0 0 12px 0', fontWeight: '600'}}>🔍 Aucun résultat trouvé</h3>
+            <p style={{color: '#64748b', fontSize: '16px', margin: '0 0 16px 0'}}>
               Aucun verset trouvé pour "<strong>{searchTerm}</strong>"
             </p>
-            <p className="no-results-suggestion">
+            <p style={{color: '#94a3b8', fontSize: '14px', fontStyle: 'italic', margin: '0'}}>
               Essayez avec des termes comme : amour, paix, Dieu, joie, espoir, foi
             </p>
           </div>
         ) : (
-          <div className="welcome-message">
-            <div className="welcome-content">
-              <h2 className="welcome-title">🙏 Bienvenue dans la Concordance Biblique</h2>
-              <p className="welcome-description">
+          <div style={styles.welcomeMessage}>
+            <div>
+              <h2 style={styles.welcomeTitle}>🙏 Bienvenue dans la Concordance Biblique</h2>
+              <p style={{color: '#64748b', fontSize: '16px', margin: '0 0 32px 0', maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto'}}>
                 Découvrez tous les versets de la Bible contenant un mot ou concept spécifique.
               </p>
-              <div className="welcome-features">
-                <div className="feature-item">
-                  <span className="feature-icon">🔍</span>
-                  <span className="feature-text">Recherche dans toute la Bible</span>
+              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px', maxWidth: '600px', margin: '0 auto'}}>
+                <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', background: 'rgba(139, 92, 246, 0.05)', borderRadius: '12px', border: '1px solid rgba(139, 92, 246, 0.1)'}}>
+                  <span style={{fontSize: '1.5rem', minWidth: '32px', textAlign: 'center'}}>🔍</span>
+                  <span style={{color: '#475569', fontWeight: '500', fontSize: '14px'}}>Recherche dans toute la Bible</span>
                 </div>
-                <div className="feature-item">
-                  <span className="feature-icon">📝</span>
-                  <span className="feature-text">Références complètes</span>
+                <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', background: 'rgba(139, 92, 246, 0.05)', borderRadius: '12px', border: '1px solid rgba(139, 92, 246, 0.1)'}}>
+                  <span style={{fontSize: '1.5rem', minWidth: '32px', textAlign: 'center'}}>📝</span>
+                  <span style={{color: '#475569', fontWeight: '500', fontSize: '14px'}}>Références complètes</span>
                 </div>
-                <div className="feature-item">
-                  <span className="feature-icon">✨</span>
-                  <span className="feature-text">Texte mis en évidence</span>
+                <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', background: 'rgba(139, 92, 246, 0.05)', borderRadius: '12px', border: '1px solid rgba(139, 92, 246, 0.1)'}}>
+                  <span style={{fontSize: '1.5rem', minWidth: '32px', textAlign: 'center'}}>✨</span>
+                  <span style={{color: '#475569', fontWeight: '500', fontSize: '14px'}}>Texte mis en évidence</span>
                 </div>
-                <div className="feature-item">
-                  <span className="feature-icon">🌐</span>
-                  <span className="feature-text">Lien vers YouVersion</span>
+                <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', background: 'rgba(139, 92, 246, 0.05)', borderRadius: '12px', border: '1px solid rgba(139, 92, 246, 0.1)'}}>
+                  <span style={{fontSize: '1.5rem', minWidth: '32px', textAlign: 'center'}}>🌐</span>
+                  <span style={{color: '#475569', fontWeight: '500', fontSize: '14px'}}>Lien vers YouVersion</span>
                 </div>
               </div>
             </div>
