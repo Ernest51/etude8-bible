@@ -1619,6 +1619,8 @@ ${contextualEnrichment}
           content={versetPageContent}
           bookInfo={currentBookInfo}
         />
+      ) : currentPage === 'notes' ? (
+        <NotesPage onGoBack={navigateToMain} />
       ) : (
         <>
           {/* Header avec texte défilant */}
