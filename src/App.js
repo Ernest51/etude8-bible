@@ -1048,13 +1048,13 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
         setContent(generatedRubriques[contentKey]);
       }
     } else if (id >= 1 && id <= 28) {
-      // Générer la rubrique à la demande et naviguer vers sa page dédiée
+      // Générer la rubrique à la demande ET naviguer vers sa page dédiée
       console.log(`[GÉNÉRATION REQUISE] Rubrique ${id} non trouvée dans le cache`);
       await generateRubriqueOnDemand(id);
       
       // Après génération, naviguer vers la page de rubrique
-      const contentKey = `${selectedBook}_${selectedChapter}_${id}`;
-      const content = generatedRubriques[contentKey] || '';
+      const finalContentKey = `${selectedBook}_${selectedChapter}_${id}`;
+      const content = generatedRubriques[finalContentKey] || '';
       navigateToRubrique(id, content);
     } else if (id === 0) {
       // Rubrique 0 utilise VERSETS PROG - ne pas interférer
