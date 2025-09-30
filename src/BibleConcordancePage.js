@@ -133,180 +133,218 @@ const BibleConcordancePage = ({ onGoBack }) => {
   };
 
   return (
-    <div style={styles.bibleConcordancePage}>
-      {/* En-tête avec navigation */}
-      <div style={styles.concordanceHeader}>
-        <button style={styles.backButton} onClick={onGoBack}>
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.95) 0%, rgba(124, 58, 237, 0.98) 100%)',
+      fontFamily: 'Inter, sans-serif'
+    }}>
+      {/* En-tête simple */}
+      <div style={{
+        padding: '40px 20px',
+        textAlign: 'center',
+        color: 'white'
+      }}>
+        <button 
+          onClick={onGoBack}
+          style={{
+            background: 'rgba(255, 255, 255, 0.2)',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            color: 'white',
+            padding: '12px 24px',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            marginBottom: '20px'
+          }}
+        >
           ← Retour à l'Étude
         </button>
-        <h1 style={styles.concordanceTitle}>
+        
+        <h1 style={{
+          fontSize: '2.5rem',
+          fontWeight: '800',
+          margin: '0 0 10px 0'
+        }}>
           📖 Bible de Concordance
         </h1>
-        <div style={styles.concordanceSubtitle}>
-          Explorez la richesse des Écritures par mots-clés
-        </div>
+        
+        <p style={{
+          fontSize: '1.1rem',
+          opacity: 0.9
+        }}>
+          Explorez les Écritures par mots-clés
+        </p>
       </div>
 
-      {/* Section de recherche */}
-      <div style={styles.concordanceSearchSection}>
-        <form onSubmit={handleSearchSubmit} style={styles.searchForm}>
-          <div style={styles.searchInputContainer}>
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Rechercher un mot ou concept dans la Bible..."
-              style={styles.searchInput}
-              autoFocus
-            />
-            <button 
-              type="submit" 
-              style={styles.searchButton}
-              disabled={isLoading || searchTerm.trim().length < 2}
-            >
-              {isLoading ? "⏳" : "🔍"} Rechercher
-            </button>
-          </div>
-        </form>
-
-        {/* Boutons de suggestion */}
-        <div style={styles.suggestionsSection}>
-          <h3 style={styles.suggestionsTitle}>💡 Suggestions de recherche :</h3>
-          <div style={styles.suggestionButtons}>
-            {["amour", "paix", "joie", "foi", "espoir", "grâce", "Dieu", "Jésus", "salut", "prière"].map(term => (
-              <button 
-                key={term}
-                style={styles.suggestionButton}
-                onClick={() => handleSuggestionClick(term)}
-                onMouseOver={(e) => {
-                  e.target.style.background = 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)';
-                  e.target.style.color = 'white';
-                  e.target.style.transform = 'translateY(-2px)';
+      {/* Zone de recherche */}
+      <div style={{
+        maxWidth: '800px',
+        margin: '0 auto',
+        padding: '0 20px'
+      }}>
+        <div style={{
+          background: 'white',
+          borderRadius: '16px',
+          padding: '30px',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
+        }}>
+          <form onSubmit={handleSearchSubmit}>
+            <div style={{
+              display: 'flex',
+              gap: '10px',
+              marginBottom: '20px'
+            }}>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Rechercher un mot dans la Bible..."
+                style={{
+                  flex: 1,
+                  padding: '15px',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '8px',
+                  fontSize: '16px'
                 }}
-                onMouseOut={(e) => {
-                  e.target.style.background = 'white';
-                  e.target.style.color = '#7c3aed';
-                  e.target.style.transform = 'translateY(0)';
+                autoFocus
+              />
+              <button 
+                type="submit" 
+                disabled={isLoading || searchTerm.trim().length < 2}
+                style={{
+                  background: '#8b5cf6',
+                  color: 'white',
+                  border: 'none',
+                  padding: '15px 25px',
+                  borderRadius: '8px',
+                  cursor: 'pointer'
                 }}
               >
-                {term}
+                {isLoading ? "⏳" : "🔍"}
               </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Lien externe YouVersion */}
-        <div style={{textAlign: 'center'}}>
-          <button
-            style={styles.youversionButton}
-            onClick={openYouVersionConcordance}
-            title="Ouvrir dans YouVersion pour plus de résultats"
-            onMouseOver={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 6px 24px rgba(5, 150, 105, 0.35)';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 4px 16px rgba(5, 150, 105, 0.25)';
-            }}
-          >
-            🌐 Rechercher aussi sur YouVersion
-          </button>
-        </div>
-      </div>
-
-      {/* Section des résultats */}
-      <div style={styles.resultsSection}>
-        {isLoading ? (
-          <div style={styles.loadingContainer}>
-            <div style={{...styles.loadingSpinner, animation: 'spin 1s linear infinite'}}></div>
-            <p style={{color: '#64748b', fontSize: '16px', fontWeight: '500'}}>Recherche en cours dans les Écritures...</p>
-            <style>
-              {`@keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-              }`}
-            </style>
-          </div>
-        ) : results.length > 0 ? (
-          <div>
-            <div style={{textAlign: 'center', marginBottom: '32px', padding: '24px', background: 'white', borderRadius: '16px', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)'}}>
-              <h2 style={{fontSize: '1.8rem', fontWeight: '700', color: '#1e293b', margin: '0 0 8px 0'}}>
-                📋 Résultats trouvés ({results.length})
-              </h2>
-              <p style={{color: '#64748b', fontSize: '16px', margin: '0', fontWeight: '500'}}>
-                Versets contenant "{searchTerm}"
-              </p>
             </div>
-            
-            <div style={styles.versesGrid}>
-              {results.map((verse, index) => (
-                <div 
-                  key={index} 
+          </form>
+
+          {/* Suggestions simples */}
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ marginBottom: '15px', color: '#6b7280' }}>
+              💡 Suggestions: 
+            </p>
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '8px',
+              justifyContent: 'center'
+            }}>
+              {["amour", "paix", "joie", "foi", "espoir"].map(term => (
+                <button 
+                  key={term}
+                  onClick={() => handleSuggestionClick(term)}
                   style={{
-                    ...styles.verseCard,
-                    borderLeft: '4px solid #8b5cf6'
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.08), 0 1px 0 rgba(255, 255, 255, 0.5)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.05), 0 1px 0 rgba(255, 255, 255, 0.5)';
+                    background: '#f3f4f6',
+                    border: '1px solid #d1d5db',
+                    padding: '6px 12px',
+                    borderRadius: '16px',
+                    cursor: 'pointer',
+                    fontSize: '14px'
                   }}
                 >
-                  <div style={styles.verseReference}>
-                    <strong>{verse.book} {verse.chapter}:{verse.verse}</strong>
-                  </div>
-                  <div 
-                    style={styles.verseText}
-                    dangerouslySetInnerHTML={{ 
-                      __html: highlightSearchTerm(verse.text, searchTerm) 
-                    }}
-                  />
-                </div>
+                  {term}
+                </button>
               ))}
             </div>
           </div>
-        ) : searchTerm.length > 0 ? (
-          <div style={{textAlign: 'center', padding: '60px 20px', background: 'white', borderRadius: '16px', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.05)'}}>
-            <h3 style={{fontSize: '1.5rem', color: '#64748b', margin: '0 0 12px 0', fontWeight: '600'}}>🔍 Aucun résultat trouvé</h3>
-            <p style={{color: '#64748b', fontSize: '16px', margin: '0 0 16px 0'}}>
-              Aucun verset trouvé pour "<strong>{searchTerm}</strong>"
-            </p>
-            <p style={{color: '#94a3b8', fontSize: '14px', fontStyle: 'italic', margin: '0'}}>
-              Essayez avec des termes comme : amour, paix, Dieu, joie, espoir, foi
-            </p>
-          </div>
-        ) : (
-          <div style={styles.welcomeMessage}>
-            <div>
-              <h2 style={styles.welcomeTitle}>🙏 Bienvenue dans la Concordance Biblique</h2>
-              <p style={{color: '#64748b', fontSize: '16px', margin: '0 0 32px 0', maxWidth: '500px', marginLeft: 'auto', marginRight: 'auto'}}>
-                Découvrez tous les versets de la Bible contenant un mot ou concept spécifique.
+        </div>
+
+        {/* Résultats */}
+        <div style={{ marginTop: '30px' }}>
+          {isLoading ? (
+            <div style={{ textAlign: 'center', padding: '40px' }}>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                border: '4px solid #e5e7eb',
+                borderTop: '4px solid #8b5cf6',
+                borderRadius: '50%',
+                animation: 'spin 1s linear infinite',
+                margin: '0 auto'
+              }}></div>
+              <p style={{ color: '#6b7280', marginTop: '15px' }}>
+                Recherche en cours...
               </p>
-              <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px', maxWidth: '600px', margin: '0 auto'}}>
-                <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', background: 'rgba(139, 92, 246, 0.05)', borderRadius: '12px', border: '1px solid rgba(139, 92, 246, 0.1)'}}>
-                  <span style={{fontSize: '1.5rem', minWidth: '32px', textAlign: 'center'}}>🔍</span>
-                  <span style={{color: '#475569', fontWeight: '500', fontSize: '14px'}}>Recherche dans toute la Bible</span>
-                </div>
-                <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', background: 'rgba(139, 92, 246, 0.05)', borderRadius: '12px', border: '1px solid rgba(139, 92, 246, 0.1)'}}>
-                  <span style={{fontSize: '1.5rem', minWidth: '32px', textAlign: 'center'}}>📝</span>
-                  <span style={{color: '#475569', fontWeight: '500', fontSize: '14px'}}>Références complètes</span>
-                </div>
-                <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', background: 'rgba(139, 92, 246, 0.05)', borderRadius: '12px', border: '1px solid rgba(139, 92, 246, 0.1)'}}>
-                  <span style={{fontSize: '1.5rem', minWidth: '32px', textAlign: 'center'}}>✨</span>
-                  <span style={{color: '#475569', fontWeight: '500', fontSize: '14px'}}>Texte mis en évidence</span>
-                </div>
-                <div style={{display: 'flex', alignItems: 'center', gap: '12px', padding: '16px', background: 'rgba(139, 92, 246, 0.05)', borderRadius: '12px', border: '1px solid rgba(139, 92, 246, 0.1)'}}>
-                  <span style={{fontSize: '1.5rem', minWidth: '32px', textAlign: 'center'}}>🌐</span>
-                  <span style={{color: '#475569', fontWeight: '500', fontSize: '14px'}}>Lien vers YouVersion</span>
-                </div>
+            </div>
+          ) : results.length > 0 ? (
+            <div>
+              <h2 style={{
+                textAlign: 'center',
+                color: 'white',
+                fontSize: '1.5rem',
+                marginBottom: '20px'
+              }}>
+                📋 {results.length} résultat(s) pour "{searchTerm}"
+              </h2>
+              <div style={{
+                display: 'grid',
+                gap: '20px'
+              }}>
+                {results.map((verse, index) => (
+                  <div 
+                    key={index}
+                    style={{
+                      background: 'white',
+                      borderRadius: '12px',
+                      padding: '20px',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                      borderLeft: '4px solid #8b5cf6'
+                    }}
+                  >
+                    <div style={{
+                      color: '#7c3aed',
+                      fontSize: '14px',
+                      fontWeight: 'bold',
+                      marginBottom: '10px'
+                    }}>
+                      {verse.book} {verse.chapter}:{verse.verse}
+                    </div>
+                    <div 
+                      style={{
+                        color: '#374151',
+                        lineHeight: '1.6'
+                      }}
+                      dangerouslySetInnerHTML={{ 
+                        __html: highlightSearchTerm(verse.text, searchTerm) 
+                      }}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
-        )}
+          ) : searchTerm.length > 0 ? (
+            <div style={{
+              background: 'white',
+              borderRadius: '12px',
+              padding: '40px',
+              textAlign: 'center'
+            }}>
+              <h3 style={{ color: '#6b7280' }}>
+                🔍 Aucun résultat pour "{searchTerm}"
+              </h3>
+            </div>
+          ) : (
+            <div style={{
+              background: 'white',
+              borderRadius: '12px',
+              padding: '40px',
+              textAlign: 'center'
+            }}>
+              <h2 style={{ color: '#1f2937', marginBottom: '15px' }}>
+                🙏 Bienvenue dans la Concordance
+              </h2>
+              <p style={{ color: '#6b7280' }}>
+                Recherchez des mots ou concepts dans la Bible
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
