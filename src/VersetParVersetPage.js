@@ -218,7 +218,7 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
     };
   }, [currentBatch, allVersetsBatches]);
   
-  // Fonction pour formater le contenu avec les bonnes couleurs ET boutons Gemini
+  // Fonction pour formater le contenu avec les bonnes couleurs SANS boutons (boutons ajoutés séparément)
   const formatVersetContent = (content) => {
     if (!content) return '';
     
@@ -238,34 +238,27 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
       .replace(/\*\*(EXPLICATION THÉOLOGIQUE\s*:?)\*\*/g, '<div class="explication-label">$1</div>')
       .replace(/(EXPLICATION THÉOLOGIQUE\s*:?)/g, '<div class="explication-label">$1</div>');
     
-    // Étape 2 : Ajouter les boutons Gemini après chaque explication théologique
-    // Pattern pour identifier les versets avec leurs explications
-    const versetPattern = /(<div class="verset-header">VERSET (\d+)<\/div>[\s\S]*?<div class="explication-label">EXPLICATION THÉOLOGIQUE[\s\S]*?<\/div>[\s\S]*?)(?=<div class="verset-header">|$)/gi;
-    
-    formattedContent = formattedContent.replace(versetPattern, (match, versetContent, versetNumber) => {
-      return versetContent + `
-        <div class="gemini-enrichment-section">
-          <button 
-            class="btn-gemini-enrich" 
-            onclick="enrichVersetGemini(${versetNumber})"
-            data-verset="${versetNumber}"
-          >
-            🤖 Gemini gratuit - Enrichir cette explication
-          </button>
-          <div class="gemini-loading" id="gemini-loading-${versetNumber}" style="display: none;">
-            <span class="loading-spinner-small"></span>
-            Enrichissement en cours avec Gemini...
-          </div>
-        </div>
-      `;
-    });
-    
-    // Étape 3 : Gérer les paragraphes
+    // Étape 2 : Gérer les paragraphes
     formattedContent = formattedContent
       .replace(/\n\n/g, '</p><p>')
       .replace(/\n/g, '<br/>');
     
     return `<div class="verset-content"><p>${formattedContent}</p></div>`;
+  };
+
+  // Fonction pour extraire les numéros de versets du contenu
+  const extractVersetNumbers = (content) => {
+    if (!content) return [];
+    
+    const versetPattern = /VERSET\s+(\d+)/gi;
+    const matches = [];
+    let match;
+    
+    while ((match = versetPattern.exec(content)) !== null) {
+      matches.push(parseInt(match[1]));
+    }
+    
+    return matches;
   };
 
   return (
