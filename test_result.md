@@ -210,7 +210,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Notes Page Ultra-Robust Persistence"
+    - "Duplicate Issue Resolution Verification"
   stuck_tasks:
     - "Character Length Controls"
     - "Single Verse Generation"
