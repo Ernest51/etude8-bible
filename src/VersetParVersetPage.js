@@ -193,13 +193,13 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
     }
   };
   
-  // Fonction pour formater le contenu avec les bonnes couleurs SANS boutons (boutons ajoutés séparément)
+  // Fonction pour formater le contenu avec les bonnes couleurs ET boutons Gemini intégrés
   const formatVersetContent = (content) => {
     if (!content) return '';
     
     let formattedContent = content;
     
-    // Étape 1 : Formater les headers avec couleurs
+    // Étape 1 : Formater les headers de base
     formattedContent = formattedContent
       // VERSET en violet
       .replace(/\*\*(VERSET\s+\d+)\*\*/g, '<div class="verset-header">$1</div>')
@@ -207,13 +207,30 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
       
       // TEXTE BIBLIQUE en bleu  
       .replace(/\*\*(TEXTE BIBLIQUE\s*:?)\*\*/g, '<div class="texte-biblique-label">$1</div>')
-      .replace(/(TEXTE BIBLIQUE\s*:?)/g, '<div class="texte-biblique-label">$1</div>')
-      
-      // EXPLICATION THÉOLOGIQUE en orange
-      .replace(/\*\*(EXPLICATION THÉOLOGIQUE\s*:?)\*\*/g, '<div class="explication-label">$1</div>')
-      .replace(/(EXPLICATION THÉOLOGIQUE\s*:?)/g, '<div class="explication-label">$1</div>');
+      .replace(/(TEXTE BIBLIQUE\s*:?)/g, '<div class="texte-biblique-label">$1</div>');
     
-    // Étape 2 : Gérer les paragraphes
+    // Étape 2 : EXPLICATION THÉOLOGIQUE avec bouton Gemini intégré à droite
+    // Pattern pour capturer VERSET X + contenu + EXPLICATION THÉOLOGIQUE
+    const versetExplicationPattern = /(VERSET\s+(\d+)[\s\S]*?)(\*\*(EXPLICATION THÉOLOGIQUE\s*:?)\*\*|\b(EXPLICATION THÉOLOGIQUE\s*:?))/gi;
+    
+    formattedContent = formattedContent.replace(versetExplicationPattern, (match, precedingContent, versetNumber, fullExplication, boldExplication, normalExplication) => {
+      const explicationText = boldExplication || normalExplication || 'EXPLICATION THÉOLOGIQUE :';
+      
+      return precedingContent + `
+        <div class="explication-header-with-button">
+          <div class="explication-label">${explicationText}</div>
+          <button 
+            class="btn-gemini-inline" 
+            onclick="window.enrichirVerset(${versetNumber})"
+            data-verset="${versetNumber}"
+            id="gemini-btn-${versetNumber}"
+          >
+            🤖 Gemini
+          </button>
+        </div>`;
+    });
+    
+    // Étape 3 : Gérer les paragraphes
     formattedContent = formattedContent
       .replace(/\n\n/g, '</p><p>')
       .replace(/\n/g, '<br/>');
