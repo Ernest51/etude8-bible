@@ -948,6 +948,12 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
     setCurrentPage('concordance');
   };
 
+  const navigateToVersets = (content, bookInfo) => {
+    setVersetPageContent(content);
+    setCurrentBookInfo(bookInfo);
+    setCurrentPage('versets');
+  };
+
   const navigateToMain = () => {
     setCurrentPage('main');
   };
