@@ -171,10 +171,47 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
     }
   };
 
-  // Obtenir le contenu du batch actuel
-  const getCurrentBatchContent = () => {
-    return allVersetsBatches[currentBatch] || '';
-  };
+  // Exposer la fonction d'enrichissement globalement pour les boutons HTML
+  useEffect(() => {
+    window.enrichVersetGemini = async (versetNumber) => {
+      console.log(`[GEMINI] Clic enrichissement verset ${versetNumber}`);
+      
+      // Afficher le loading
+      const loadingEl = document.getElementById(`gemini-loading-${versetNumber}`);
+      const buttonEl = document.querySelector(`[data-verset="${versetNumber}"]`);
+      
+      if (loadingEl && buttonEl) {
+        loadingEl.style.display = 'flex';
+        buttonEl.disabled = true;
+        buttonEl.textContent = '⏳ Enrichissement...';
+      }
+      
+      // Extraire le texte du verset et l'explication actuelle
+      const currentContent = getCurrentBatchContent();
+      const versetRegex = new RegExp(`VERSET ${versetNumber}[\\s\\S]*?TEXTE BIBLIQUE[\\s\\S]*?:([\\s\\S]*?)EXPLICATION THÉOLOGIQUE[\\s\\S]*?:([\\s\\S]*?)(?=VERSET|$)`, 'i');
+      const match = currentContent.match(versetRegex);
+      
+      if (match) {
+        const versetText = match[1].trim();
+        const currentExplication = match[2].trim();
+        
+        await enrichirExplicationGemini(versetNumber, currentExplication, versetText);
+      }
+      
+      // Masquer le loading
+      if (loadingEl && buttonEl) {
+        loadingEl.style.display = 'none';
+        buttonEl.disabled = false;
+        buttonEl.textContent = '✅ Enrichi avec Gemini';
+        buttonEl.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+      }
+    };
+
+    // Cleanup
+    return () => {
+      delete window.enrichVersetGemini;
+    };
+  }, [currentBatch, allVersetsBatches]);
   
   // Fonction pour formater le contenu avec les bonnes couleurs ET boutons Gemini
   const formatVersetContent = (content) => {
