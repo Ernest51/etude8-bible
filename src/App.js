@@ -923,22 +923,12 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
     // Note: Les notes personnelles ne sont jamais effacées lors du reset
   };
 
+  // Fonctions pour les notes persistantes
   const handleNotesClick = () => {
-    setShowNotesModal(true);
+    navigateToNotes();
   };
 
-  const handleSaveNotes = (notes) => {
-    setPersonalNotes(notes);
-    localStorage.setItem('bible-study-notes', JSON.stringify(notes));
-    setShowNotesModal(false);
-  };
-
-  const handleNotesChange = (e) => {
-    const newNotes = e.target.value;
-    setPersonalNotes(newNotes);
-    // Sauvegarde automatique à chaque modification
-    localStorage.setItem('bible-study-notes', JSON.stringify(newNotes));
-  };
+  // SUPPRIMÉ : showNotesModal et fonctions de modal - remplacées par page dédiée
 
   const handleCloseNotes = () => {
     setShowNotesModal(false);
