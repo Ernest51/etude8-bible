@@ -298,6 +298,13 @@ function App() {
   }, []);
 
   const saveCurrentStudy = () => {
+    console.log("[DEBUG SAUVEGARDE] Tentative sauvegarde:", {
+      selectedBook,
+      selectedChapter,
+      selectedVerse,
+      content_length: content ? content.length : 0
+    });
+    
     if (selectedBook !== "--" && selectedChapter !== "--") {
       const currentStudy = {
         book: selectedBook, chapter: selectedChapter, verse: selectedVerse,
@@ -307,6 +314,9 @@ function App() {
       };
       localStorage.setItem("lastBibleStudy", JSON.stringify(currentStudy));
       setLastStudy(currentStudy);
+      console.log("[SAUVEGARDE SUCCESS] Étude sauvegardée:", currentStudy.displayTitle);
+    } else {
+      console.log("[SAUVEGARDE SKIP] Conditions non remplies - livre ou chapitre = '--'");
     }
   };
 
