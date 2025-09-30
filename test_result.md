@@ -104,9 +104,9 @@ backend:
 frontend:
   - task: "Frontend Integration"
     implemented: true
-    working: true
+    working: false
     file: "frontend/src/App.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
     needs_retesting: false
     status_history:
@@ -128,6 +128,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "🎉 CORRECTION AFFICHAGE VERSET PAR VERSET CONFIRMÉE - SUCCÈS TOTAL: Test critique complet de la correction formatContent('versets-prog') PARFAITEMENT RÉUSSI. ✅ SÉLECTIONS RAPIDES: Genèse 1, LSG, 500 caractères effectuées correctement. ✅ RUBRIQUE 0 ACTIVE: 'Étude verset par verset' sélectionnée et fonctionnelle. ✅ BOUTON VERSETS PROG: Trouvé et cliqué avec succès, génération lancée. ✅ GÉNÉRATION API RÉUSSIE: Console logs confirment '[API RAILWAY OK] Contenu reçu: 5090 caractères' et '[SUCCESS] Contenu VERSETS PROG affiché correctement'. ✅ PROBLÈME D'AFFICHAGE RÉSOLU: Contenu maintenant COMPLÈTEMENT VISIBLE (5122 caractères affichés vs 46 précédemment). ✅ TEXTE BIBLIQUE PRÉSENT: 'Au commencement Dieu créa les cieux et la terre' trouvé dans l'interface. ✅ STRUCTURE CORRECTE: VERSET 1 (📖), TEXTE BIBLIQUE (📜), EXPLICATION THÉOLOGIQUE (🎓) tous visibles et correctement formatés. ✅ CONTENU COMPLET: 5122 caractères affichés (>5000 requis), structure théologique complète détectée. ✅ SCORE PARFAIT: 9/9 critères de test réussis. DIAGNOSTIC: La correction du contexte 'verse-by-verse' → 'versets-prog' dans formatContent() a COMPLÈTEMENT RÉSOLU le problème d'affichage critique. L'objectif utilisateur est ATTEINT."
+      - working: false
+        agent: "testing"
+        comment: "❌ TEST CRITIQUE BOUTON VERSETS PROG - PROBLÈME CONFIRMÉ: Test complet selon demande utilisateur révèle que le rapport utilisateur est PARTIELLEMENT CORRECT. ✅ NAVIGATION FONCTIONNELLE: Bouton '⚡ Versets Prog' trouvé, visible, activé et cliquable. Navigation vers page dédiée '📖 Étude Verset par Verset' RÉUSSIE. Logs debug '[DEBUG] generateVerseByVerseProgressive function called!' et '[TEST] Navigation immédiate vers page Verset par Verset: Genèse 1' confirmés. ❌ PROBLÈME CRITIQUE GÉNÉRATION CONTENU: Malgré navigation réussie, AUCUN contenu biblique généré après 30 secondes d'attente. Page reste bloquée sur '⏳ Chargement...' (119 caractères visibles seulement). AUCUN élément VERSET/TEXTE BIBLIQUE/EXPLICATION THÉOLOGIQUE détecté. AUCUN mot-clé biblique (Dieu, créa, commencement, etc.) trouvé. ✅ PAGINATION DÉTECTÉE: Bouton 'Suivant' présent, log '[PAGINATION] Chargement batch 2: Genèse 1:6-10' confirmé. DIAGNOSTIC: Le bouton fonctionne (navigation + logs debug OK) mais la génération de contenu échoue silencieusement. L'utilisateur a raison - le bouton ne produit pas le contenu attendu malgré une navigation apparemment réussie."
 
   - task: "GÉNÉRER Button (Rubriques 1-28)"
     implemented: true
