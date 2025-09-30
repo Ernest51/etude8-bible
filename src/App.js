@@ -214,7 +214,9 @@ function App() {
   const [showNotesModal, setShowNotesModal] = useState(false);
 
   // État pour la navigation
-  const [currentPage, setCurrentPage] = useState('main'); // 'main' ou 'concordance'
+  const [currentPage, setCurrentPage] = useState('main'); // 'main', 'concordance', ou 'versets'
+  const [versetPageContent, setVersetPageContent] = useState('');
+  const [currentBookInfo, setCurrentBookInfo] = useState('');
 
   // Thèmes
   const colorThemes = [
