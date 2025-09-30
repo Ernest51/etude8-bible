@@ -713,6 +713,7 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
             </p>
           </div>
         )}
+        </div>
         
         {/* Colonne droite - Section Bienvenue */}
         <div style={{
