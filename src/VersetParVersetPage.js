@@ -193,6 +193,22 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
     }
   };
   
+  // Fonction pour nettoyer les marqueurs Markdown
+  const cleanMarkdownFormatting = (text) => {
+    if (!text) return '';
+    
+    return text
+      // Supprimer les ** pour le gras
+      .replace(/\*\*/g, '')
+      // Supprimer les * pour l'italique
+      .replace(/(?<!\*)\*(?!\*)/g, '')
+      // Nettoyer les espaces multiples
+      .replace(/\s+/g, ' ')
+      // Nettoyer les lignes vides multiples
+      .replace(/\n\s*\n\s*\n/g, '\n\n')
+      .trim();
+  };
+
   // Nouvelle approche : Analyser le contenu et créer des composants React avec boutons intégrés
   const parseContentWithGeminiButtons = (content) => {
     if (!content) return [];
@@ -216,12 +232,12 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
         const part = parts[i].trim();
         
         if (part.includes('VERSET')) {
-          versetTitle = part;
+          versetTitle = cleanMarkdownFormatting(part);
         } else if (part.match(/TEXTE BIBLIQUE/i)) {
-          texteContent = parts[i + 1]?.trim() || '';
+          texteContent = cleanMarkdownFormatting(parts[i + 1]?.trim() || '');
           i++; // Skip next part as we've consumed it
         } else if (part.match(/EXPLICATION THÉOLOGIQUE/i)) {
-          explicationContent = parts[i + 1]?.trim() || '';
+          explicationContent = cleanMarkdownFormatting(parts[i + 1]?.trim() || '');
           i++; // Skip next part as we've consumed it
         }
       }
