@@ -1029,7 +1029,7 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       console.log(`[AFFICHAGE RUBRIQUE ${id}] Contenu sauvegardé trouvé`);
       
       // Si rubrique 0 et qu'il y a du contenu verset par verset, naviguer vers la page verset dédiée
-      if (id === 0 && (generatedRubriques[contentKey].includes('VERSET') || generatedRubriques[contentKey].includes('TEXTE BIBLIQUE'))) {
+      if (id === 0 && (generatedRubriques[contentKey].includes('VERSET') || generatedRubriques[contentKey].includes('**TEXTE BIBLIQUE'))) {
         const bookInfo = `${selectedBook || 'Genèse'} ${selectedChapter || '1'}${selectedVerse !== "--" ? ":" + selectedVerse : ""}`;
         navigateToVersets(generatedRubriques[contentKey], bookInfo);
       }
@@ -1261,6 +1261,10 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       setIsVersetsProgContent(true); // IMPORTANT : activer l'état VERSETS PROG
       console.log("[SUCCESS] Contenu VERSETS PROG affiché correctement");
       
+      // Sauvegarder l'étude après génération réussie
+      saveCurrentStudy();
+      console.log("[SAUVEGARDE] Étude verset par verset sauvegardée");
+      
       // Sauvegarder le contenu dans generatedRubriques pour la navigation
       const contentKey = `${selectedBook || 'Genèse'}_${selectedChapter || '1'}_0`;
       setGeneratedRubriques(prev => ({
@@ -1340,6 +1344,10 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
           }));
           
           console.log("[SUCCESS] Enrichissement Gemini gratuit affiché correctement");
+          
+          // Sauvegarder l'étude après enrichissement réussi
+          saveCurrentStudy();
+          console.log("[SAUVEGARDE] Étude enrichie Gemini sauvegardée");
         } else {
           throw new Error("Pas de contenu reçu de votre Gemini gratuit");
         }
@@ -1475,6 +1483,10 @@ ${contextualEnrichment}
       // 🔹 COMMENCER PAR LA RUBRIQUE 1 UNIQUEMENT ET NAVIGUER VERS ELLE
       await generateSingleRubrique(1, "Prière d'ouverture", passage);
       setActiveRubrique(1); // Se positionner sur la rubrique 1
+      
+      // Sauvegarder l'étude après génération réussie
+      saveCurrentStudy();
+      console.log("[SAUVEGARDE] Étude 28 points sauvegardée");
       
     } catch (error) {
       console.error("[ERREUR GÉNÉRATION]", error);
