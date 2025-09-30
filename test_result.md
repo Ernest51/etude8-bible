@@ -201,9 +201,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Character Length Controls"
-    - "Single Verse Generation"
-    - "Error Handling"
+    - "Notes Page Ultra-Robust Persistence"
   stuck_tasks:
     - "Character Length Controls"
     - "Single Verse Generation"
