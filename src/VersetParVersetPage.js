@@ -351,103 +351,110 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
         </div>
       </div>
 
-      {/* Contenu principal avec optimisation mobile */}
+      {/* Layout 2 colonnes : Contenu principal + Bienvenue */}
       <div style={{
-        maxWidth: '900px',
+        maxWidth: '1200px',
         margin: '0 auto',
         padding: '20px',
-        // Optimisation mobile : padding plus petit sur mobile
-        '@media (maxWidth: 768px)': {
-          padding: '15px'
+        display: 'grid',
+        gridTemplateColumns: '1fr 280px',
+        gap: '32px',
+        '@media (maxWidth: 1024px)': {
+          gridTemplateColumns: '1fr',
+          gap: '20px',
+          maxWidth: '900px'
         }
       }}>
-        {getCurrentBatchContent() ? (
-          <div style={{
-            background: 'white',
-            borderRadius: '16px',
-            padding: 'clamp(20px, 5vw, 40px)',
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
-            border: '1px solid rgba(226, 232, 240, 0.8)',
-            lineHeight: '1.7',
-            fontSize: 'clamp(15px, 4vw, 16px)',
-            marginBottom: '20px'
-          }}>
-            {/* Nouveau rendu avec boutons intégrés */}
-            {parseContentWithGeminiButtons(getCurrentBatchContent()).map((section, index) => (
-              <div key={section.number} style={{ marginBottom: '40px' }}>
-                {/* Titre du verset */}
-                <div className="verset-header">
-                  {section.title}
-                </div>
-                
-                {/* Texte biblique */}
-                {section.texte && (
-                  <>
-                    <div className="texte-biblique-label">TEXTE BIBLIQUE :</div>
-                    <div style={{ 
-                      marginBottom: '20px', 
-                      padding: '10px 0',
-                      color: '#374151'
-                    }}>
-                      {section.texte}
-                    </div>
-                  </>
-                )}
-                
-                {/* Explication théologique avec bouton Gemini intégré */}
-                {section.explication && (
-                  <>
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      gap: '15px',
-                      marginBottom: '16px',
-                      flexWrap: 'wrap'
-                    }}>
-                      <div className="explication-label" style={{ flex: '1', minWidth: '200px' }}>
-                        EXPLICATION THÉOLOGIQUE :
+        
+        {/* Colonne principale - Contenu des versets */}
+        <div>
+          {getCurrentBatchContent() ? (
+            <div style={{
+              background: 'white',
+              borderRadius: '16px',
+              padding: 'clamp(20px, 5vw, 40px)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
+              border: '1px solid rgba(226, 232, 240, 0.8)',
+              lineHeight: '1.7',
+              fontSize: 'clamp(15px, 4vw, 16px)',
+              marginBottom: '20px'
+            }}>
+              {/* Nouveau rendu avec boutons intégrés */}
+              {parseContentWithGeminiButtons(getCurrentBatchContent()).map((section, index) => (
+                <div key={section.number} style={{ marginBottom: '40px' }}>
+                  {/* Titre du verset */}
+                  <div className="verset-header">
+                    {section.title}
+                  </div>
+                  
+                  {/* Texte biblique */}
+                  {section.texte && (
+                    <>
+                      <div className="texte-biblique-label">TEXTE BIBLIQUE :</div>
+                      <div style={{ 
+                        marginBottom: '20px', 
+                        padding: '10px 0',
+                        color: '#374151'
+                      }}>
+                        {section.texte}
                       </div>
-                      
-                      {/* Bouton Gemini à droite de l'explication */}
-                      <button 
-                        onClick={() => handleEnrichirVerset(section.number)}
-                        disabled={enrichingVersets[`${currentBatch}-${section.number}`]}
-                        style={{
-                          background: enrichingVersets[`${currentBatch}-${section.number}`]
-                            ? 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)'
-                            : 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
-                          color: 'white',
-                          border: 'none',
-                          padding: 'clamp(8px, 2vw, 12px) clamp(12px, 3vw, 18px)',
-                          borderRadius: '8px',
-                          fontSize: 'clamp(12px, 3vw, 14px)',
-                          fontWeight: '600',
-                          cursor: enrichingVersets[`${currentBatch}-${section.number}`] ? 'not-allowed' : 'pointer',
-                          transition: 'all 0.3s ease',
-                          boxShadow: '0 3px 12px rgba(139, 92, 246, 0.25)',
-                          whiteSpace: 'nowrap',
-                          flexShrink: 0,
-                          opacity: enrichingVersets[`${currentBatch}-${section.number}`] ? 0.7 : 1
-                        }}
-                        onMouseOver={(e) => {
-                          if (!enrichingVersets[`${currentBatch}-${section.number}`]) {
-                            e.target.style.transform = 'translateY(-1px)';
-                            e.target.style.boxShadow = '0 4px 16px rgba(139, 92, 246, 0.35)';
+                    </>
+                  )}
+                  
+                  {/* Explication théologique avec bouton Gemini intégré */}
+                  {section.explication && (
+                    <>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: '15px',
+                        marginBottom: '16px',
+                        flexWrap: 'wrap'
+                      }}>
+                        <div className="explication-label" style={{ flex: '1', minWidth: '200px' }}>
+                          EXPLICATION THÉOLOGIQUE :
+                        </div>
+                        
+                        {/* Bouton Gemini à droite de l'explication */}
+                        <button 
+                          onClick={() => handleEnrichirVerset(section.number)}
+                          disabled={enrichingVersets[`${currentBatch}-${section.number}`]}
+                          style={{
+                            background: enrichingVersets[`${currentBatch}-${section.number}`]
+                              ? 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)'
+                              : 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                            color: 'white',
+                            border: 'none',
+                            padding: 'clamp(8px, 2vw, 12px) clamp(12px, 3vw, 18px)',
+                            borderRadius: '8px',
+                            fontSize: 'clamp(12px, 3vw, 14px)',
+                            fontWeight: '600',
+                            cursor: enrichingVersets[`${currentBatch}-${section.number}`] ? 'not-allowed' : 'pointer',
+                            transition: 'all 0.3s ease',
+                            boxShadow: '0 3px 12px rgba(139, 92, 246, 0.25)',
+                            whiteSpace: 'nowrap',
+                            flexShrink: 0,
+                            opacity: enrichingVersets[`${currentBatch}-${section.number}`] ? 0.7 : 1
+                          }}
+                          onMouseOver={(e) => {
+                            if (!enrichingVersets[`${currentBatch}-${section.number}`]) {
+                              e.target.style.transform = 'translateY(-1px)';
+                              e.target.style.boxShadow = '0 4px 16px rgba(139, 92, 246, 0.35)';
+                            }
+                          }}
+                          onMouseOut={(e) => {
+                            if (!enrichingVersets[`${currentBatch}-${section.number}`]) {
+                              e.target.style.transform = 'translateY(0)';
+                              e.target.style.boxShadow = '0 3px 12px rgba(139, 92, 246, 0.25)';
+                            }
+                          }}
+                        >
+                          {enrichingVersets[`${currentBatch}-${section.number}`] 
+                            ? '⏳ Gemini...' 
+                            : '🤖 Gemini gratuit'
                           }
-                        }}
-                        onMouseOut={(e) => {
-                          if (!enrichingVersets[`${currentBatch}-${section.number}`]) {
-                            e.target.style.transform = 'translateY(0)';
-                            e.target.style.boxShadow = '0 3px 12px rgba(139, 92, 246, 0.25)';
-                          }
-                        }}
-                      >
-                        {enrichingVersets[`${currentBatch}-${section.number}`] 
-                          ? '⏳ Gemini...' 
-                          : '🤖 Gemini gratuit'
-                        }
-                      </button>
+                        </button>
                     </div>
                     
                     {/* Contenu de l'explication */}
@@ -706,6 +713,77 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
             </p>
           </div>
         )}
+        
+        {/* Colonne droite - Section Bienvenue */}
+        <div style={{
+          background: 'white',
+          borderRadius: '16px',
+          padding: 'clamp(20px, 4vw, 32px)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
+          border: '1px solid rgba(226, 232, 240, 0.8)',
+          height: 'fit-content',
+          position: 'sticky',
+          top: '120px'
+        }}>
+          <div style={{
+            textAlign: 'center'
+          }}>
+            <h2 style={{
+              fontSize: 'clamp(1.3rem, 4vw, 1.6rem)',
+              fontWeight: '700',
+              color: '#1e293b',
+              marginBottom: '20px',
+              background: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
+              🙏 Bienvenue
+            </h2>
+            
+            <div style={{
+              fontSize: 'clamp(14px, 3.5vw, 16px)',
+              color: '#64748b',
+              lineHeight: '1.6',
+              textAlign: 'left'
+            }}>
+              <p style={{ marginBottom: '16px' }}>
+                <strong>Étude approfondie</strong> des Saintes Écritures verset par verset
+              </p>
+              
+              <p style={{ marginBottom: '16px' }}>
+                Naviguez entre les versets avec les boutons <strong>Précédent</strong> et <strong>Suivant</strong>
+              </p>
+              
+              <p style={{ marginBottom: '16px' }}>
+                Chaque batch contient <strong>5 versets</strong> avec explications théologiques complètes
+              </p>
+              
+              <p style={{ marginBottom: '16px' }}>
+                Utilisez les boutons <strong>🤖 Gemini gratuit</strong> pour enrichir les explications
+              </p>
+              
+              <div style={{
+                backgroundColor: '#f8fafc',
+                borderRadius: '8px',
+                padding: '16px',
+                marginTop: '20px',
+                borderLeft: '4px solid #8b5cf6'
+              }}>
+                <p style={{ 
+                  margin: '0',
+                  fontSize: 'clamp(13px, 3.2vw, 14px)',
+                  fontStyle: 'italic',
+                  color: '#475569'
+                }}>
+                  "Ta parole est une lampe à mes pieds, Et une lumière sur mon sentier." 
+                  <br />
+                  <strong>Psaume 119:105</strong>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
