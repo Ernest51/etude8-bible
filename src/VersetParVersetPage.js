@@ -135,9 +135,11 @@ const VersetParVersetPage = ({ onGoBack, content, bookInfo }) => {
       <div style={{
         background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.95) 0%, rgba(124, 58, 237, 0.98) 100%)',
         color: 'white',
-        padding: '40px 24px',
+        padding: '30px 20px',
         boxShadow: '0 8px 32px rgba(139, 92, 246, 0.25)',
-        position: 'relative',
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
         overflow: 'hidden'
       }}>
         <div style={{
@@ -150,81 +152,172 @@ const VersetParVersetPage = ({ onGoBack, content, bookInfo }) => {
           pointerEvents: 'none'
         }}></div>
         
-        <button 
-          onClick={onGoBack}
-          style={{
-            background: 'rgba(255, 255, 255, 0.2)',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            color: 'white',
-            padding: '12px 24px',
-            borderRadius: '12px',
-            cursor: 'pointer',
-            fontSize: '14px',
-            fontWeight: '600',
-            marginBottom: '24px',
-            backdropFilter: 'blur(10px)',
-            transition: 'all 0.3s ease',
-            position: 'relative',
-            zIndex: 10
-          }}
-          onMouseOver={(e) => {
-            e.target.style.background = 'rgba(255, 255, 255, 0.3)';
-            e.target.style.transform = 'translateY(-2px)';
-          }}
-          onMouseOut={(e) => {
-            e.target.style.background = 'rgba(255, 255, 255, 0.2)';
-            e.target.style.transform = 'translateY(0)';
-          }}
-        >
-          ← Retour à l'Étude
-        </button>
-        
-        <h1 style={{
-          fontSize: '2.5rem',
-          fontWeight: '800',
-          margin: '0 0 12px 0',
-          textAlign: 'center',
-          textShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+        <div style={{
+          maxWidth: '900px',
+          margin: '0 auto',
           position: 'relative',
           zIndex: 10
         }}>
-          📖 Étude Verset par Verset
-        </h1>
-        
-        {bookInfo && (
-          <div style={{
-            fontSize: '1.2rem',
+          <button 
+            onClick={onGoBack}
+            style={{
+              background: 'rgba(255, 255, 255, 0.2)',
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              color: 'white',
+              padding: '10px 20px',
+              borderRadius: '12px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              fontWeight: '600',
+              marginBottom: '20px',
+              backdropFilter: 'blur(10px)',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.background = 'rgba(255, 255, 255, 0.3)';
+              e.target.style.transform = 'translateY(-2px)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+              e.target.style.transform = 'translateY(0)';
+            }}
+          >
+            ← Retour à l'Étude
+          </button>
+          
+          <h1 style={{
+            fontSize: 'clamp(1.8rem, 4vw, 2.5rem)',
+            fontWeight: '800',
+            margin: '0 0 8px 0',
             textAlign: 'center',
-            opacity: 0.9,
-            fontWeight: '500',
-            position: 'relative',
-            zIndex: 10
+            textShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
           }}>
-            {bookInfo}
-          </div>
-        )}
+            📖 Étude Verset par Verset
+          </h1>
+          
+          {bookInfo && (
+            <div style={{
+              fontSize: 'clamp(1rem, 3vw, 1.2rem)',
+              textAlign: 'center',
+              opacity: 0.9,
+              fontWeight: '500'
+            }}>
+              {bookInfo} • Batch {currentBatch} (versets {(currentBatch - 1) * 5 + 1}-{currentBatch * 5})
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Contenu principal */}
+      {/* Contenu principal avec optimisation mobile */}
       <div style={{
         maxWidth: '900px',
         margin: '0 auto',
-        padding: '40px 24px'
+        padding: '20px',
+        // Optimisation mobile : padding plus petit sur mobile
+        '@media (maxWidth: 768px)': {
+          padding: '15px'
+        }
       }}>
-        {content ? (
+        {getCurrentBatchContent() ? (
           <div style={{
             background: 'white',
-            borderRadius: '20px',
-            padding: '40px',
-            boxShadow: '0 12px 40px rgba(0, 0, 0, 0.08)',
+            borderRadius: '16px',
+            padding: 'clamp(20px, 5vw, 40px)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
             border: '1px solid rgba(226, 232, 240, 0.8)',
-            lineHeight: '1.8',
-            fontSize: '16px'
+            lineHeight: '1.7',
+            fontSize: 'clamp(15px, 4vw, 16px)',
+            marginBottom: '20px'
           }}>
             <div 
-              dangerouslySetInnerHTML={{ __html: formatVersetContent(content) }}
+              dangerouslySetInnerHTML={{ __html: formatVersetContent(getCurrentBatchContent()) }}
               style={{ color: '#374151' }}
             />
+            
+            {/* Boutons de navigation */}
+            <div style={{
+              display: 'flex',
+              gap: '15px',
+              marginTop: '40px',
+              justifyContent: 'center',
+              flexWrap: 'wrap'
+            }}>
+              {/* Bouton Précédent */}
+              {currentBatch > 1 && (
+                <button
+                  onClick={goToPreviousBatch}
+                  style={{
+                    background: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
+                    color: 'white',
+                    border: 'none',
+                    padding: 'clamp(12px, 3vw, 16px) clamp(20px, 5vw, 32px)',
+                    borderRadius: '12px',
+                    fontSize: 'clamp(14px, 3.5vw, 16px)',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 16px rgba(107, 114, 128, 0.25)',
+                    minWidth: '140px'
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 6px 24px rgba(107, 114, 128, 0.35)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 16px rgba(107, 114, 128, 0.25)';
+                  }}
+                >
+                  ◀ Précédent
+                </button>
+              )}
+
+              {/* Bouton Suivant */}
+              <button
+                onClick={loadNextBatch}
+                disabled={isLoadingMore}
+                style={{
+                  background: isLoadingMore 
+                    ? 'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)'
+                    : 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
+                  color: 'white',
+                  border: 'none',
+                  padding: 'clamp(12px, 3vw, 16px) clamp(20px, 5vw, 32px)',
+                  borderRadius: '12px',
+                  fontSize: 'clamp(14px, 3.5vw, 16px)',
+                  fontWeight: '600',
+                  cursor: isLoadingMore ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 4px 16px rgba(139, 92, 246, 0.25)',
+                  minWidth: '140px',
+                  opacity: isLoadingMore ? 0.7 : 1
+                }}
+                onMouseOver={(e) => {
+                  if (!isLoadingMore) {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 6px 24px rgba(139, 92, 246, 0.35)';
+                  }
+                }}
+                onMouseOut={(e) => {
+                  if (!isLoadingMore) {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 16px rgba(139, 92, 246, 0.25)';
+                  }
+                }}
+              >
+                {isLoadingMore ? '⏳ Chargement...' : 'Suivant ▶'}
+              </button>
+            </div>
+
+            {/* Indicateur de progression */}
+            <div style={{
+              textAlign: 'center',
+              marginTop: '20px',
+              fontSize: 'clamp(12px, 3vw, 14px)',
+              color: '#6b7280'
+            }}>
+              📖 Batch {currentBatch} • Versets {(currentBatch - 1) * 5 + 1} à {currentBatch * 5}
+            </div>
             
             {/* Styles CSS intégrés pour les couleurs */}
             <style>
@@ -232,11 +325,11 @@ const VersetParVersetPage = ({ onGoBack, content, bookInfo }) => {
                 .verset-header {
                   background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
                   color: white;
-                  font-size: 1.4rem;
+                  font-size: clamp(1.2rem, 4vw, 1.4rem);
                   font-weight: 800;
-                  padding: 16px 24px;
+                  padding: clamp(12px, 3vw, 16px) clamp(16px, 4vw, 24px);
                   border-radius: 12px;
-                  margin: 32px 0 20px 0;
+                  margin: clamp(24px, 6vw, 32px) 0 clamp(16px, 4vw, 20px) 0;
                   text-align: center;
                   box-shadow: 0 4px 16px rgba(139, 92, 246, 0.25);
                   text-transform: uppercase;
@@ -246,11 +339,11 @@ const VersetParVersetPage = ({ onGoBack, content, bookInfo }) => {
                 .texte-biblique-label {
                   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
                   color: white;
-                  font-size: 1.1rem;
+                  font-size: clamp(1rem, 3.5vw, 1.1rem);
                   font-weight: 700;
-                  padding: 12px 20px;
+                  padding: clamp(10px, 3vw, 12px) clamp(16px, 4vw, 20px);
                   border-radius: 10px;
-                  margin: 24px 0 16px 0;
+                  margin: clamp(20px, 5vw, 24px) 0 clamp(12px, 3vw, 16px) 0;
                   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
                   text-transform: uppercase;
                   letter-spacing: 0.5px;
@@ -259,36 +352,56 @@ const VersetParVersetPage = ({ onGoBack, content, bookInfo }) => {
                 .explication-label {
                   background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
                   color: white;
-                  font-size: 1.1rem;
+                  font-size: clamp(1rem, 3.5vw, 1.1rem);
                   font-weight: 700;
-                  padding: 12px 20px;
+                  padding: clamp(10px, 3vw, 12px) clamp(16px, 4vw, 20px);
                   border-radius: 10px;
-                  margin: 24px 0 16px 0;
+                  margin: clamp(20px, 5vw, 24px) 0 clamp(12px, 3vw, 16px) 0;
                   box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
                   text-transform: uppercase;
                   letter-spacing: 0.5px;
                 }
                 
                 .verset-content p {
-                  margin-bottom: 18px;
-                  line-height: 1.8;
+                  margin-bottom: clamp(16px, 4vw, 18px);
+                  line-height: 1.7;
+                  font-size: clamp(15px, 4vw, 16px);
                 }
                 
                 .verset-content br {
-                  line-height: 1.8;
+                  line-height: 1.7;
                 }
                 
-                /* Responsive mobile */
+                /* Responsive mobile - lecture optimisée */
                 @media (max-width: 768px) {
                   .verset-header {
-                    font-size: 1.2rem;
-                    padding: 12px 16px;
+                    margin: 20px 0 16px 0;
+                    border-radius: 8px;
                   }
                   
                   .texte-biblique-label,
                   .explication-label {
-                    font-size: 1rem;
-                    padding: 10px 16px;
+                    margin: 16px 0 12px 0;
+                    border-radius: 8px;
+                  }
+                  
+                  .verset-content p {
+                    margin-bottom: 14px;
+                    text-align: left;
+                  }
+                }
+                
+                /* Styles pour très petits écrans */
+                @media (max-width: 480px) {
+                  .verset-header {
+                    font-size: 1.1rem;
+                    padding: 10px 14px;
+                  }
+                  
+                  .texte-biblique-label,
+                  .explication-label {
+                    font-size: 0.95rem;
+                    padding: 8px 14px;
                   }
                 }
               `}
@@ -298,16 +411,16 @@ const VersetParVersetPage = ({ onGoBack, content, bookInfo }) => {
           <div style={{
             background: 'white',
             borderRadius: '20px',
-            padding: '60px 40px',
+            padding: 'clamp(40px, 8vw, 60px)',
             textAlign: 'center',
             boxShadow: '0 12px 40px rgba(0, 0, 0, 0.08)'
           }}>
             <div style={{
-              fontSize: '4rem',
+              fontSize: 'clamp(3rem, 8vw, 4rem)',
               marginBottom: '20px'
             }}>📖</div>
             <h2 style={{
-              fontSize: '2rem',
+              fontSize: 'clamp(1.5rem, 5vw, 2rem)',
               color: '#1f2937',
               marginBottom: '16px',
               fontWeight: '700'
@@ -316,54 +429,15 @@ const VersetParVersetPage = ({ onGoBack, content, bookInfo }) => {
             </h2>
             <p style={{
               color: '#6b7280',
-              fontSize: '1.1rem',
+              fontSize: 'clamp(1rem, 3vw, 1.1rem)',
               maxWidth: '500px',
-              margin: '0 auto'
+              margin: '0 auto',
+              lineHeight: '1.6'
             }}>
               Sélectionnez un passage biblique depuis la page principale pour commencer une étude approfondie verset par verset avec explications théologiques.
+              <br /><br />
+              <strong>Nouveau :</strong> 5 versets par batch avec navigation fluide !
             </p>
-            <div style={{
-              marginTop: '30px',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-              gap: '20px',
-              maxWidth: '600px',
-              margin: '30px auto 0'
-            }}>
-              <div style={{
-                padding: '20px',
-                background: 'rgba(139, 92, 246, 0.05)',
-                borderRadius: '12px',
-                border: '2px solid rgba(139, 92, 246, 0.1)'
-              }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🔵</div>
-                <div style={{ color: '#475569', fontWeight: '600', fontSize: '14px' }}>
-                  Versets en Violet
-                </div>
-              </div>
-              <div style={{
-                padding: '20px',
-                background: 'rgba(59, 130, 246, 0.05)',
-                borderRadius: '12px',
-                border: '2px solid rgba(59, 130, 246, 0.1)'
-              }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>📘</div>
-                <div style={{ color: '#475569', fontWeight: '600', fontSize: '14px' }}>
-                  Textes en Bleu
-                </div>
-              </div>
-              <div style={{
-                padding: '20px',
-                background: 'rgba(249, 115, 22, 0.05)',
-                borderRadius: '12px',
-                border: '2px solid rgba(249, 115, 22, 0.1)'
-              }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>🧡</div>
-                <div style={{ color: '#475569', fontWeight: '600', fontSize: '14px' }}>
-                  Explications en Orange
-                </div>
-              </div>
-            </div>
           </div>
         )}
       </div>
