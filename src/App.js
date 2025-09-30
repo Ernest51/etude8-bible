@@ -207,12 +207,9 @@ function App() {
   const [currentVerseCount, setCurrentVerseCount] = useState(5);
   const [canContinueVerses, setCanContinueVerses] = useState(true);
   
-  // États pour les notes persistantes
-  const [personalNotes, setPersonalNotes] = useState(() => {
-    const savedNotes = localStorage.getItem('bible-study-notes');
-    return savedNotes ? JSON.parse(savedNotes) : '';
-  });
-  const [showNotesModal, setShowNotesModal] = useState(false);
+  // États pour les notes persistantes - SUPPRIMÉES (remplacées par page dédiée)
+  // const [personalNotes, setPersonalNotes] = useState(...)
+  // const [showNotesModal, setShowNotesModal] = useState(false)
 
   // État pour la navigation
   const [currentPage, setCurrentPage] = useState('main'); // 'main', 'concordance', 'versets', ou 'notes'
