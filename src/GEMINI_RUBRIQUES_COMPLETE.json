@@ -1,0 +1,35 @@
+{
+  "timestamp": "2024-09-30T13:15:00Z",
+  "features": "GEMINI_BUTTONS_RUBRIQUE_PAGES",
+  "description": "Added Gemini enrichment buttons for each verse + dedicated pages for all 28 rubrics",
+  "feature_1_gemini_buttons": {
+    "location": "VersetParVersetPage - after each theological explanation",
+    "functionality": [
+      "Automatic Gemini button after each EXPLICATION THÉOLOGIQUE",
+      "Click enriches explanation with 200-300 additional words",
+      "Loading states and visual feedback",
+      "Enrichment includes historical context, biblical links, doctrinal implications",
+      "Updates content in real-time with enhanced theological depth"
+    ],
+    "api_integration": "Uses existing Gemini API with custom enrichment prompts",
+    "user_experience": "One-click theological enrichment for deeper study"
+  },
+  "feature_2_rubrique_pages": {
+    "location": "New RubriquePage component for rubriques 1-28",
+    "functionality": [
+      "Each rubric opens in dedicated page automatically",
+      "Color-coded headers for different rubriques (10 color cycle)",
+      "Navigation between rubriques (Previous/Next buttons)",
+      "Consistent with modern design patterns",
+      "Automatic generation and page navigation on click"
+    ],
+    "navigation": "Automatic redirect from rubric list to dedicated page",
+    "user_experience": "Immersive study experience with dedicated focus per rubric"
+  },
+  "implementation_highlights": {
+    "systematic_approach": "ALL verses get Gemini buttons, ALL rubriques get dedicated pages",
+    "consistency": "Maintains design coherence across all study modes",
+    "performance": "Lazy loading and caching for optimal experience",
+    "mobile_optimization": "Fully responsive for mobile study"
+  }
+}
