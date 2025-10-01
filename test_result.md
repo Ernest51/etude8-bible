@@ -210,7 +210,8 @@ metadata:
 
 test_plan:
   current_focus:
-    - "28 Rubriques Gemini System Fix"
+    - "Character Length Controls"
+    - "Single Verse Generation"
   stuck_tasks:
     - "Character Length Controls"
     - "Single Verse Generation"
