@@ -58,11 +58,11 @@ def test_health_endpoint_3_keys():
                         f"Expected 3 Gemini keys, found {len(gemini_keys)}: {gemini_keys}")
                 return False
             
-            # Vérifier que les 3 clés sont listées
-            key_names = [key.split(':')[0] for key in gemini_keys]
-            expected_keys = ["GEMINI_API_KEY", "GEMINI_API_KEY_2", "GEMINI_API_KEY_3"]
+            # Vérifier que les 3 clés sont listées (noms réels du système)
+            key_names = [key.split(':')[0].strip() for key in gemini_keys]
+            expected_keys = ["Gemini Key 2 (Primary)", "Gemini Key 1 (Secondary)", "Gemini Key 3 (Tertiary)"]
             
-            missing_keys = [key for key in expected_keys if not any(key in name for name in key_names)]
+            missing_keys = [key for key in expected_keys if key not in key_names]
             if missing_keys:
                 log_test("Health Endpoint - Key Names", "FAIL", 
                         f"Missing expected keys: {missing_keys}. Found: {key_names}")
