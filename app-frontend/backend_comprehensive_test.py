@@ -13,7 +13,7 @@ import sys
 from datetime import datetime
 
 # Configuration - Use the public URL from frontend .env
-BACKEND_URL = "https://bible-ai-study.preview.emergentagent.com"
+BACKEND_URL = "https://rubriques-app.preview.emergentagent.com"
 TIMEOUT = 60  # Increased timeout for comprehensive testing
 
 def log_test(test_name, status, details=""):

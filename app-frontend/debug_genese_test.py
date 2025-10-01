@@ -6,7 +6,7 @@ Debug test for Genèse 1:1 LSG endpoint
 import requests
 import json
 
-BACKEND_URL = "https://bible-ai-study.preview.emergentagent.com"
+BACKEND_URL = "https://rubriques-app.preview.emergentagent.com"
 
 def test_genese_detailed():
     """Test POST /api/generate-verse-by-verse with Genèse 1:1 LSG and show full response"""

@@ -22,7 +22,7 @@ PREFERRED_BIBLE_ID = os.getenv("BIBLE_ID", "a93a92589195411f-01")  # Darby FR pa
 # --- CORS pour Railway ---
 ALLOWED_ORIGINS = [
     "https://etude8-bible.vercel.app",
-    "https://bible-ai-study.preview.emergentagent.com",  # ← AJOUTÉ POUR EMERGENT
+    "https://rubriques-app.preview.emergentagent.com",  # ← AJOUTÉ POUR EMERGENT
     "http://localhost:3000",
     "http://localhost:5173",
 ]
