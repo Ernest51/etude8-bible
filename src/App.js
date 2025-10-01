@@ -451,40 +451,36 @@ function App() {
   const parseRubriquesContent = (fullContent) => {
     const rubriques = {};
     
-    // Diviser le contenu par les titres de rubriques (## 1. , ## 2. , etc.)
-    const sections = fullContent.split(/##\s*(\d+)\.\s*/);
+    console.log("[PARSING DEBUG] Contenu reçu:", fullContent.length, "caractères");
+    console.log("[PARSING DEBUG] Début du contenu:", fullContent.substring(0, 200));
+    
+    // Diviser le contenu par les titres de rubriques (## Rubrique 1: , ## Rubrique 2: , etc.)
+    const sections = fullContent.split(/##\s*Rubrique\s*(\d+):\s*/i);
+    
+    console.log("[PARSING DEBUG] Sections trouvées:", sections.length);
     
     for (let i = 1; i < sections.length; i += 2) {
-      const rubriqueNumber = parseInt(sections[i]);
+      const rubriqueNumber = parseInt(sections[i]) - 1; // Index 0-based pour l'array
       let rubriqueContent = sections[i + 1] ? sections[i + 1].trim() : "";
       
-      // Nettoyer le contenu et extraire le titre de la rubrique
-      if (rubriqueContent) {
-        // Supprimer le titre de la rubrique s'il est répété
-        rubriqueContent = rubriqueContent.replace(/^[^\n]*\n/, '').trim();
-        
-        // Formatage spécifique selon le contenu de l'API
-        if (rubriqueContent.includes('- Adoration :')) {
-          // C'est la rubrique 1 (Prière d'ouverture)
-          rubriqueContent = rubriqueContent
-            .replace(/- Adoration : reconnaître Dieu pour qui Il est\./, '**Adoration :** Reconnaissons Dieu pour qui Il est dans sa grandeur et sa sainteté.')
-            .replace(/- Confession : se placer dans la lumière\./, '**Confession :** Plaçons-nous humblement dans la lumière de sa vérité.')
-            .replace(/- Demande : sagesse et compréhension du passage\./, '**Demande :** Accordez-nous, Seigneur, sagesse et compréhension pour saisir les vérités de ce passage.');
-        } else if (rubriqueContent.includes('- Contexte')) {
-          // Autres rubriques avec format contexte/lien/application
-          rubriqueContent = rubriqueContent
-            .replace(/- Contexte \([^)]+\) : ([^.]+)\./g, '**Contexte :** $1')
-            .replace(/- Lien biblique : ([^.]+)\./g, '**Lien biblique :** $1')
-            .replace(/- Application : une mise en pratique concrète\./g, '**Application :** Mise en pratique concrète dans notre marche quotidienne.');
-        }
-      }
+      console.log(`[PARSING DEBUG] Rubrique ${rubriqueNumber}:`, rubriqueContent.length, "caractères");
       
-      if (rubriqueNumber >= 1 && rubriqueNumber <= 28 && rubriqueContent) {
-        rubriques[rubriqueNumber] = rubriqueContent;
+      // Nettoyer le contenu - enlever le titre suivant s'il existe
+      if (rubriqueContent) {
+        // Enlever une éventuelle rubrique suivante qui serait incluse
+        rubriqueContent = rubriqueContent.split('## Rubrique')[0].trim();
+        
+        // Nettoyer les sauts de ligne multiples
+        rubriqueContent = rubriqueContent.replace(/\n{3,}/g, '\n\n').trim();
+        
+        if (rubriqueContent.length > 0) {
+          rubriques[rubriqueNumber] = rubriqueContent;
+          console.log(`[PARSING SUCCESS] Rubrique ${rubriqueNumber} parsée:`, rubriqueContent.substring(0, 100) + "...");
+        }
       }
     }
     
-    console.log(`[PARSING] Rubriques extraites:`, Object.keys(rubriques));
+    console.log("[PARSING FINAL] Rubriques parsées:", Object.keys(rubriques).length);
     return rubriques;
   };
 
