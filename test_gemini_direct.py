@@ -7,7 +7,8 @@ import os
 import google.generativeai as genai
 from dotenv import load_dotenv
 
-load_dotenv()
+# Load from backend directory
+load_dotenv('/app/backend/.env')
 
 def test_gemini_key(key_name, api_key):
     """Test a specific Gemini API key"""
