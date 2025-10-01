@@ -2,7 +2,7 @@ FINAL VERCEL API CORRECTION
 Timestamp: 2025-09-29 17:10:00
 CRITICAL: Fixed both vercel.json AND .env files
 Old API: https://etude8-bible-api-production.up.railway.app (generic content)
-New API: https://bible-study-ai-1.preview.emergentagent.com (real biblical content)
+New API: https://bible-ai-study.preview.emergentagent.com (real biblical content)
 Files corrected: vercel.json, .env, App.js (both src and frontend)
 Status: Ready for final deployment with real content
 Hash: final-api-correction-2025-09-29-171000

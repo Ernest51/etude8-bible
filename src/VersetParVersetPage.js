@@ -32,7 +32,7 @@ const VersetParVersetPage = ({ onGoBack, content, bookInfo }) => {
       const isLocal = window.location.hostname === 'localhost';
       const apiUrl = isLocal 
         ? "http://localhost:8001/api/generate-verse-by-verse"
-        : "https://bible-study-ai-1.preview.emergentagent.com/api/generate-verse-by-verse";
+        : "https://bible-ai-study.preview.emergentagent.com/api/generate-verse-by-verse";
       
       const prompt = `ENRICHISSEMENT THÉOLOGIQUE APPROFONDI
 
@@ -122,7 +122,7 @@ GÉNÈRE DIRECTEMENT l'explication enrichie complète :`;
       const isLocal = window.location.hostname === 'localhost';
       const apiUrl = isLocal 
         ? "http://localhost:8001/api/generate-verse-by-verse"
-        : "https://bible-study-ai-1.preview.emergentagent.com/api/generate-verse-by-verse";
+        : "https://bible-ai-study.preview.emergentagent.com/api/generate-verse-by-verse";
       
       const response = await fetch(apiUrl, {
         method: 'POST',

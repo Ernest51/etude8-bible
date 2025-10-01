@@ -1,7 +1,7 @@
 # URGENT FIX FOR VERCEL
 
 The Vercel deployment has inconsistent API endpoints:
-- Environment configured for: https://bible-study-ai-1.preview.emergentagent.com/api
+- Environment configured for: https://bible-ai-study.preview.emergentagent.com/api
 - But VERSETS PROG calls: https://etude8-bible-api-production.up.railway.app/api
 
 ## Solution:

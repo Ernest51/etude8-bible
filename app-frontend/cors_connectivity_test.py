@@ -7,7 +7,7 @@ import requests
 import json
 from datetime import datetime
 
-BACKEND_URL = "https://bible-study-ai-1.preview.emergentagent.com"
+BACKEND_URL = "https://bible-ai-study.preview.emergentagent.com"
 
 def test_cors_headers():
     """Test CORS headers on the endpoint"""
@@ -25,7 +25,7 @@ def test_cors_headers():
         
         headers = {
             "Content-Type": "application/json",
-            "Origin": "https://bible-study-ai-1.preview.emergentagent.com"  # Simulate frontend origin
+            "Origin": "https://bible-ai-study.preview.emergentagent.com"  # Simulate frontend origin
         }
         
         response = requests.post(f"{BACKEND_URL}/api/generate-verse-by-verse", 
@@ -63,7 +63,7 @@ def test_cors_headers():
 def test_different_origins():
     """Test with different origins to check CORS policy"""
     origins = [
-        "https://bible-study-ai-1.preview.emergentagent.com",
+        "https://bible-ai-study.preview.emergentagent.com",
         "http://localhost:3000",
         "https://example.com"
     ]
