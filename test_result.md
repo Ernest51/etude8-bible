@@ -40,6 +40,9 @@ backend:
       - working: false
         agent: "testing"
         comment: "❌ Character length controls not working as expected. 500 tokens produces 5016 chars (expected 300-800), 1500 tokens produces 12004 chars (expected 800-2000), 2500 tokens produces 28667 chars (expected 1500-3500). The API generates much more content than the token parameter suggests."
+      - working: false
+        agent: "testing"
+        comment: "❌ CHARACTER LENGTH CONTROLS STILL NOT WORKING: Comprehensive testing confirms length controls are not functioning properly. 500 tokens → 2082 chars (expected 300-800), 1500 tokens → 2082 chars (expected 800-2000), 2500 tokens → 2082 chars (expected 1500-3500). Root cause: Gemini API quota exhausted, system falling back to Bible API which generates fixed-length content regardless of token parameter. Issue will resolve when Gemini quotas reset (24 hours) or with paid Gemini API keys. Current fallback system working correctly but ignores token length parameter."
 
   - task: "Single Verse Generation"
     implemented: true
