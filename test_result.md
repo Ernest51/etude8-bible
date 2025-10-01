@@ -46,15 +46,18 @@ backend:
 
   - task: "Single Verse Generation"
     implemented: true
-    working: false
+    working: true
     file: "backend/server.py"
-    stuck_count: 1
+    stuck_count: 0
     priority: "medium"
     needs_retesting: false
     status_history:
       - working: false
         agent: "testing"
         comment: "❌ Single verse generation has formatting issues. For Genèse 1:1, expected exactly 1 theological explanation but found 2. The structure is not properly formatted for single verses."
+      - working: true
+        agent: "testing"
+        comment: "✅ SINGLE VERSE GENERATION NOW WORKING CORRECTLY: Testing with Genèse 1:1 shows proper single verse structure. Found exactly 1 VERSET, 1 TEXTE BIBLIQUE, 1 EXPLICATION THÉOLOGIQUE as expected. Genesis-specific terms detected: ['commencement', 'dieu', 'créa', 'cieux', 'terre']. Content length: 372 chars. Structure is now properly formatted for single verses. Previous formatting issues resolved."
 
   - task: "Study Generation (28 Rubriques)"
     implemented: true
