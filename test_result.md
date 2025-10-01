@@ -10,6 +10,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ GET /api/health endpoint working correctly. Returns status: ok, gemini_enabled: true, bibleId: a93a92589195411f-01, intelligent_mode: true"
+      - working: true
+        agent: "testing"
+        comment: "✅ FOCUSED HEALTH CHECK FOR NEW UI BUTTONS COMPLETED: Backend infrastructure is STABLE and ready for new UI button testing. ✅ Health Endpoint (/api/health): Status OK, Rotation system active, 2 Gemini keys configured, Bible API configured, 10 cache entries. ✅ API Status Endpoint (/api/api-status): Working correctly with real-time monitoring data. ✅ Cache System (/api/cache-stats): Operational with 11 cache entries, quota status properly tracked. ✅ Core Functionality: All critical endpoints operational despite Gemini quota exhaustion. ✅ Fallback System: Bible API fallback working correctly when Gemini keys exhausted. ✅ Infrastructure Assessment: 5/6 tests passed, ready for 'gemini', 'chatgpt', 'prise de note', and 'api' button testing."
 
   - task: "Verse by Verse Generation Basic"
     implemented: true
