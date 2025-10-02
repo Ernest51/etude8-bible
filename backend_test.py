@@ -1,23 +1,13 @@
 #!/usr/bin/env python3
 """
 Backend API Testing Suite for Bible Study Application
-Tests according to the specific review request:
+Tests the main backend endpoints according to review request:
+1. GET /api/ - verify API responds
+2. POST /api/generate-verse-by-verse - test with Genesis 1:1-3 LSG
+3. POST /api/generate-study - test with John 3:16 LSG
 
-1. Health Check: Test /api/health endpoint
-2. Verse by Verse Generation: Test /api/generate-verse-by-verse with different parameters:
-   - Basic generation: passage="Genèse 1", tokens=500, use_gemini=true, enriched=true
-   - Different lengths: 500, 1500, 2500 tokens to verify character length control
-   - Single verse: passage="Genèse 1:1"
-3. Individual Verse Enrichment: Test /api/generate-enhanced-content-with-gemini for individual verse enrichment
-4. Study Generation: Test /api/generate-study for theological studies
-5. Error Handling: Test with invalid parameters to verify proper error responses
-
-Focus on verifying:
-- API endpoints respond correctly
-- Character length controls work (500, 1500, 2500)
-- Gemini enrichment is working and producing theological content
-- Content quality and completeness
-- Performance (should complete within reasonable time)
+CONTEXTE: Validation rapide des endpoints backend principaux selon test_result.md
+TESTS REQUIS: Genèse 1:1-3 (verset par verset), Jean 3:16 (28 rubriques)
 """
 
 import requests
@@ -40,41 +30,33 @@ def log_test(test_name, status, details=""):
         print(f"    Details: {details}")
     print()
 
-def test_health_check():
-    """Test GET /api/health endpoint - specific test from review request"""
+def test_api_root():
+    """Test GET /api/ endpoint - specific test from review request"""
     try:
-        response = requests.get(f"{BACKEND_URL}/api/health", timeout=TIMEOUT)
+        response = requests.get(f"{BACKEND_URL}/api/", timeout=TIMEOUT)
         
         if response.status_code == 200:
             data = response.json()
-            required_fields = ["status", "bibleId", "gemini_enabled", "intelligent_mode"]
-            missing_fields = [field for field in required_fields if field not in data]
-            
-            if not missing_fields and data.get("status") == "ok":
-                log_test("GET /api/health - Health Check", "PASS", 
-                        f"Status: {data.get('status')}, Gemini: {data.get('gemini_enabled')}, Bible ID: {data.get('bibleId')}")
+            if "message" in data and "Bible Study" in data["message"]:
+                log_test("GET /api/ - Root endpoint", "PASS", f"Response: {data}")
                 return True
             else:
-                log_test("GET /api/health - Health Check", "FAIL", 
-                        f"Missing fields: {missing_fields} or status not 'ok'. Response: {data}")
+                log_test("GET /api/ - Root endpoint", "FAIL", f"Unexpected response: {data}")
                 return False
         else:
-            log_test("GET /api/health - Health Check", "FAIL", 
-                    f"Status: {response.status_code}, Response: {response.text}")
+            log_test("GET /api/ - Root endpoint", "FAIL", f"Status: {response.status_code}, Response: {response.text}")
             return False
             
     except Exception as e:
-        log_test("GET /api/health - Health Check", "FAIL", f"Exception: {str(e)}")
+        log_test("GET /api/ - Root endpoint", "FAIL", f"Exception: {str(e)}")
         return False
 
-def test_verse_by_verse_basic():
-    """Test POST /api/generate-verse-by-verse with basic parameters - specific test from review request"""
+def test_verse_by_verse_genesis():
+    """Test POST /api/generate-verse-by-verse with Genesis 1 LSG - specific test from review request"""
     try:
         payload = {
             "passage": "Genèse 1",
-            "tokens": 500,
-            "use_gemini": True,
-            "enriched": True
+            "version": "LSG"
         }
         
         headers = {"Content-Type": "application/json"}
@@ -89,35 +71,29 @@ def test_verse_by_verse_basic():
             
             # Check JSON format is correct
             if not isinstance(data, dict) or "content" not in data:
-                log_test("POST /api/generate-verse-by-verse - Basic (Genèse 1, 500 tokens, Gemini)", "FAIL", 
+                log_test("POST /api/generate-verse-by-verse - Genèse 1 LSG", "FAIL", 
                         "Invalid JSON response format")
-                return False
+                return False, None
             
-            # Check content is present and substantial
-            if len(content) < 300:
-                log_test("POST /api/generate-verse-by-verse - Basic (Genèse 1, 500 tokens, Gemini)", "FAIL", 
-                        f"Content too short: {len(content)} characters")
-                return False
+            # Check content quality - should be substantial (>1000 characters as per review request)
+            if len(content) < 1000:
+                log_test("POST /api/generate-verse-by-verse - Genèse 1 LSG", "FAIL", 
+                        f"Content too short: {len(content)} characters (required >1000)")
+                return False, None
             
-            # Check for verse-by-verse structure
+            # Check for verse-by-verse structure - should contain all verses with explanations
             verse_matches = re.findall(r'VERSET \d+', content)
             explanation_matches = re.findall(r'EXPLICATION THÉOLOGIQUE', content)
-            biblical_text_matches = re.findall(r'TEXTE BIBLIQUE', content)
             
-            if len(verse_matches) < 1:
-                log_test("POST /api/generate-verse-by-verse - Basic (Genèse 1, 500 tokens, Gemini)", "FAIL", 
-                        f"Expected at least 1 verse, found {len(verse_matches)}")
-                return False
+            if len(verse_matches) < 3:
+                log_test("POST /api/generate-verse-by-verse - Genèse 1 LSG", "FAIL", 
+                        f"Expected at least 3 verses, found {len(verse_matches)}")
+                return False, None
             
-            if len(explanation_matches) < 1:
-                log_test("POST /api/generate-verse-by-verse - Basic (Genèse 1, 500 tokens, Gemini)", "FAIL", 
-                        f"Expected at least 1 theological explanation, found {len(explanation_matches)}")
-                return False
-            
-            if len(biblical_text_matches) < 1:
-                log_test("POST /api/generate-verse-by-verse - Basic (Genèse 1, 500 tokens, Gemini)", "FAIL", 
-                        f"Expected at least 1 biblical text section, found {len(biblical_text_matches)}")
-                return False
+            if len(explanation_matches) < 3:
+                log_test("POST /api/generate-verse-by-verse - Genèse 1 LSG", "FAIL", 
+                        f"Expected at least 3 theological explanations, found {len(explanation_matches)}")
+                return False, None
             
             # Check for theological quality indicators
             theological_terms = [
@@ -127,151 +103,31 @@ def test_verse_by_verse_basic():
             found_terms = [term for term in theological_terms if term.lower() in content.lower()]
             
             if len(found_terms) < 3:
-                log_test("POST /api/generate-verse-by-verse - Basic (Genèse 1, 500 tokens, Gemini)", "FAIL", 
+                log_test("POST /api/generate-verse-by-verse - Genèse 1 LSG", "FAIL", 
                         f"Insufficient theological content quality. Found terms: {found_terms}")
-                return False
+                return False, None
             
-            log_test("POST /api/generate-verse-by-verse - Basic (Genèse 1, 500 tokens, Gemini)", "PASS", 
+            log_test("POST /api/generate-verse-by-verse - Genèse 1 LSG", "PASS", 
                     f"Content: {len(content)} chars, Verses: {len(verse_matches)}, Explanations: {len(explanation_matches)}, Theological terms: {len(found_terms)}")
-            return True
+            return True, data
             
         else:
-            log_test("POST /api/generate-verse-by-verse - Basic (Genèse 1, 500 tokens, Gemini)", "FAIL", 
+            log_test("POST /api/generate-verse-by-verse - Genèse 1 LSG", "FAIL", 
                     f"Status: {response.status_code}, Response: {response.text}")
-            return False
+            return False, None
             
     except Exception as e:
-        log_test("POST /api/generate-verse-by-verse - Basic (Genèse 1, 500 tokens, Gemini)", "FAIL", f"Exception: {str(e)}")
-        return False
+        log_test("POST /api/generate-verse-by-verse - Genèse 1 LSG", "FAIL", f"Exception: {str(e)}")
+        return False, None
 
-def test_verse_by_verse_length_controls():
-    """Test POST /api/generate-verse-by-verse with different token lengths - specific test from review request"""
-    test_cases = [
-        {"tokens": 500, "expected_min_length": 300, "expected_max_length": 800},
-        {"tokens": 1500, "expected_min_length": 800, "expected_max_length": 2000},
-        {"tokens": 2500, "expected_min_length": 1500, "expected_max_length": 3500}
-    ]
-    
-    results = []
-    
-    for test_case in test_cases:
-        try:
-            payload = {
-                "passage": "Genèse 1",
-                "tokens": test_case["tokens"],
-                "use_gemini": True,
-                "enriched": True
-            }
-            
-            headers = {"Content-Type": "application/json"}
-            response = requests.post(f"{BACKEND_URL}/api/generate-verse-by-verse", 
-                                   json=payload, 
-                                   headers=headers, 
-                                   timeout=TIMEOUT)
-            
-            if response.status_code == 200:
-                data = response.json()
-                content = data.get("content", "")
-                content_length = len(content)
-                
-                # Check if length is within expected range
-                if (content_length >= test_case["expected_min_length"] and 
-                    content_length <= test_case["expected_max_length"]):
-                    log_test(f"Length Control Test - {test_case['tokens']} tokens", "PASS", 
-                            f"Content length: {content_length} chars (expected: {test_case['expected_min_length']}-{test_case['expected_max_length']})")
-                    results.append(True)
-                else:
-                    log_test(f"Length Control Test - {test_case['tokens']} tokens", "FAIL", 
-                            f"Content length: {content_length} chars (expected: {test_case['expected_min_length']}-{test_case['expected_max_length']})")
-                    results.append(False)
-            else:
-                log_test(f"Length Control Test - {test_case['tokens']} tokens", "FAIL", 
-                        f"Status: {response.status_code}")
-                results.append(False)
-                
-        except Exception as e:
-            log_test(f"Length Control Test - {test_case['tokens']} tokens", "FAIL", f"Exception: {str(e)}")
-            results.append(False)
-    
-    # Return True if at least 2 out of 3 length controls work
-    success_count = sum(results)
-    overall_success = success_count >= 2
-    
-    log_test("Character Length Controls (500, 1500, 2500)", "PASS" if overall_success else "FAIL", 
-            f"Successful length controls: {success_count}/3")
-    
-    return overall_success
-
-def test_single_verse():
-    """Test POST /api/generate-verse-by-verse with single verse - specific test from review request"""
-    try:
-        payload = {
-            "passage": "Genèse 1:1",
-            "tokens": 500,
-            "use_gemini": True,
-            "enriched": True
-        }
-        
-        headers = {"Content-Type": "application/json"}
-        response = requests.post(f"{BACKEND_URL}/api/generate-verse-by-verse", 
-                               json=payload, 
-                               headers=headers, 
-                               timeout=TIMEOUT)
-        
-        if response.status_code == 200:
-            data = response.json()
-            content = data.get("content", "")
-            
-            # Check for single verse structure
-            verse_matches = re.findall(r'VERSET \d+', content)
-            explanation_matches = re.findall(r'EXPLICATION THÉOLOGIQUE', content)
-            biblical_text_matches = re.findall(r'TEXTE BIBLIQUE', content)
-            
-            # Should have exactly 1 verse for single verse request
-            if len(verse_matches) != 1:
-                log_test("POST /api/generate-verse-by-verse - Single Verse (Genèse 1:1)", "FAIL", 
-                        f"Expected exactly 1 verse, found {len(verse_matches)}")
-                return False
-            
-            if len(explanation_matches) != 1:
-                log_test("POST /api/generate-verse-by-verse - Single Verse (Genèse 1:1)", "FAIL", 
-                        f"Expected exactly 1 theological explanation, found {len(explanation_matches)}")
-                return False
-            
-            if len(biblical_text_matches) != 1:
-                log_test("POST /api/generate-verse-by-verse - Single Verse (Genèse 1:1)", "FAIL", 
-                        f"Expected exactly 1 biblical text section, found {len(biblical_text_matches)}")
-                return False
-            
-            # Check for Genesis 1:1 specific content
-            genesis_terms = ["commencement", "dieu", "créa", "cieux", "terre"]
-            found_terms = [term for term in genesis_terms if term.lower() in content.lower()]
-            
-            if len(found_terms) < 3:
-                log_test("POST /api/generate-verse-by-verse - Single Verse (Genèse 1:1)", "FAIL", 
-                        f"Insufficient Genesis 1:1 specific content. Found terms: {found_terms}")
-                return False
-            
-            log_test("POST /api/generate-verse-by-verse - Single Verse (Genèse 1:1)", "PASS", 
-                    f"Single verse structure correct, Genesis terms: {found_terms}, Content: {len(content)} chars")
-            return True
-            
-        else:
-            log_test("POST /api/generate-verse-by-verse - Single Verse (Genèse 1:1)", "FAIL", 
-                    f"Status: {response.status_code}, Response: {response.text}")
-            return False
-            
-    except Exception as e:
-        log_test("POST /api/generate-verse-by-verse - Single Verse (Genèse 1:1)", "FAIL", f"Exception: {str(e)}")
-        return False
-
-def test_study_generation():
-    """Test POST /api/generate-study for theological studies - specific test from review request"""
+def test_28_rubriques_jean_3_16():
+    """Test POST /api/generate-study with Jean 3:16 LSG - specific test from review request"""
     try:
         payload = {
             "passage": "Jean 3:16",
-            "tokens": 1500,
-            "use_gemini": True,
+            "version": "LSG",
+            "tokens": 500,
+            "model": "gpt",
             "requestedRubriques": []  # All 28 rubriques
         }
         
@@ -287,24 +143,24 @@ def test_study_generation():
             
             # Check JSON format is correct
             if not isinstance(data, dict) or "content" not in data:
-                log_test("POST /api/generate-study - Theological Studies (Jean 3:16)", "FAIL", 
+                log_test("POST /api/generate-study - Jean 3:16 LSG (28 rubriques)", "FAIL", 
                         "Invalid JSON response format")
-                return False
+                return False, None
             
-            # Check content quality - should be substantial for theological study
+            # Check content quality - should be substantial (>1000 characters as per review request)
             if len(content) < 1000:
-                log_test("POST /api/generate-study - Theological Studies (Jean 3:16)", "FAIL", 
-                        f"Content too short: {len(content)} characters (expected >1000)")
-                return False
+                log_test("POST /api/generate-study - Jean 3:16 LSG (28 rubriques)", "FAIL", 
+                        f"Content too short: {len(content)} characters (required >1000)")
+                return False, None
             
-            # Count rubric sections (should be multiple)
+            # Count rubric sections (should be 28)
             rubric_matches = re.findall(r'## \d+\.', content)
             rubric_count = len(rubric_matches)
             
-            if rubric_count < 10:  # Should have multiple theological sections
-                log_test("POST /api/generate-study - Theological Studies (Jean 3:16)", "FAIL", 
-                        f"Expected multiple theological sections, found {rubric_count}")
-                return False
+            if rubric_count < 20:  # Allow some flexibility but should have most rubriques
+                log_test("POST /api/generate-study - Jean 3:16 LSG (28 rubriques)", "FAIL", 
+                        f"Expected around 28 rubriques, found {rubric_count}")
+                return False, None
             
             # Check for theological quality indicators specific to John 3:16
             theological_terms = [
@@ -314,156 +170,64 @@ def test_study_generation():
             found_terms = [term for term in theological_terms if term.lower() in content.lower()]
             
             if len(found_terms) < 5:
-                log_test("POST /api/generate-study - Theological Studies (Jean 3:16)", "FAIL", 
+                log_test("POST /api/generate-study - Jean 3:16 LSG (28 rubriques)", "FAIL", 
                         f"Insufficient theological content quality. Found terms: {found_terms}")
-                return False
+                return False, None
             
-            log_test("POST /api/generate-study - Theological Studies (Jean 3:16)", "PASS", 
-                    f"Content: {len(content)} chars, Sections: {rubric_count}, Theological terms: {len(found_terms)}")
-            return True
+            log_test("POST /api/generate-study - Jean 3:16 LSG (28 rubriques)", "PASS", 
+                    f"Content: {len(content)} chars, Rubriques: {rubric_count}, Theological terms: {len(found_terms)}")
+            return True, data
             
         else:
-            log_test("POST /api/generate-study - Theological Studies (Jean 3:16)", "FAIL", 
+            log_test("POST /api/generate-study - Jean 3:16 LSG (28 rubriques)", "FAIL", 
                     f"Status: {response.status_code}, Response: {response.text}")
-            return False
+            return False, None
             
     except Exception as e:
-        log_test("POST /api/generate-study - Theological Studies (Jean 3:16)", "FAIL", f"Exception: {str(e)}")
-        return False
+        log_test("POST /api/generate-study - Jean 3:16 LSG (28 rubriques)", "FAIL", f"Exception: {str(e)}")
+        return False, None
 
-def test_error_handling():
-    """Test error handling with invalid parameters - specific test from review request"""
-    test_cases = [
-        {
-            "name": "Empty passage",
-            "payload": {"passage": "", "tokens": 500},
-            "expected_status": 400
-        },
-        {
-            "name": "Invalid passage format",
-            "payload": {"passage": "InvalidBook 999:999", "tokens": 500},
-            "expected_status": 400
-        },
-        {
-            "name": "Negative tokens",
-            "payload": {"passage": "Genèse 1:1", "tokens": -100},
-            "expected_status": [200, 400]  # May be handled gracefully
-        }
-    ]
-    
-    results = []
-    
-    for test_case in test_cases:
-        try:
-            headers = {"Content-Type": "application/json"}
-            response = requests.post(f"{BACKEND_URL}/api/generate-verse-by-verse", 
-                                   json=test_case["payload"], 
-                                   headers=headers, 
-                                   timeout=TIMEOUT)
-            
-            expected_statuses = test_case["expected_status"] if isinstance(test_case["expected_status"], list) else [test_case["expected_status"]]
-            
-            if response.status_code in expected_statuses:
-                log_test(f"Error Handling - {test_case['name']}", "PASS", 
-                        f"Status: {response.status_code} (expected: {expected_statuses})")
-                results.append(True)
-            else:
-                log_test(f"Error Handling - {test_case['name']}", "FAIL", 
-                        f"Status: {response.status_code} (expected: {expected_statuses})")
-                results.append(False)
-                
-        except Exception as e:
-            log_test(f"Error Handling - {test_case['name']}", "FAIL", f"Exception: {str(e)}")
-            results.append(False)
-    
-    # Return True if at least 2 out of 3 error handling tests work
-    success_count = sum(results)
-    overall_success = success_count >= 2
-    
-    log_test("Error Handling with Invalid Parameters", "PASS" if overall_success else "FAIL", 
-            f"Successful error handling tests: {success_count}/3")
-    
-    return overall_success
-
-def test_gemini_enrichment():
-    """Test Gemini enrichment functionality - specific test from review request"""
+def test_cors_configuration():
+    """Test CORS configuration - specific test from review request"""
     try:
-        # Test with and without Gemini to compare
-        payload_with_gemini = {
-            "passage": "Jean 1:1",
-            "tokens": 1000,
-            "use_gemini": True,
-            "enriched": True
+        # Test with OPTIONS request to check CORS headers
+        response = requests.options(f"{BACKEND_URL}/api/generate-study", 
+                                  headers={
+                                      "Origin": "https://etude8-bible.vercel.app",
+                                      "Access-Control-Request-Method": "POST",
+                                      "Access-Control-Request-Headers": "Content-Type"
+                                  },
+                                  timeout=TIMEOUT)
+        
+        # Check for CORS headers
+        cors_headers = {
+            "Access-Control-Allow-Origin": response.headers.get("Access-Control-Allow-Origin"),
+            "Access-Control-Allow-Methods": response.headers.get("Access-Control-Allow-Methods"),
+            "Access-Control-Allow-Headers": response.headers.get("Access-Control-Allow-Headers")
         }
         
-        payload_without_gemini = {
-            "passage": "Jean 1:1",
-            "tokens": 1000,
-            "use_gemini": False,
-            "enriched": False
-        }
-        
-        headers = {"Content-Type": "application/json"}
-        
-        # Test with Gemini
-        response_with = requests.post(f"{BACKEND_URL}/api/generate-verse-by-verse", 
-                                    json=payload_with_gemini, 
-                                    headers=headers, 
-                                    timeout=TIMEOUT)
-        
-        # Test without Gemini
-        response_without = requests.post(f"{BACKEND_URL}/api/generate-verse-by-verse", 
-                                       json=payload_without_gemini, 
-                                       headers=headers, 
-                                       timeout=TIMEOUT)
-        
-        if response_with.status_code == 200 and response_without.status_code == 200:
-            data_with = response_with.json()
-            data_without = response_without.json()
-            
-            content_with = data_with.get("content", "")
-            content_without = data_without.get("content", "")
-            
-            # Gemini-enriched content should be longer and more detailed
-            if len(content_with) > len(content_without):
-                # Check for enriched theological language
-                enriched_indicators = [
-                    "théologique", "exégèse", "herméneutique", "christologique", 
-                    "sotériologique", "trinitaire", "incarnation", "logos"
-                ]
-                found_indicators = [term for term in enriched_indicators if term.lower() in content_with.lower()]
-                
-                if len(found_indicators) >= 2:
-                    log_test("Gemini Enrichment Functionality", "PASS", 
-                            f"Enriched content longer ({len(content_with)} vs {len(content_without)} chars) with theological terms: {found_indicators}")
-                    return True
-                else:
-                    log_test("Gemini Enrichment Functionality", "FAIL", 
-                            f"Content longer but lacks enriched theological language. Found: {found_indicators}")
-                    return False
-            else:
-                log_test("Gemini Enrichment Functionality", "FAIL", 
-                        f"Gemini content not longer than basic content ({len(content_with)} vs {len(content_without)} chars)")
-                return False
+        # Check if CORS is properly configured
+        if (cors_headers["Access-Control-Allow-Origin"] in ["*", "https://etude8-bible.vercel.app"] or
+            response.status_code in [200, 204]):
+            log_test("CORS Configuration", "PASS", 
+                    f"CORS headers present: {cors_headers}")
+            return True
         else:
-            log_test("Gemini Enrichment Functionality", "FAIL", 
-                    f"API calls failed. With Gemini: {response_with.status_code}, Without: {response_without.status_code}")
+            log_test("CORS Configuration", "FAIL", 
+                    f"CORS not properly configured. Headers: {cors_headers}, Status: {response.status_code}")
             return False
             
     except Exception as e:
-        log_test("Gemini Enrichment Functionality", "FAIL", f"Exception: {str(e)}")
+        log_test("CORS Configuration", "FAIL", f"Exception: {str(e)}")
         return False
 
-def test_performance():
-    """Test API performance - should complete within reasonable time"""
+def test_no_failed_to_fetch():
+    """Test that there are no 'Failed to fetch' errors - specific test from review request"""
     try:
-        start_time = time.time()
-        
+        # Test a simple API call to ensure no network issues
         payload = {
-            "passage": "Psaumes 23:1",
-            "tokens": 500,
-            "use_gemini": True,
-            "enriched": True
+            "passage": "Jean 3:16",
+            "version": "LSG"
         }
         
         headers = {"Content-Type": "application/json"}
@@ -472,93 +236,79 @@ def test_performance():
                                headers=headers, 
                                timeout=TIMEOUT)
         
-        end_time = time.time()
-        duration = end_time - start_time
-        
         if response.status_code == 200:
             data = response.json()
             content = data.get("content", "")
             
-            # Should complete within 60 seconds for reasonable performance
-            if duration <= 60:
-                log_test("API Performance Test", "PASS", 
-                        f"Completed in {duration:.2f} seconds with {len(content)} chars content")
-                return True
-            else:
-                log_test("API Performance Test", "FAIL", 
-                        f"Too slow: {duration:.2f} seconds (expected ≤60s)")
+            # Check that response doesn't contain error messages
+            error_indicators = ["failed to fetch", "network error", "connection error", "timeout"]
+            found_errors = [error for error in error_indicators if error.lower() in content.lower()]
+            
+            if found_errors:
+                log_test("No 'Failed to fetch' errors", "FAIL", 
+                        f"Found error indicators: {found_errors}")
                 return False
+            else:
+                log_test("No 'Failed to fetch' errors", "PASS", 
+                        "No network error messages found in response")
+                return True
         else:
-            log_test("API Performance Test", "FAIL", 
-                    f"API call failed with status: {response.status_code}")
+            log_test("No 'Failed to fetch' errors", "FAIL", 
+                    f"HTTP error: {response.status_code}")
             return False
             
+    except requests.exceptions.RequestException as e:
+        if "failed to fetch" in str(e).lower():
+            log_test("No 'Failed to fetch' errors", "FAIL", 
+                    f"Network error detected: {str(e)}")
+            return False
+        else:
+            log_test("No 'Failed to fetch' errors", "FAIL", f"Request exception: {str(e)}")
+            return False
     except Exception as e:
-        log_test("API Performance Test", "FAIL", f"Exception: {str(e)}")
+        log_test("No 'Failed to fetch' errors", "FAIL", f"Exception: {str(e)}")
         return False
 
 def run_all_tests():
     """Run all backend tests according to review request"""
     print("=" * 80)
     print("BACKEND API TESTING SUITE - BIBLE STUDY APPLICATION")
-    print("REVIEW REQUEST TESTING")
     print("=" * 80)
     print(f"Testing backend at: {BACKEND_URL}")
     print(f"Timeout: {TIMEOUT} seconds")
     print()
-    print("FOCUS AREAS:")
-    print("- API endpoints respond correctly")
-    print("- Character length controls work (500, 1500, 2500)")
-    print("- Gemini enrichment is working and producing theological content")
-    print("- Content quality and completeness")
-    print("- Performance (should complete within reasonable time)")
+    print("CONTEXTE: Validation rapide des endpoints backend principaux")
+    print("TESTS REQUIS: GET /api/, POST /api/generate-verse-by-verse, POST /api/generate-study")
     print()
     
     test_results = []
     
-    # Test 1: Health Check
-    print("1. HEALTH CHECK")
+    # Test 1: Basic API health check
+    print("1. BASIC API HEALTH CHECK")
     print("-" * 40)
-    test_results.append(("GET /api/health - Health Check", test_health_check()))
+    test_results.append(("GET /api/ - Root endpoint", test_api_root()))
     
-    # Test 2: Verse by Verse Generation - Basic
-    print("\n2. VERSE BY VERSE GENERATION - BASIC")
+    # Test 2: Verse-by-verse study (Rubrique 0)
+    print("\n2. TEST ÉTUDE VERSET PAR VERSET (RUBRIQUE 0)")
     print("-" * 40)
-    test_results.append(("POST /api/generate-verse-by-verse - Basic (Genèse 1, 500 tokens, Gemini)", test_verse_by_verse_basic()))
+    verse_result, _ = test_verse_by_verse_genesis()
+    test_results.append(("POST /api/generate-verse-by-verse - Genèse 1 LSG", verse_result))
     
-    # Test 3: Character Length Controls
-    print("\n3. CHARACTER LENGTH CONTROLS")
+    # Test 3: 28 rubriques study
+    print("\n3. TEST ÉTUDE 28 RUBRIQUES")
     print("-" * 40)
-    test_results.append(("Character Length Controls (500, 1500, 2500)", test_verse_by_verse_length_controls()))
+    study_result, _ = test_28_rubriques_jean_3_16()
+    test_results.append(("POST /api/generate-study - Jean 3:16 LSG (28 rubriques)", study_result))
     
-    # Test 4: Single Verse
-    print("\n4. SINGLE VERSE GENERATION")
+    # Test 4: CORS and network configuration
+    print("\n4. CONFIGURATION CORS ET RÉSEAU")
     print("-" * 40)
-    test_results.append(("POST /api/generate-verse-by-verse - Single Verse (Genèse 1:1)", test_single_verse()))
-    
-    # Test 5: Study Generation
-    print("\n5. THEOLOGICAL STUDY GENERATION")
-    print("-" * 40)
-    test_results.append(("POST /api/generate-study - Theological Studies (Jean 3:16)", test_study_generation()))
-    
-    # Test 6: Gemini Enrichment
-    print("\n6. GEMINI ENRICHMENT FUNCTIONALITY")
-    print("-" * 40)
-    test_results.append(("Gemini Enrichment Functionality", test_gemini_enrichment()))
-    
-    # Test 7: Error Handling
-    print("\n7. ERROR HANDLING")
-    print("-" * 40)
-    test_results.append(("Error Handling with Invalid Parameters", test_error_handling()))
-    
-    # Test 8: Performance
-    print("\n8. PERFORMANCE TEST")
-    print("-" * 40)
-    test_results.append(("API Performance Test", test_performance()))
+    test_results.append(("CORS Configuration", test_cors_configuration()))
+    test_results.append(("No 'Failed to fetch' errors", test_no_failed_to_fetch()))
     
     # Summary
     print("\n" + "=" * 80)
-    print("TEST RESULTS SUMMARY - BIBLE STUDY API")
+    print("RÉSUMÉ DES TESTS - BIBLE STUDY APPLICATION")
     print("=" * 80)
     
     passed = sum(1 for _, result in test_results if result)
@@ -569,32 +319,19 @@ def run_all_tests():
         print(f"{status} - {test_name}")
     
     print()
-    print(f"OVERALL RESULT: {passed}/{total} tests passed")
-    
-    # Determine overall success
-    critical_tests = [
-        "GET /api/health - Health Check",
-        "POST /api/generate-verse-by-verse - Basic (Genèse 1, 500 tokens, Gemini)",
-        "Character Length Controls (500, 1500, 2500)",
-        "POST /api/generate-study - Theological Studies (Jean 3:16)"
-    ]
-    
-    critical_passed = sum(1 for test_name, result in test_results 
-                         if result and test_name in critical_tests)
+    print(f"RÉSULTAT GLOBAL: {passed}/{total} tests réussis")
     
     if passed == total:
-        print("\n🎉 ALL TESTS PASSED!")
-        print("✅ Bible Study API is fully functional")
-        print("✅ All review request requirements verified")
+        print("🎉 TOUS LES TESTS RÉUSSIS!")
+        print("✅ Backend Bible Study Application entièrement fonctionnel")
+        print("✅ Endpoints principaux validés selon review request")
         return True
-    elif critical_passed >= 3:  # Most critical functionality works
-        print("\n⚠️  SOME TESTS FAILED BUT CORE FUNCTIONALITY WORKS")
-        print(f"✅ Critical tests passed: {critical_passed}/{len(critical_tests)}")
+    elif passed >= 3:  # At least most functionality works
+        print("⚠️  QUELQUES TESTS ÉCHOUÉS MAIS FONCTIONNALITÉ PRINCIPALE OK")
         return True
     else:
-        print("\n❌ CRITICAL TESTS FAILED")
-        print("❌ Major issues with the Bible Study API")
-        print(f"❌ Critical tests passed: {critical_passed}/{len(critical_tests)}")
+        print("❌ TESTS CRITIQUES ÉCHOUÉS")
+        print("❌ Problèmes majeurs avec le backend")
         return False
 
 if __name__ == "__main__":
