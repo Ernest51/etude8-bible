@@ -1,85 +1,79 @@
 <analysis>
-The trajectory outlines a comprehensive debugging and feature enhancement cycle for a Bible study application. The initial task was to fix a navigation bug where the VERSETS PROG button failed to open the dedicated study page. This led to a deep dive into the React component , involving extensive debugging with console logs, forced navigation attempts, and troubleshooting the event handler attachment, eventually revealing a file path confusion between  and .
+The trajectory documents a multi-faceted development and debugging process for an AI-powered Bible study application. The work began with implementing the user's request to add four, then five, control buttons (gemini, chatgpt, prise de note, api, Lire la Bible) to each of the 28 generated rubrique pages. This involved modifying  to include the buttons and their handlers, updating  to pass the necessary functions as props, and adding corresponding CSS in .
 
-Upon fixing the navigation, a new issue surfaced: Gemini API rate limiting. The user provided multiple API keys, prompting the engineer to architect a robust backend solution. This involved creating a new module, , to implement an intelligent cache, an automatic API key rotation system (cycling through two Gemini keys), and a final fallback to a Bible API to ensure service continuity.
+A significant portion of the work was dedicated to iterative debugging of a persistent mobile UI bug: a vertical bar appearing on the right side of the screen on iOS. After multiple failed attempts using CSS overrides, the root cause was identified as an inline style in  forcing a grid layout. The final fix involved removing the inline style and applying aggressive CSS overrides to enforce a single-column layout on mobile.
 
-Subsequent work focused on refining this new system. The user reported bugs related to the fallback mechanism, including placeholder text (Texte du verset...), repetitive theological explanations, and severe content duplication and ordering issues on the Verset par Verset page. These were traced to incorrect backend logic and, more significantly, faulty regex parsing in the  frontend component, which was fixed.
+The engineer also implemented two major feature requests: a fully functional API monitoring modal within each rubrique page and a comprehensive Biblical Characters search feature in the . This second feature included a new UI with tabs, a filterable list of 70+ characters, and a detail view. This led to further debugging of JavaScript scope errors (), which were resolved by moving constants and functions to the correct component scope.
 
-The final major task was to overhaul the 28 Rubriques feature, which was using generic placeholders. The engineer replaced an external API call with a new local endpoint () powered by the Gemini key rotation system and corrected the frontend parsing logic in  to handle the new API response format. A bug with the dernière étude button was also identified but not resolved.
+The final phase of the trajectory was dominated by a critical deployment issue. The user reported that the live Vercel site was not updating. The engineer diagnosed the problem as a lack of a configured git remote, complicated by the  and  directories being git submodules, which prevented successful commits and pushes. The work concluded with the AI engineer stuck in a loop, attempting various git commands to force a commit of the submodule contents, a task that remains unresolved.
 </analysis>
 
 <product_requirements>
-The application is an AI-powered Bible study tool designed to provide deep theological analysis.
+The application is an AI-driven Bible study tool. The primary user requirement is to provide a rich, interactive, and resilient study experience.
 
-**Core Feature: Verset par Verset Study**
-- A VERSETS PROG button must trigger a study of the selected book and chapter, navigating the user to a dedicated page.
-- This page must display the biblical text and theological analysis in sequential batches of 5 verses (e.g., 1-5, 6-10).
-- A Suivant (Next) button must correctly load the subsequent batch of verses without duplication, ordering errors, or placeholder text.
+**Core Feature Enhancements:**
+- **Interactive Rubriques:** Each of the 28 generated study pages () must contain five functional control buttons: gemini, chatgpt, prise de note, Lire la Bible, and api.
+- **API Monitoring:** The api button within each rubrique must open a detailed modal displaying the real-time status (with colored LEDs) of all available APIs (four Gemini keys and one Bible API fallback).
+- **Expanded Concordance:** The Bible de Concordance page must be enhanced with a new, tabbed interface. One tab should provide the existing concordance search, while a new Personnages Bibliques tab should allow users to search a list of 70+ biblical figures and view their detailed, AI-generated histories.
+- **AI-Powered Enrichment:** The concordance page must feature two distinct Gemini buttons—one for enriching theme-based searches and another for generating deeper insights on selected biblical characters.
 
-**API Resilience and Content Quality**
-- The application must gracefully handle API rate limits. It needs to implement an automatic rotation system, first trying a primary Gemini key, then a secondary Gemini key, and finally falling back to a Bible API if both fail.
-- The goal is to prevent study interruptions due to quota issues.
-- When the Bible API fallback is used, it must display the *actual* biblical text, not generic placeholders or repetitive, templated explanations.
-
-**Core Feature: 28 Rubriques Study**
-- This feature must generate intelligent, unique theological content for each of the 28 study points using the internal Gemini API system.
-- It must not display generic placeholder text like Le contenu de cette rubrique sera généré automatiquement....
-
-**Additional Functionality**
-- A Dernière étude (Last Study) button should allow users to save and restore their most recent study session. This feature must be functional.
-- The user interface on the study page should be a clean, single-column layout.
+**Technical & UI/UX Requirements:**
+- **API Resilience:** The backend must support and automatically rotate through four separate Gemini API keys, ensuring high availability.
+- **Mobile Responsiveness:** The application must have a flawless mobile UI, specifically eliminating a persistent vertical bar on the right side of the screen on iOS and ensuring all new features like the character list are fully usable on small screens.
+- **Deployment:** All completed local features must be successfully deployed and visible on the live Vercel production site.
 </product_requirements>
 
 <key_technical_concepts>
-- **Frontend**: React.js (,  for state management).
-- **Backend**: Python with FastAPI.
-- **AI Integration**: Google Gemini API for primary content generation.
-- **API Resilience**: A custom-built backend system featuring intelligent caching, automatic rotation between multiple API keys, and a fallback mechanism to a separate Bible API.
-- **Content Parsing**: Heavy reliance on Regular Expressions (Regex) in the React frontend to parse and structure the raw markdown content returned by the backend API into displayable components.
+- **Frontend:** React.js (Component Props, State Management with , Conditional Rendering).
+- **Backend:** Python with FastAPI.
+- **API Management:** A custom API key rotation and fallback system () to manage multiple Gemini keys and a Bible API.
+- **UI/UX:** Advanced responsive CSS using Media Queries to fix platform-specific bugs (iOS) and adapt complex layouts for mobile.
+- **Version Control:** Git, with a significant unresolved issue involving submodules that is preventing deployment.
 </key_technical_concepts>
 
 <code_architecture>
-The application is a monorepo with distinct frontend and backend services. A key characteristic is the mirrored  directories for development and Vercel builds, requiring careful synchronization.
-
-
+The application uses a monorepo structure with distinct frontend and backend directories, which are themselves git submodules.
 
 - ****
-  - **Importance**: The main FastAPI application file defining all API endpoints.
-  - **Summary of Changes**: It was significantly modified to integrate the new resilience logic. The primary endpoint  was refactored to call the . A new endpoint, , was created to power the 28 Rubriques feature locally, replacing a hardcoded external API.
+  - **Importance**: Displays the content for a single generated study topic. It is the component where the user experience is most focused.
+  - **Summary of Changes**: This file was heavily modified to include five new control buttons. It was refactored to accept multiple functions as props from  to make the buttons functional. A complete API status modal, replicating the logic from , was added directly into this component, managed by local state.
 
 - ****
-  - **Importance**: This is a new, critical module created to handle all complex API interactions, ensuring the application remains functional despite API quota limits.
-  - **Summary of Changes**: Created from scratch, this module implements:
-    1.  An intelligent cache to store generated content.
-    2.  Logic to manage and rotate between two Gemini API keys ( and ).
-    3.  A fallback mechanism that calls a Bible API when both Gemini keys are exhausted.
-    4.  Functions to correctly parse verse ranges (e.g., 6-10) and fetch authentic biblical text.
-    5.  Fixed an  event loop conflict.
+  - **Importance**: Provides the Bible concordance search tool.
+  - **Summary of Changes**: This page underwent a major overhaul. It was transformed into a tabbed interface to house both the original concordance search and a new Biblical Characters search feature. A hardcoded list of 70+ characters was added, along with state management for searching and displaying character details. Two new Gemini buttons and their associated handler functions (, ) were also implemented. Several scope-related JavaScript bugs were fixed here.
 
 - ****
-  - **Importance**: The root component of the React application, managing global state, routing, and rendering the main interface, including the 28 Rubriques feature.
-  - **Summary of Changes**: This file was the focus of debugging the initial VERSETS PROG navigation issue. Later, it was modified to fix the 28 Rubriques feature by:
-    1.  Changing the  call's URL from an external API to the new local  endpoint.
-    2.  Correcting the  function with an updated regex () to correctly parse the new markdown format returned by the local Gemini API.
-    3.  Logic for the non-functional Dernière étude button resides here.
+  - **Importance**: The main application component, managing routing, state, and component composition.
+  - **Summary of Changes**: Modified to pass down numerous handler functions (e.g., , ) as props to . A critical inline style forcing a two-column grid layout () was removed to fix a major mobile UI bug.
 
 - ****
-  - **Importance**: The dedicated component for displaying the verse-by-verse study. It handles fetching paginated content, parsing it, and rendering it.
-  - **Summary of Changes**: This file was heavily modified to fix severe display bugs. The  function's regex was updated to correctly handle markdown () and split the content, which resolved the critical issues of verse duplication and incorrect ordering during pagination. The erroneously added second Bienvenue column was also removed from this file's JSX.
+  - **Importance**: The global stylesheet for the application.
+  - **Summary of Changes**: This file received numerous additions. Styles were created for the five new control buttons in . Most importantly, aggressive, responsive media queries were added to resolve the iOS vertical bar issue by forcing a single-column layout () on mobile devices. Further styles were added to make the new character list in the concordance responsive.
+
+- ****
+  - **Importance**: Stores environment variables and API keys for the backend.
+  - **Summary of Changes**: This file was updated twice to include two new Gemini API keys, named  and , bringing the total number of rotating keys to four.
+
+- ****
+  - **Importance**: Manages the API key rotation logic.
+  - **Summary of Changes**: The  list within this module was updated twice to incorporate the two new keys from the  file, expanding the rotation pool from two to four keys.
 </code_architecture>
 
 <pending_tasks>
-- **Fix Dernière étude button**: The button for restoring the last study is non-functional. The logic for saving a study to localStorage ( function) is not being triggered correctly upon content generation, preventing any study from being saved and thus restored.
+- **Fix Dernière étude button**: The functionality for this button was mentioned as a pending task in the initial context but was not addressed during the development cycle.
+- **Resolve Git Submodule Issue for Deployment**: The most critical pending task is to fix the version control problem that prevents committing and pushing the  and  submodule changes, which is blocking any updates to the Vercel production environment.
 </pending_tasks>
 
 <current_work>
-The most recent task was to fix the 28 Rubriques feature, which was displaying generic placeholder text instead of AI-generated theological content.
+Immediately before this summary, the AI engineer was grappling with a critical deployment blocker. The user reported that none of the newly developed features were appearing on the live Vercel URL. The engineer correctly diagnosed that the local code was not being pushed to the remote GitHub repository.
 
-The AI engineer successfully diagnosed that while the newly created backend endpoint () was functioning correctly and generating valid content with Gemini, the frontend was failing to display it. The root cause was identified in : the  function used an outdated regular expression () that did not match the markdown format () being returned by the new backend.
+Further investigation revealed two core issues:
+1.  There was no  remote configured in the git repository.
+2.  The  and  directories were structured as git submodules, which severely complicated the process of staging and committing changes from the root directory.
 
-The final action taken was to update this regex in . The engineer then restarted the frontend service and was preparing to run a final validation test to confirm that the rich, AI-generated content for the 28 rubriques now correctly appears in the user interface.
+The engineer's last actions were a series of failing command-line attempts to resolve this. They tried to  the submodules, remove the submodule tracking (), and force-add the files. Every attempt failed, leaving the repository in a state where all the completed feature work is present locally but cannot be pushed to the remote repository for deployment. The current, unfinished task is to find a way to create a valid commit that includes all the recent changes across the entire codebase, bypassing or resolving the submodule conflict.
 </current_work>
 
 <optional_next_step>
-Use the frontend testing agent to run a comprehensive test on the 28 Rubriques feature to confirm that the parsing fix is effective and the UI now correctly displays the AI-generated content for each rubrique.
+Resolve the git submodule issue by removing submodule tracking and creating a new, clean commit that includes all frontend and backend code, enabling the work to finally be pushed to the remote repository.
 </optional_next_step>

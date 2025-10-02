@@ -1213,7 +1213,7 @@ Mémorisons ce verset pour porter sa vérité dans notre quotidien.
       const isLocal = window.location.hostname === 'localhost';
       const versetAPIUrl = isLocal 
         ? "http://localhost:8001/api/generate-verse-by-verse"  // Local avec votre Gemini
-        : "https://rubriques-app.preview.emergentagent.com/api/generate-verse-by-verse";  // Preview avec votre Gemini
+        : "https://faithai-tools.preview.emergentagent.com/api/generate-verse-by-verse";  // Preview avec votre Gemini
       console.log("[VERSETS PROG] URL backend utilisée:", versetAPIUrl);
       const apiUrl = versetAPIUrl;
       

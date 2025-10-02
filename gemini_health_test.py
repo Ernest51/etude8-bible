@@ -10,7 +10,7 @@ import time
 from datetime import datetime
 
 # Configuration
-BACKEND_URL = "https://rubriques-app.preview.emergentagent.com"
+BACKEND_URL = "https://faithai-tools.preview.emergentagent.com"
 API_BASE = f"{BACKEND_URL}/api"
 
 def print_test_header(test_name):

@@ -20,7 +20,7 @@ import sys
 from datetime import datetime
 
 # Configuration - Use the REACT_APP_BACKEND_URL from frontend/.env
-BACKEND_URL = "https://rubriques-app.preview.emergentagent.com"
+BACKEND_URL = "https://faithai-tools.preview.emergentagent.com"
 TIMEOUT = 120
 
 def log_test(test_name, status, details=""):
